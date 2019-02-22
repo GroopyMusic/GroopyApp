@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/logo_yb_stroked"
+            android:layout_marginBottom="30dp"/>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progressBar_stat"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dark_Green"
+            android:textSize="30dp"
+            android:text="            "
+            android:textAlignment="center"
+            android:id="@+id/stat_event_name"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stat_event_date"
+            android:textColor="@color/dark_Green"
+            android:text="4 avril 2018"
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stat_event_total_ticket"
+            android:textColor="@color/dark_Green"
+            android:text="TOTAL :    "
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stat_event_total_ticket_sold"
+            android:textColor="@color/dark_Green"
+            android:text="VENDUS :    "
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stat_event_total_ticket_scanned"
+            android:textColor="@color/dark_Green"
+            android:text="SCANNES :    "
+            android:layout_marginBottom="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stat_event_total_ticket_onsite"
+            android:textColor="@color/dark_Green"
+            android:text="SUR SITE :    "
+            android:layout_marginBottom="40dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginBottom="10dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back"
+                android:background="@drawable/button_green"
+                android:textColor="@color/dark_Green"
+                android:layout_marginRight="20dp"
+                android:id="@+id/stat_event_btn_back"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scan"
+                android:background="@drawable/button_green"
+                android:textColor="@color/dark_Green"
+                android:id="@+id/stat_event_btn_scan"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_green"
+            android:textColor="@color/dark_Green"
+            android:id="@+id/stat_event_btn_add"
+            android:text="@string/add_ticket"
+            android:padding="5dp"/>
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

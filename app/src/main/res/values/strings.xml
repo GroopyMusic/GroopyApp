@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Un-Mute Scan</string>
+    <string name="home">ACCUEIL</string>
+    <string name="scan">SCAN</string>
+    <string name="username">NOM D\'UTILISATEUR</string>
+    <string name="password">MOT DE PASSE</string>
+    <string name="forgotten_pwd">Mot de passe oublié ?</string>
+    <string name="login_um">Se connecter via Un-Mute</string>
+    <string name="login_fb">Se connecter via Facebook</string>
+    <string name="scan_status">scannés : </string>
+    <string name="ticket_ok">Ticket validé !</string>
+    <string name="ticket_ok_dialog">Ticket validé ! Bon concert !</string>
+    <string name="see_more">Plus d\'infos</string>
+    <string name="back_to_scan">Retour au scan</string>
+    <string name="ok">OK</string>
+    <string name="sth_wrong">"Oups, une erreur est survenue"</string>
+    <string name="no_barcode_detected">Aucun code-barre détecté</string>
+    <string name="stat">STATS</string>
+    <string name="my_events">MES EVENEMENTS</string>
+    <string name="back">RETOUR</string>
+    <string name="error_barcode">Oups, il y a eu une erreur avec le scanner</string>
+    <string name="user_wrong_credentials">Mauvais nom d\'utilisateur ou mot de passe.</string>
+    <string name="user_not_found">Veuillez entrer un nom d\'utilisateur valide</string>
+    <string name="user_cant_access">Vous ne pouvez pas utiliser l\'application. Vous devez être gestionnaire de campagnes.</string>
+    <string name="user_no_login">Vous devez entrer un nom d\'utilisateur et un mot de passe.</string>
+    <string name="add_ticket">Ajouter un ticket</string>
+    <string name="cancel">Annuler</string>
+    <string name="add_price">Entrer le prix et valider</string>
+    <string name="ticket_added">Ticket ajouté ! Bon concert !</string>
+    <string name="ticket_total">TOTAL : </string>
+    <string name="ticket_sold">VENUDUS : </string>
+    <string name="ticket_scanned">SCANNES : </string>
+    <string name="ticket_on_site">SUR SITE : </string>
+    <string name="no_connexion">Problème de connexion au serveur. Réessayer d\'ici quelques instants.</string>
+</resources>

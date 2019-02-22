@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Un-Mute Scan</string>
+    <string name="home">HOME</string>
+    <string name="scan">SCAN</string>
+    <string name="username">USERNAME</string>
+    <string name="password">PASSWORD</string>
+    <string name="forgotten_pwd">You forgot your password ?</string>
+    <string name="login_um">Login with Un-Mute</string>
+    <string name="login_fb">Login with Facebook</string>
+    <string name="scan_status">scanned : </string>
+    <string name="ticket_ok">Ticket validated !</string>
+    <string name="ticket_ok_dialog">Ticket validated ! Enjoy the show !</string>
+    <string name="see_more">More infos</string>
+    <string name="back_to_scan">Back to scan</string>
+    <string name="ok">OK</string>
+    <string name="sth_wrong">"Oops, something went wrong"</string>
+    <string name="no_barcode_detected">No barcode detected</string>
+    <string name="stat">STATS</string>
+    <string name="my_events">MY EVENTS</string>
+    <string name="back">BACK</string>
+    <string name="error_barcode">Oops, something went wrong with the scanner</string>
+    <string name="user_wrong_credentials">Veuillez entrer un nom d\'utilisateur valide.</string>
+</resources>

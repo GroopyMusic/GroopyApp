@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:background="@drawable/button_green"
+    android:gravity="right">
+
+    <TextView
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_info_name"
+        android:textColor="@color/dark_Green"
+        android:text="Mon événement"/>
+
+    <Button
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_info_stat"
+        android:background="@drawable/button_green"
+        android:textColor="@color/dark_Green"
+        android:text="@string/stat"
+        />
+
+</LinearLayout>
