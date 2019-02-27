@@ -1,12 +1,14 @@
 package adri.suys.un_mutescan.model;
 
+import adri.suys.un_mutescan.R;
+
 public class Ticket {
 
-    private String buyer;
-    private String ticket_type;
-    private String seat_type;
-    private String barcode;
-    private String error;
+    private final String buyer;
+    private final String ticket_type;
+    private final String seat_type;
+    private final String barcode;
+    private final String error;
 
     public Ticket(String barcodeText, String name, String ticketType, String seatType, String errorMessage) {
         this.buyer = name;
@@ -20,39 +22,43 @@ public class Ticket {
         return buyer;
     }
 
-    public void setName(String name) {
-        this.buyer = name;
-    }
-
     public String getTicketType() {
         return ticket_type;
-    }
-
-    public void setTicketType(String ticketType) {
-        this.ticket_type = ticketType;
     }
 
     public String getSeatType() {
         return seat_type;
     }
 
-    public void setSeatType(String seatType) {
-        this.seat_type = seatType;
-    }
-
     public String getBarcodeText() {
         return barcode;
-    }
-
-    public void setBarcodeText(String barcodeText) {
-        this.barcode = barcodeText;
     }
 
     public String getErrorMessage() {
         return error;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.error = errorMessage;
+    /**
+     * Get the resource string associated to the error message.
+     * @return the int value of the resource string
+     */
+    public int getErrorMessageAsResource(){
+        switch (error){
+            case "Ce ticket n'existe pas." :
+                return R.string.scan_error_ticket_not_exist;
+            case "Cet événement n\\'existe pas." :
+                return R.string.scan_error_event_not_exist;
+            case "Cet événement n\\'a pas lieu aujourd'hui." :
+                return R.string.scan_error_incorrect_date;
+            case "Ce ticket ne correspond pas à l\\'évenement sélectionné" :
+                return R.string.scan_error_no_match_event_tix;
+            case "Ce ticket a été remboursé et n\\'est donc plus valide." :
+                return R.string.scan_error_tix_refund;
+            case "Ce ticket a déjà été scanné." :
+                return R.string.scan_error_already_scanned;
+            default :
+                return R.string.ticket_ok_dialog;
+        }
     }
+
 }

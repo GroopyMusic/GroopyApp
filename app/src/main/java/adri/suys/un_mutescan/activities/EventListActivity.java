@@ -3,7 +3,6 @@ package adri.suys.un_mutescan.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
 
@@ -23,10 +21,11 @@ import java.util.Observer;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestEvents;
+import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
 
-public class EventActivity extends Activity implements Observer {
+public class EventListActivity extends Activity implements Observer {
 
     private RecyclerView recyclerView;
     private EventAdapter adapter;
@@ -38,7 +37,7 @@ public class EventActivity extends Activity implements Observer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.activity_event_list);
         configActionBar();
         progressBar = findViewById(R.id.progressBar_event);
         progressBar.setVisibility(View.VISIBLE);
@@ -47,7 +46,7 @@ public class EventActivity extends Activity implements Observer {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        user = (User) getIntent().getSerializableExtra("user");
+        user = UnMuteDataHolder.getUser();
         createEvents();
     }
 
@@ -55,29 +54,34 @@ public class EventActivity extends Activity implements Observer {
     protected void onResume(){
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
-        user = (User) getIntent().getSerializableExtra("user");
+        user = UnMuteDataHolder.getUser();
         createEvents();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void update(Observable observable, Object o) {
         if (o instanceof NoConnectionError){
             String message = getResources().getString(R.string.no_connexion);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            showToast(message);
         } else if (o instanceof String){
             String errorMsg = (String) o;
-            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+            showToast(errorMsg);
         } else {
-            List<Event> events = (List<Event>) o;
-            this.events = events;
+            this.events = (List<Event>) o;
         }
         progressBar.setVisibility(View.GONE);
         updateEventsList();
     }
 
+    @Override
     public void onBackPressed() {
         // do nothing
     }
+
+    /////////////////////
+    // private methods //
+    /////////////////////
 
     private void updateEventsList() {
         if (adapter == null) {
@@ -104,7 +108,7 @@ public class EventActivity extends Activity implements Observer {
             initViewElements();
         }
 
-        public void bind(Event event) {
+        void bind(Event event) {
             this.event = event;
             eventName.setText(event.getName());
         }
@@ -115,13 +119,12 @@ public class EventActivity extends Activity implements Observer {
             setClickActions();
         }
 
-        private void setClickActions() {
+        void setClickActions() {
             statBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(EventActivity.this, StatActivity.class);
-                    intent.putExtra("event", event);
-                    intent.putExtra("user", user);
+                    Intent intent = new Intent(EventListActivity.this, EventStatActivity.class);
+                    UnMuteDataHolder.setEvent(event);
                     startActivity(intent);
                 }
             });
@@ -140,7 +143,7 @@ public class EventActivity extends Activity implements Observer {
         @NonNull
         @Override
         public EventHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            LayoutInflater layoutInflater = LayoutInflater.from(EventActivity.this);
+            LayoutInflater layoutInflater = LayoutInflater.from(EventListActivity.this);
             return new EventHolder(layoutInflater, viewGroup);
         }
 

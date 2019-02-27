@@ -3,13 +3,11 @@ package adri.suys.un_mutescan.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
 
@@ -18,13 +16,13 @@ import java.util.Observer;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestTicket;
+import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
 
-public class TicketActivity extends Activity implements Observer {
+public class TicketInfosActivity extends Activity implements Observer {
 
-    private TextView barcode, name, ticketType, seatType, eventName, eventScanningStatus, ticketError;
-    private Button backHomeBtn, backScanBtn;
+    private TextView barcode, name, ticketType, seatType, eventName, ticketError;
     private Event currentEvent;
     private AlertDialog.Builder dialogBuilder;
     private RestTicket restCommunication;
@@ -32,81 +30,73 @@ public class TicketActivity extends Activity implements Observer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ticket);
+        setContentView(R.layout.activity_ticket_infos);
         configActionBar();
         restCommunication = new RestTicket(this);
         initViewElements();
-        currentEvent = (Event) getIntent().getSerializableExtra("event");
+        currentEvent = UnMuteDataHolder.getEvent();
         dialogBuilder = new AlertDialog.Builder(this);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        currentEvent = (Event) getIntent().getSerializableExtra("event");
+        currentEvent = UnMuteDataHolder.getEvent();
         displayInfos();
     }
 
+    @Override
     public void onBackPressed(){
-        Intent intent = new Intent(TicketActivity.this, StatActivity.class);
-        intent.putExtra("event", currentEvent);
-        startActivity(intent);
+        startActivity(new Intent(this, EventStatActivity.class));
     }
 
     @Override
     public void update(Observable observable, Object o) {
         if (o instanceof NoConnectionError){
             String message = getResources().getString(R.string.no_connexion);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            showToast(message);
         } else {
             Ticket ticket = (Ticket) o;
             try {
                 displayTicket(ticket);
-                displayEvent();
+                displayEventName();
                 Boolean mustDisplayAlert = getIntent().getBooleanExtra("alert", false);
                 if (mustDisplayAlert) {
-                    displayAlert(ticket.getErrorMessage());
+                    displayAlert(getResources().getString(ticket.getErrorMessageAsResource()));
                 }
             } catch (NullPointerException ex) {
-                Toast.makeText(this, getResources().getString(R.string.sth_wrong), Toast.LENGTH_SHORT).show();
-                Log.d("TICKET OU EVENT NULL", ex.getMessage());
+                showToast(getResources().getString(R.string.sth_wrong));
             }
         }
     }
 
-    // private methods
+    /**
+     * Handle a pressure on the back button -> goes to the previous screen
+     * @param v the view the Activity is linked to
+     */
+    public void goBack(View v){
+        startActivity(new Intent(this, EventStatActivity.class));
+    }
+
+    /**
+     * Open the scanner in order to scan qr-code
+     * @param v the view the Activity is linked to
+     */
+    public void openScan(View v){
+        startActivity(new Intent(this, BarcodeScannerActivity.class));
+    }
+
+    /////////////////////
+    // private methods //
+    /////////////////////
 
     private void initViewElements() {
         barcode = findViewById(R.id.ticket_barcode);
         name = findViewById(R.id.ticket_name);
         ticketType = findViewById(R.id.ticket_type_ticket);
         seatType = findViewById(R.id.ticket_type_seat);
-        backHomeBtn = findViewById(R.id.back_home_btn);
-        backScanBtn = findViewById(R.id.back_scan_btn);
         eventName = findViewById(R.id.event_name);
         ticketError = findViewById(R.id.ticket_error);
-        setOnClickActions();
-    }
-
-    private void setOnClickActions() {
-        backHomeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TicketActivity.this, StatActivity.class);
-                intent.putExtra("event", currentEvent);
-                startActivity(intent);
-            }
-        });
-        backScanBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TicketActivity.this, BarcodeActivity.class);
-                System.out.println("TicketActivity - avant d'envoyer l'évent");
-                System.out.println(currentEvent);
-                intent.putExtra("event", currentEvent);
-                startActivity(intent);
-            }
-        });
     }
 
     private void displayInfos(){
@@ -115,10 +105,10 @@ public class TicketActivity extends Activity implements Observer {
     }
 
     private void validateTicket(String barcodeValue){
-        restCommunication.scanTicket(/*currentEvent.getId()*/3, barcodeValue);
+        restCommunication.scanTicket(currentEvent.getId(), barcodeValue);
     }
 
-    private void displayEvent() {
+    private void displayEventName() {
         if (currentEvent == null){
             throw new NullPointerException("L'événement n'existe pas");
         }
@@ -131,32 +121,31 @@ public class TicketActivity extends Activity implements Observer {
         }
         if (ticket.getErrorMessage().equals("")){
             ticketError.setText(getResources().getString(R.string.ticket_ok_dialog));
-            ticketError.setTextColor(getResources().getColor(R.color.green));
+            int green = ContextCompat.getColor(this, R.color.green);
+            ticketError.setTextColor(green);
             barcode.setText(ticket.getBarcodeText());
             name.setText(ticket.getName());
             ticketType.setText(ticket.getTicketType());
             seatType.setText(ticket.getSeatType());
+            currentEvent.scanTicket(); // nb of scanned tix + 1
         } else {
-            ticketError.setTextColor(getResources().getColor(R.color.red));
-            ticketError.setText(ticket.getErrorMessage());
+            int red = ContextCompat.getColor(this, R.color.red);
+            ticketError.setTextColor(red);
+            ticketError.setText(ticket.getErrorMessageAsResource());
         }
     }
 
     private void displayAlert(String error){
-        if (error.equals("")){
-            dialogBuilder.setMessage(getResources().getString(R.string.ticket_ok)).setTitle("");
+        dialogBuilder.setMessage(error).setTitle("");
+        if (error.equals(getResources().getString(R.string.ticket_ok_dialog))){
             currentEvent.scanTicket();
-        } else {
-            dialogBuilder.setMessage(error).setTitle("");
         }
         dialogBuilder.setCancelable(false)
                 .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        Intent intent = new Intent(TicketActivity.this, BarcodeActivity.class);
-                        intent.putExtra("event", currentEvent);
-                        startActivity(intent);
+                        startActivity(new Intent(TicketInfosActivity.this, BarcodeScannerActivity.class));
                     }
                 })
                 .setNegativeButton(R.string.see_more, new DialogInterface.OnClickListener() {

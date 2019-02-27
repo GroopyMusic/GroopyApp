@@ -14,37 +14,52 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Observable;
 
-import adri.suys.un_mutescan.activities.EventActivity;
+import adri.suys.un_mutescan.activities.EventListActivity;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
 
+/**
+ * Handles all the communication with the API concerning the recuperation of all the events of an user
+ */
 public class RestEvents extends Observable {
 
-    private static final String BASE_URL = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getevents?";
-    private RestService rest;
+    //private static final String BASE_URL = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getevents?";
+    private static final String BASE_URL = "http://192.168.1.216:8888/GroopyMusic/web/app_dev.php/getevents?";
+    private final RestService rest;
 
-    public RestEvents(EventActivity eventActivity){
+    public RestEvents(EventListActivity eventActivity){
         rest = new RestService(eventActivity);
         this.addObserver(eventActivity);
     }
 
+    /**
+     * Complete the url to reach the API
+     * According to the given the User, we ask the API to give us the list of events handled by the user
+     * if an error occured, the error message is given to the observers
+     * else the list of Event is passed to the observers.
+     * @param user
+     */
     public void collectEvents(User user){
         String url = makeEventUrl(user.getId());
-        JsonArrayRequest eventsRequest = createEventsRequest(Request.Method.GET, url);
+        JsonArrayRequest eventsRequest = createEventsRequest(url);
         rest.getRequestQueue().add(eventsRequest);
     }
+
+    /////////////////////
+    // private methods //
+    /////////////////////
 
     private String makeEventUrl(int id) {
         return BASE_URL + "id=" + id;
     }
 
-    private JsonArrayRequest createEventsRequest(int requestMethod, String url){
-        JsonArrayRequest jor = new JsonArrayRequest(requestMethod, url, null,
+    private JsonArrayRequest createEventsRequest(String url){
+        return new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -76,7 +91,6 @@ public class RestEvents extends Observable {
                     }
                 }
         );
-        return jor;
     }
 
     private String getError(JSONArray response) throws JSONException {
@@ -98,7 +112,7 @@ public class RestEvents extends Observable {
             int nbTicketSoldOnSite = jsonObject.getInt("nbBoughtOnSiteTicket");
             String dateStr = ((JSONObject) jsonObject.get("date")).getString("date");
             dateStr = dateStr.substring(0, dateStr.length() - 7);
-            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(dateStr);
+            Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).parse(dateStr);
             events.add(new Event(id, name, nbTotalTicket, nbScannedTicket, nbSoldTicket, nbTicketSoldOnSite, date));
         }
         return events;

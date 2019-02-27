@@ -11,10 +11,11 @@
         android:gravity="center_horizontal">
 
         <ImageView
+            android:contentDescription="@string/logo_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_yb_stroked"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="10dp"/>
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -44,24 +45,21 @@
             android:layout_height="wrap_content"
             android:id="@+id/stat_event_total_ticket"
             android:textColor="@color/dark_Green"
-            android:text="TOTAL :    "
-            android:layout_marginBottom="5dp"/>
+            android:text="TOTAL :    "/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/stat_event_total_ticket_sold"
             android:textColor="@color/dark_Green"
-            android:text="VENDUS :    "
-            android:layout_marginBottom="5dp"/>
+            android:text="VENDUS :    "/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/stat_event_total_ticket_scanned"
             android:textColor="@color/dark_Green"
-            android:text="SCANNES :    "
-            android:layout_marginBottom="5dp"/>
+            android:text="SCANNES :    "/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -69,14 +67,14 @@
             android:id="@+id/stat_event_total_ticket_onsite"
             android:textColor="@color/dark_Green"
             android:text="SUR SITE :    "
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="5dp">
 
             <Button
                 android:layout_width="wrap_content"
@@ -85,7 +83,8 @@
                 android:background="@drawable/button_green"
                 android:textColor="@color/dark_Green"
                 android:layout_marginRight="20dp"
-                android:id="@+id/stat_event_btn_back"/>
+                android:id="@+id/stat_event_btn_back"
+                android:onClick="goBack"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -93,7 +92,8 @@
                 android:text="@string/scan"
                 android:background="@drawable/button_green"
                 android:textColor="@color/dark_Green"
-                android:id="@+id/stat_event_btn_scan"/>
+                android:id="@+id/stat_event_btn_scan"
+                android:onClick="openScan"/>
 
         </LinearLayout>
 
@@ -104,7 +104,18 @@
             android:textColor="@color/dark_Green"
             android:id="@+id/stat_event_btn_add"
             android:text="@string/add_ticket"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:onClick="generateTicketOnSite"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_green"
+            android:textColor="@color/dark_Green"
+            android:id="@+id/stat_event_btn_manually"
+            android:text="@string/enter_manually_barcode"
+            android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:onClick="generateTicketOnSite"/>
 
     </LinearLayout>
 

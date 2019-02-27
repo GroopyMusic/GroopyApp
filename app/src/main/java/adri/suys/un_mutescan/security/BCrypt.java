@@ -533,8 +533,8 @@ public class BCrypt {
      * Initialise the Blowfish key schedule
      */
     private void init_key() {
-        P = (int[])P_orig.clone();
-        S = (int[])S_orig.clone();
+        P = P_orig.clone();
+        S = S_orig.clone();
     }
 
     /**
@@ -652,7 +652,7 @@ public class BCrypt {
         String real_salt;
         byte passwordb[], saltb[], hashed[];
         char minor = (char)0;
-        int rounds, off = 0;
+        int rounds, off;
         StringBuffer rs = new StringBuffer();
 
         if (salt.charAt(0) != '$' || salt.charAt(1) != '2')
@@ -681,8 +681,7 @@ public class BCrypt {
         saltb = decode_base64(real_salt, BCRYPT_SALT_LEN);
 
         B = new BCrypt();
-        hashed = B.crypt_raw(passwordb, saltb, rounds,
-                (int[])bf_crypt_ciphertext.clone());
+        hashed = B.crypt_raw(passwordb, saltb, rounds, bf_crypt_ciphertext.clone());
 
         rs.append("$2");
         if (minor >= 'a')
@@ -691,8 +690,7 @@ public class BCrypt {
         if (rounds < 10)
             rs.append("0");
         if (rounds > 30) {
-            throw new IllegalArgumentException(
-                    "rounds exceeds maximum (30)");
+            throw new IllegalArgumentException("rounds exceeds maximum (30)");
         }
         rs.append(Integer.toString(rounds));
         rs.append("$");

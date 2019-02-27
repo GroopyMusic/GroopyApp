@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Un-Mute Scan</string>
+    <string name="app_name">Ticked-it!</string>
     <string name="home">ACCUEIL</string>
     <string name="scan">SCAN</string>
     <string name="username">NOM D\'UTILISATEUR</string>
@@ -23,13 +23,31 @@
     <string name="user_not_found">Veuillez entrer un nom d\'utilisateur valide</string>
     <string name="user_cant_access">Vous ne pouvez pas utiliser l\'application. Vous devez être gestionnaire de campagnes.</string>
     <string name="user_no_login">Vous devez entrer un nom d\'utilisateur et un mot de passe.</string>
+    <string name="user_logged">Vous êtes connecté !</string>
     <string name="add_ticket">Ajouter un ticket</string>
     <string name="cancel">Annuler</string>
-    <string name="add_price">Entrer le prix et valider</string>
     <string name="ticket_added">Ticket ajouté ! Bon concert !</string>
-    <string name="ticket_total">TOTAL : </string>
-    <string name="ticket_sold">VENUDUS : </string>
-    <string name="ticket_scanned">SCANNES : </string>
-    <string name="ticket_on_site">SUR SITE : </string>
+    <string name="ticket_total">TOTAL : %1$d</string>
+    <string name="ticket_sold">VENUDUS : %1$d</string>
+    <string name="ticket_scanned">SCANNES : %1$d</string>
+    <string name="ticket_on_site">SUR SITE : %1$d</string>
     <string name="no_connexion">Problème de connexion au serveur. Réessayer d\'ici quelques instants.</string>
+    <string name="logo_description">Logo de Ticked-it</string>
+    <string name="scan_error_ticket_not_exist">Ce ticket n\'existe pas.</string>
+    <string name="scan_error_event_not_exist">Cet événement n\'existe pas.</string>
+    <string name="scan_error_incorrect_date">Cet événement n\'a pas lieu aujourd'hui.</string>
+    <string name="scan_error_no_match_event_tix">Ce ticket ne correspond pas à l\'évenement sélectionné</string>
+    <string name="scan_error_tix_refund">Ce ticket a été remboursé et n\'est donc plus valide.</string>
+    <string name="scan_error_already_scanned">Ce ticket a déjà été scanné.</string>
+    <string name="enter_manually_barcode">Entrer le code</string>
+    <string name="enter_manually_barcode_instructions">Veuillez entrer manuellement la valeur du code-barre</string>
+    <string name="validate">VALIDER</string>
+    <string name="no_barcode_input">Veuillez introduire un code-barre</string>
+    <string name="add_ticket_instructions">Choisissez vos tickets et validez !</string>
+    <string name="order_recap">Vous rajoutez %1$d ticket(s) pour %2$.2f euros. Confirmer?</string>
+    <string name="payment_mode">Mode de paiement</string>
+    <string name="via_bancontact">Pour BANCONTACT, scanner le QR-CODE ci-dessous.</string>
+    <string name="via_cash">VIA CASH</string>
+    <string name="amount_to_pay">A payer : %1$d euro(s)</string>
+    <string name="done_payment">C\'est payé !</string>
 </resources>

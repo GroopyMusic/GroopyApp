@@ -13,6 +13,7 @@
         android:padding="10dp">
 
         <ImageView
+            android:contentDescription="@string/logo_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_yb_stroked"
@@ -92,7 +93,8 @@
                 android:textColor="@color/dark_Green"
                 android:background="@drawable/button_green"
                 android:layout_marginRight="10dp"
-                style="?android:attr/borderlessButtonStyle"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:onClick="goBack"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -101,7 +103,8 @@
                 android:textColor="@color/dark_Green"
                 android:id="@+id/back_scan_btn"
                 android:background="@drawable/button_green"
-                style="?android:attr/borderlessButtonStyle"/>
+                style="?android:attr/borderlessButtonStyle"
+                android:onClick="openScan"/>
 
         </LinearLayout>
 

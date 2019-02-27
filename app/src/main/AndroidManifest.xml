@@ -13,16 +13,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.MainActivity">
+        <activity android:name=".activities.LoginActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.BarcodeActivity"/>
-        <activity android:name=".activities.TicketActivity"/>
-        <activity android:name=".activities.StatActivity"/>
-        <activity android:name=".activities.EventActivity"/>
+        <activity android:name=".activities.BarcodeScannerActivity"/>
+        <activity android:name=".activities.TicketInfosActivity"/>
+        <activity android:name=".activities.EventStatActivity"/>
+        <activity android:name=".activities.EventListActivity"/>
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>

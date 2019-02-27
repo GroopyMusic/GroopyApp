@@ -1,18 +1,20 @@
 package adri.suys.un_mutescan.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
 public class Event implements Serializable {
 
-    private int id;
-    private String name;
-    private int nbTotalTicket;
-    private int nbSoldTicket;
+    private final int id;
+    private final String name;
+    private final int nbTotalTicket;
+    private final int nbSoldTicket;
     private int nbScannedTicket;
     private int nbTicketSoldOnSite;
-    private Date date;
+    private final Date date;
+    private List<Counterpart> counterparts = new ArrayList<>();
 
     public Event(int id, String name, int nbTotalTicket, int nbScannedTicket, int nbSoldTicket, int nbTicketSoldOnSite, Date date){
         this.id = id;
@@ -21,55 +23,31 @@ public class Event implements Serializable {
         this.nbScannedTicket = nbScannedTicket;
         this.nbSoldTicket = nbSoldTicket;
         this.nbTicketSoldOnSite = nbTicketSoldOnSite;
-        this.date = new Date();
+        this.date = date;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getNbTotalTicket() {
         return nbTotalTicket;
     }
 
-    public void setNbTotalTicket(int nbTotalTicket) {
-        this.nbTotalTicket = nbTotalTicket;
-    }
-
     public int getNbScannedTicket() {
         return nbScannedTicket;
-    }
-
-    public void setNbScannedTicket(int nbScannedTicket) {
-        this.nbScannedTicket = nbScannedTicket;
     }
 
     public Date getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     public int getNbSoldTicket() {
         return nbSoldTicket;
-    }
-
-    public void setNbSoldTicket(int nbSoldTicket) {
-        this.nbSoldTicket = nbSoldTicket;
     }
 
     public boolean isToday(){
@@ -81,15 +59,23 @@ public class Event implements Serializable {
         return nbTicketSoldOnSite;
     }
 
-    public void setNbTicketSoldOnSite(int nbTicketSoldOnSite) {
-        this.nbTicketSoldOnSite = nbTicketSoldOnSite;
-    }
-
     public void scanTicket() {
         nbScannedTicket++;
     }
 
     public void sellTicketOnSite() {
         nbTicketSoldOnSite++;
+    }
+
+    public int getRemainingTicketToBeSold(){
+        return nbTotalTicket - nbSoldTicket - nbTicketSoldOnSite;
+    }
+
+    public List<Counterpart> getCounterparts() {
+        return counterparts;
+    }
+
+    public void setCounterparts(List<Counterpart> counterparts) {
+        this.counterparts = counterparts;
     }
 }

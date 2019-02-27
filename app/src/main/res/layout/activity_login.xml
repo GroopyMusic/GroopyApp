@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.MainActivity"
+    tools:context=".activities.LoginActivity"
     android:background="@drawable/gradient_bg">
 
     <LinearLayout
@@ -15,6 +15,7 @@
         android:gravity="center">
 
         <ImageView
+            android:contentDescription="@string/logo_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/logo_yb_stroked"
@@ -41,16 +42,6 @@
             android:background="@drawable/edittext_background"
             android:inputType="textPassword"/>
 
-        <TextView
-            android:id="@+id/forgotten_pwd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:text="@string/forgotten_pwd"
-            android:clickable="true"
-            android:textSize="15dp"
-            android:layout_marginBottom="10dp"/>
-
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,20 +59,8 @@
             app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/button_green"
             android:padding="5dp"
-            android:layout_marginBottom="50dp"/>
-
-        <Button
-            android:id="@+id/login_facebook_btn"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:text="@string/login_fb"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/facebook_blue_button"
-            android:padding="5dp"/>
+            android:layout_marginBottom="50dp"
+            android:onClick="loginViaUm"/>
 
     </LinearLayout>
 

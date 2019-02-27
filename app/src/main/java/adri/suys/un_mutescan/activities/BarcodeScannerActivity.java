@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -20,25 +19,26 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 
-public class BarcodeActivity extends Activity {
+public class BarcodeScannerActivity extends Activity {
 
-    SurfaceView surfaceView;
-    TextView barcodeText;
+    private SurfaceView surfaceView;
+    private TextView barcodeText;
     private BarcodeDetector detector;
     private CameraSource cameraSrc;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
-    String intentData = "";
-    Event currentEvent;
+    private String intentData = "";
+    private Event currentEvent;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode);
+        setContentView(R.layout.activity_barcode_scanner);
         configActionBar();
         setViewElements();
-        currentEvent = (Event) getIntent().getSerializableExtra("event");
+        currentEvent = UnMuteDataHolder.getEvent();
     }
 
     @Override
@@ -50,19 +50,18 @@ public class BarcodeActivity extends Activity {
     @Override
     protected void onResume(){
         super.onResume();
-        System.out.println("Je passe par ici");
-        currentEvent = (Event) getIntent().getSerializableExtra("event");
-        System.out.println(currentEvent);
+        currentEvent = UnMuteDataHolder.getEvent();
         initializeDetectorAndCameraSource();
     }
 
+    @Override
     public void onBackPressed(){
-        Intent intent = new Intent(this, StatActivity.class);
-        intent.putExtra("event", currentEvent);
-        startActivity(intent);
+        startActivity(new Intent(this, EventStatActivity.class));
     }
 
-    // private methods
+    /////////////////////
+    // private methods //
+    /////////////////////
 
     private void setViewElements() {
         surfaceView = findViewById(R.id.surfaceView);
@@ -81,15 +80,14 @@ public class BarcodeActivity extends Activity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 try {
-                    if (ActivityCompat.checkSelfPermission(BarcodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(BarcodeScannerActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSrc.start(surfaceView.getHolder());
                     } else {
-                        ActivityCompat.requestPermissions(BarcodeActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        ActivityCompat.requestPermissions(BarcodeScannerActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
                 } catch (IOException ex){
                     ex.printStackTrace();
-                    String error = getResources().getString(R.string.error_barcode);
-                    Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+                    showToast(getResources().getString(R.string.sth_wrong));
                 }
             }
 
@@ -120,9 +118,8 @@ public class BarcodeActivity extends Activity {
                         public void run() {
                             intentData = barcodes.valueAt(0).displayValue;
                             barcodeText.setText(intentData);
-                            Intent intent = new Intent(BarcodeActivity.this, TicketActivity.class);
+                            Intent intent = new Intent(BarcodeScannerActivity.this, TicketInfosActivity.class);
                             intent.putExtra("barcode", intentData);
-                            intent.putExtra("event", (Event) getIntent().getSerializableExtra("event"));
                             intent.putExtra("alert", true);
                             startActivity(intent);
                         }
