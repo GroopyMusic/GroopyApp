@@ -62,6 +62,7 @@
     <string name="pie_chart_sold_on_site">Vendus sur place</string>
     <string name="pie_chart_remaining">Restants</string>
     <string name="soldout">L\'événement est soldout. Il n\'y a plus de places...</string>
+    <string name="min_one_cp_selected">Vous devez sélectionner au moins 1 ticket !</string>
     <string name="tickets_well_added">Les tickets ont bien été rajoutés !</string>
     <string name="tickets_not_well_added">Problème lors de l\'ajout des tickets. Essayez encore.</string>
     <string name="search_hint">Chercher...</string>

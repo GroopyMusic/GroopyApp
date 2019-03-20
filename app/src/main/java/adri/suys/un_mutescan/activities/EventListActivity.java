@@ -32,6 +32,7 @@ public class EventListActivity extends Activity{
     private EventPresenter presenter;
     private SearchView searchView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class EventListActivity extends Activity{
         setContentView(R.layout.activity_event_list);
         configActionBar();
         setElements();
-        createEvents();
+        createEvents(false);
         handleSearch();
         handlePullToRefresh();
     }
@@ -48,7 +49,7 @@ public class EventListActivity extends Activity{
     protected void onResume(){
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
-        createEvents();
+        createEvents(false);
     }
 
     @Override
@@ -86,8 +87,8 @@ public class EventListActivity extends Activity{
     // private methods //
     /////////////////////
 
-    private void createEvents() {
-        presenter.collectEvents();
+    private void createEvents(boolean forceRefresh) {
+        presenter.collectEvents(forceRefresh);
     }
 
     private void handleSearch(){
@@ -130,8 +131,7 @@ public class EventListActivity extends Activity{
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                createEvents();
-                //searchView.setQuery("", false);
+                createEvents(true);
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -173,11 +173,17 @@ public class EventListActivity extends Activity{
             statBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
-                    presenter.persistEvent();
-                    startActivity(intent);
+                    myAction();
                 }
             });
+        }
+
+        private void myAction(){
+            currentPosition = this.getAdapterPosition();
+            presenter.persistEvent(currentPosition);
+            System.out.println();
+            Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
+            startActivity(intent);
         }
 
     }

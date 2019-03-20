@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
@@ -27,6 +28,7 @@ public class PayActivity extends Activity {
     private Button doneBtn, cashBtn, bcBtn;
     private double price;
     private PayPresenter presenter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -36,6 +38,8 @@ public class PayActivity extends Activity {
         presenter = new PayPresenter(this);
         qrcodeImg = findViewById(R.id.bancontact_qrcode);
         amountToPay = findViewById(R.id.amount_to_pay);
+        progressBar = findViewById(R.id.pay_progressBar);
+        hideProgressBar();
         setButtons();
         initPrice();
     }
@@ -54,10 +58,15 @@ public class PayActivity extends Activity {
     public void setUpBancontactPayment() {
         //qrcodeImg.setVisibility(View.VISIBLE);
         doneBtn.setVisibility(View.VISIBLE);
-        Intent bcIntent = getPackageManager().getLaunchIntentForPackage("mobi.inthepocket.bcmc.bancontact");
-        if (bcIntent != null) startActivity(bcIntent);
         cashBtn.setVisibility(GONE);
         bcBtn.setVisibility(GONE);
+        hideProgressBar();
+        Intent bcIntent = getPackageManager().getLaunchIntentForPackage("mobi.inthepocket.bcmc.bancontact");
+        if (bcIntent != null) startActivity(bcIntent);
+    }
+
+    public void hideProgressBar(){
+        progressBar.setVisibility(GONE);
     }
 
     /////////////////////
@@ -105,12 +114,14 @@ public class PayActivity extends Activity {
         cashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 presenter.addTickets(true);
             }
         });
         bcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 presenter.addTickets(false);
             }
         });

@@ -51,6 +51,7 @@ public class PayPresenter {
             event.addTicketSoldOnSite(totalTicketSold);
             if (cashPayment){
                 event.addTicketPaidInCash(totalTicketSold);
+                view.hideProgressBar();
                 view.onBackPressed();
             } else {
                 view.setUpBancontactPayment();
@@ -69,6 +70,7 @@ public class PayPresenter {
         String msg;
         if (cpt == 0){
             msg = view.getResources().getString(R.string.tickets_not_well_added);
+            view.hideProgressBar();
             view.showToast(msg);
         } else {
             List<Counterpart> cps = UnMuteDataHolder.getCounterparts();
@@ -82,6 +84,7 @@ public class PayPresenter {
                 }
             }
             msg = msg + "ont été ajoutés. Pour les autres, il y a eu un problème...";
+            view.hideProgressBar();
             view.showToast(msg);
         }
     }

@@ -39,6 +39,7 @@ public class EventPresenter {
     private EventListActivity view;
     private RestService restCommunication;
     private CountingIdlingResource countingIdlingResource = new CountingIdlingResource("name");
+    private boolean isFiltered;
 
     public EventPresenter(EventListActivity view){
         this.view = view;
@@ -48,6 +49,7 @@ public class EventPresenter {
     }
 
     public void onViewEventAtPosition(int position, EventListActivity.EventHolder view, boolean isFilteredList){
+        isFiltered = isFilteredList;
         if (isFilteredList){
             this.currentEvent = filteredEvents.get(position);
         } else {
@@ -56,7 +58,12 @@ public class EventPresenter {
         view.setEventName(currentEvent.getName());
     }
 
-    public void persistEvent(){
+    public void persistEvent(int position){
+        if (isFiltered){
+            currentEvent = filteredEvents.get(position);
+        } else {
+            currentEvent = events.get(position);
+        }
         UnMuteDataHolder.setEvent(currentEvent);
     }
 
@@ -68,9 +75,20 @@ public class EventPresenter {
         }
     }
 
-    public void collectEvents() {
+    public void collectEvents(boolean forceRefresh) {
         countingIdlingResource.increment();
-        restCommunication.collectEvents(user.getId());
+        if (UnMuteDataHolder.getEvents() == null){
+            restCommunication.collectEvents(user.getId());
+        } else {
+            if (forceRefresh){
+                restCommunication.collectEvents(user.getId());
+            } else {
+                events = UnMuteDataHolder.getEvents();
+                view.hideProgressBar();
+                view.updateEventsList(false);
+                countingIdlingResource.decrement();
+            }
+        }
     }
 
     public void handleVolleyError(VolleyError error){
@@ -94,15 +112,10 @@ public class EventPresenter {
     public void handleJSONArray(JSONArray response) {
         try {
             events = getEventsFromJSON(response);
-            Collections.sort(events, new Comparator<Event>() {
-                @Override
-                public int compare(Event event, Event t1) {
-                    if (event.getDate() != null && t1.getDate() != null){
-                        return event.getDate().compareTo(t1.getDate());
-                    }
-                    return 0;
-                }
-            });
+            UnMuteDataHolder.setEvents(events);
+            for (Event e : events){
+                System.out.println(e.getName());
+            }
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");

@@ -45,9 +45,14 @@
             android:layout_marginBottom="20dp"
             android:id="@+id/pay_bancontact_btn"/>
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/pay_progressBar"/>
+
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:id="@+id/bancontact_qrcode"
             android:layout_marginBottom="5dp"/>
 

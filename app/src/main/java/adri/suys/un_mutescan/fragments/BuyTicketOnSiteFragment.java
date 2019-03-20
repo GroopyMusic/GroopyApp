@@ -18,6 +18,7 @@ import android.widget.TextView;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.activities.PayActivity;
+import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.presenter.BuyTicketOnSitePresenter;
 
 public class BuyTicketOnSiteFragment extends Fragment {
@@ -68,28 +69,34 @@ public class BuyTicketOnSiteFragment extends Fragment {
 
     private void validateSell(){
         if (cpt > 0){
-            getCart();
-            String message = getResources().getString(R.string.order_recap, presenter.getTotalTicketSold(), presenter.getCartAmount());
-            AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
-            dialogBuilder.setMessage(message).setTitle("");
-            dialogBuilder.setCancelable(false)
-                    .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            progressBar.setVisibility(View.VISIBLE);
-                            presenter.addTicket();
-                            dialogInterface.cancel();
-                        }
-                    })
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.cancel();
-                        }
-                    });
-            AlertDialog alert = dialogBuilder.create();
-            alert.setTitle("");
-            alert.show();
+            if (presenter.isEventSoldout(cpt)){
+                ((Activity)getActivity()).showToast(getActivity().getResources().getString(R.string.soldout));
+            } else {
+                getCart();
+                String message = getResources().getString(R.string.order_recap, presenter.getTotalTicketSold(), presenter.getCartAmount());
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
+                dialogBuilder.setMessage(message).setTitle("");
+                dialogBuilder.setCancelable(false)
+                        .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                progressBar.setVisibility(View.VISIBLE);
+                                presenter.addTicket();
+                                dialogInterface.cancel();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog alert = dialogBuilder.create();
+                alert.setTitle("");
+                alert.show();
+            }
+        } else {
+            ((Activity)getActivity()).showToast(getActivity().getResources().getString(R.string.min_one_cp_selected));
         }
     }
 
@@ -164,7 +171,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
                     if (currentNbOfPurchase > 0){
                         currentNbOfPurchase--;
                         numberOfTicketWanted.setText(Integer.toString(currentNbOfPurchase));
-                        cpt ++;
+                        cpt --;
                     }
                 }
             });

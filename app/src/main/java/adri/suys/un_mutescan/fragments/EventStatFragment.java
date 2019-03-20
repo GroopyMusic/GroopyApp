@@ -64,6 +64,8 @@ public class EventStatFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
+        setPiechart();
+        setHorizontalBarChart();
     }
 
 
@@ -105,6 +107,8 @@ public class EventStatFragment extends Fragment {
         this.horizontalBarChart.setDrawValueAboveBar(false);
         this.horizontalBarChart.getAxisLeft().setAxisMaximum(100);
         this.horizontalBarChart.getAxisLeft().setAxisMinimum(0);
+        this.horizontalBarChart.getAxisRight().setAxisMaximum(100);
+        this.horizontalBarChart.getAxisRight().setAxisMinimum(0);
         this.horizontalBarChart.getLegend().setEnabled(false);
     }
 
@@ -144,8 +148,8 @@ public class EventStatFragment extends Fragment {
 
     private List<String> getXAxisValue(){
         List<String> xAxisValues = new ArrayList<>();
-        xAxisValues.add("Cash");
-        xAxisValues.add("CB");
+        xAxisValues.add("Cash (" + presenter.getTotalPaidInCash() + "/" + presenter.getTotalSoldOnSite() + ")");
+        xAxisValues.add("CB (" + (presenter.getTotalSoldOnSite() - presenter.getTotalPaidInCash()) + "/" + presenter.getTotalSoldOnSite() + ")");
         return xAxisValues;
     }
 }

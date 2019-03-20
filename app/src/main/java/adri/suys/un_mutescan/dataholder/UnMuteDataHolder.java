@@ -17,6 +17,7 @@ public class UnMuteDataHolder {
     private static int currentFragment = 0;
     private static List<Counterpart> counterparts;
     private static List<Ticket> audience;
+    private static List<Event> events;
 
     public static User getUser() {
         return user;
@@ -56,5 +57,13 @@ public class UnMuteDataHolder {
 
     public static void setAudience(List<Ticket> audience) {
         UnMuteDataHolder.audience = audience;
+    }
+
+    public static List<Event> getEvents() {
+        return events;
+    }
+
+    public static void setEvents(List<Event> events) {
+        UnMuteDataHolder.events = events;
     }
 }

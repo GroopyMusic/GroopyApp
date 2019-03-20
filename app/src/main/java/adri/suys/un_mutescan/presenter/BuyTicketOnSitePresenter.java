@@ -145,7 +145,7 @@ public class BuyTicketOnSitePresenter{
      * @return
      */
     public boolean isEventSoldout(int toBeSold){
-        return event.getRemainingTicketToBeSold() <= (toBeSold + 1);
+        return event.getRemainingTicketToBeSold() <= toBeSold;
     }
 
     public int getTotalTicketSold(){

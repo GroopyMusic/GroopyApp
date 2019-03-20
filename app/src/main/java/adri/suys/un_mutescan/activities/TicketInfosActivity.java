@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ public class TicketInfosActivity extends Activity {
     private AlertDialog.Builder dialogBuilder;
     private TicketInfosPresenter presenter;
     private ProgressBar progressBar;
+    private LinearLayout frame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,7 @@ public class TicketInfosActivity extends Activity {
      */
     public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat, int errorInt) {
         if (errorString.equals("")){
+            frame.setBackgroundResource(R.drawable.dark_green_border);
             ticketError.setText(ticketValidatedMsg);
             int green = ContextCompat.getColor(this, R.color.green);
             ticketError.setTextColor(green);
@@ -140,6 +143,8 @@ public class TicketInfosActivity extends Activity {
         ticketError = findViewById(R.id.ticket_error);
         progressBar = findViewById(R.id.ticket_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
+        frame = findViewById(R.id.frame_ticket);
+        frame.setBackgroundResource(0);
     }
 
     private void displayInfos(){
