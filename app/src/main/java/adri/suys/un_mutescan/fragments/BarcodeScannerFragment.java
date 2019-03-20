@@ -1,15 +1,18 @@
-package adri.suys.un_mutescan.activities;
+package adri.suys.un_mutescan.fragments;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
@@ -19,10 +22,10 @@ import com.google.android.gms.vision.barcode.BarcodeDetector;
 import java.io.IOException;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
-import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.activities.Activity;
+import adri.suys.un_mutescan.activities.TicketInfosActivity;
 
-public class BarcodeScannerActivity extends Activity {
+public class BarcodeScannerFragment extends Fragment {
 
     private SurfaceView surfaceView;
     private TextView barcodeText;
@@ -30,47 +33,47 @@ public class BarcodeScannerActivity extends Activity {
     private CameraSource cameraSrc;
     private static final int REQUEST_CAMERA_PERMISSION = 201;
     private String intentData = "";
-    private Event currentEvent;
+
+    public BarcodeScannerFragment(){
+        // required
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_barcode_scanner);
-        configActionBar();
-        setViewElements();
-        currentEvent = UnMuteDataHolder.getEvent();
     }
 
     @Override
-    protected void onPause(){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_barcode_scanner, container, false);
+        setViewElements(view);
+        return view;
+    }
+
+    @Override
+    public void onPause(){
         super.onPause();
         cameraSrc.release();
     }
 
     @Override
-    protected void onResume(){
+    public void onResume(){
         super.onResume();
-        currentEvent = UnMuteDataHolder.getEvent();
         initializeDetectorAndCameraSource();
-    }
-
-    @Override
-    public void onBackPressed(){
-        startActivity(new Intent(this, EventStatActivity.class));
     }
 
     /////////////////////
     // private methods //
     /////////////////////
 
-    private void setViewElements() {
-        surfaceView = findViewById(R.id.surfaceView);
-        barcodeText = findViewById(R.id.txtBarcodeValue);
+    private void setViewElements(View view) {
+        surfaceView = view.findViewById(R.id.surfaceView);
+        barcodeText = view.findViewById(R.id.txtBarcodeValue);
     }
 
     private void initializeDetectorAndCameraSource(){
-        detector = new BarcodeDetector.Builder(this).setBarcodeFormats(Barcode.ALL_FORMATS).build();
-        cameraSrc = new CameraSource.Builder(this, detector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true).build();
+        detector = new BarcodeDetector.Builder(getContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build();
+        cameraSrc = new CameraSource.Builder(getContext(), detector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true).build();
         addCallbackToSurfaceView();
         setProcessor();
     }
@@ -80,14 +83,14 @@ public class BarcodeScannerActivity extends Activity {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 try {
-                    if (ActivityCompat.checkSelfPermission(BarcodeScannerActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSrc.start(surfaceView.getHolder());
                     } else {
-                        ActivityCompat.requestPermissions(BarcodeScannerActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+                        ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
                     }
                 } catch (IOException ex){
                     ex.printStackTrace();
-                    showToast(getResources().getString(R.string.sth_wrong));
+                    ((Activity)(getActivity())).showToast(getResources().getString(R.string.sth_wrong));
                 }
             }
 
@@ -118,7 +121,7 @@ public class BarcodeScannerActivity extends Activity {
                         public void run() {
                             intentData = barcodes.valueAt(0).displayValue;
                             barcodeText.setText(intentData);
-                            Intent intent = new Intent(BarcodeScannerActivity.this, TicketInfosActivity.class);
+                            Intent intent = new Intent(getActivity(), TicketInfosActivity.class);
                             intent.putExtra("barcode", intentData);
                             intent.putExtra("alert", true);
                             startActivity(intent);

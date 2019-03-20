@@ -20,10 +20,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.BarcodeScannerActivity"/>
+        <activity android:name=".activities.OneEventActivity"/>
         <activity android:name=".activities.TicketInfosActivity"/>
-        <activity android:name=".activities.EventStatActivity"/>
         <activity android:name=".activities.EventListActivity"/>
+        <activity android:name=".activities.PayActivity"/>
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES" android:value="barcode"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
     </application>

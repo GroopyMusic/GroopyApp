@@ -1,5 +1,11 @@
 package adri.suys.un_mutescan.model;
 
+/**
+ * A counterpart is a type of ticket
+ * It can be a standard ticket, a child ticket, a vip ticket, a ticket for disabled person, etc.
+ * It has a price
+ * The quantity is only used when we want to buy tickets, this is the quantity of ticket to be sold.
+ */
 public class Counterpart {
 
     private int id;

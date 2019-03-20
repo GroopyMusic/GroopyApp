@@ -2,6 +2,9 @@ package adri.suys.un_mutescan.model;
 
 import adri.suys.un_mutescan.R;
 
+/**
+ * A ticket is a ticket generated, sold, bought for an event
+ */
 public class Ticket {
 
     private final String buyer;
@@ -9,13 +12,23 @@ public class Ticket {
     private final String seat_type;
     private final String barcode;
     private final String error;
+    private final boolean is_scanned;
 
-    public Ticket(String barcodeText, String name, String ticketType, String seatType, String errorMessage) {
+    /**
+     *
+     * @param barcodeText the barcode value written on the ticket
+     * @param name the name of the buyer
+     * @param ticketType the type of the ticket (vip, child, adult, etc.)
+     * @param seatType the seat number (nothing if it is a stand up ticket)
+     * @param errorMessage the error message (nothing if the ticket is valid) if the ticket is unvalid
+     */
+    public Ticket(String name, String ticketType, String seatType, String barcodeText, String errorMessage, String isScanned) {
         this.buyer = name;
         this.ticket_type = ticketType;
         this.seat_type = seatType;
         this.barcode = barcodeText;
         this.error = errorMessage;
+        this.is_scanned = isScanned.equals("vrai") ? true : false;
     }
 
     public String getName() {
@@ -36,6 +49,10 @@ public class Ticket {
 
     public String getErrorMessage() {
         return error;
+    }
+
+    public boolean isScanned(){
+        return is_scanned;
     }
 
     /**
@@ -61,4 +78,12 @@ public class Ticket {
         }
     }
 
+    public boolean isValid(){
+        return error.equals("");
+    }
+
+    @Override
+    public String toString() {
+        return buyer + " - " + is_scanned;
+    }
 }

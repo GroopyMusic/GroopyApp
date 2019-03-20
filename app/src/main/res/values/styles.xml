@@ -10,4 +10,17 @@
         <item name="fontFamily">@font/montserrat_medium</item>
     </style>
 
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/dark_Green</item>
+        <item name="android:textColorPrimary">@color/orange</item>
+        <item name="android:background">@color/beige</item>
+    </style>
+    
+    <style name="ProgressBarPaymentMode" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressBackgroundTint">@color/grey</item>
+        <item name="android:progressTint">@color/greyBlue</item>
+        <item name="android:minHeight">20dp</item>
+        <item name="android:maxHeight">21dp</item>
+    </style>
+
 </resources>

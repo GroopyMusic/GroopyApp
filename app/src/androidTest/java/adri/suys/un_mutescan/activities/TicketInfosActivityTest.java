@@ -1,6 +1,7 @@
 package adri.suys.un_mutescan.activities;
 
 import android.content.Intent;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Rule;
@@ -13,8 +14,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
-import androidx.test.rule.ActivityTestRule;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -28,7 +29,7 @@ import static org.hamcrest.Matchers.not;
 public class TicketInfosActivityTest {
 
     @Rule
-    ActivityTestRule<EventStatActivity> activityTestRule = new ActivityTestRule<>(EventStatActivity.class);
+    ActivityTestRule<TicketInfosActivity> activityTestRule = new ActivityTestRule<>(TicketInfosActivity.class);
 
     @Test
     public void barcodeDoesNotExist() throws ParseException {
@@ -56,29 +57,29 @@ public class TicketInfosActivityTest {
 
     @Test
     public void ticketWasRefunded() throws ParseException {
-        init("", 74999);
+        init("cf8495c6a7194d63c62", 749997);
         onView(withText(R.string.scan_error_tix_refund)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
     public void ticketAlreadyScanned() throws ParseException {
-        init("", 74999);
+        init("ph0c9124a1077f4fa90", 750008);
         onView(withText(R.string.scan_error_already_scanned)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
     public void ticketOK() throws ParseException {
-        init("", 74999);
+        init("cf8555c8bc80b96f2f3", 750008);
         onView(withText(R.string.ticket_ok_dialog)).inRoot(withDecorView(not(is(activityTestRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     private void init(String barcode, int eventID) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).parse("2019-02-18 16:00:00");
-        Event event = new Event(eventID, "[Ticked-it] Mon anniversaire", 500, 0, 0, 0, date);
+        Event event = new Event(eventID, "[Ticked-it] Mon anniversaire", 500, 0, 0, 0, date, 0);
         Intent i = new Intent();
         i.putExtra("alert", true);
         i.putExtra("barcode", barcode);
-        i.putExtra("event", event);
+        UnMuteDataHolder.setEvent(event);
         activityTestRule.launchActivity(i);
     }
 

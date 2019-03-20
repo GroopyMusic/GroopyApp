@@ -28,21 +28,13 @@
             android:layout_marginBottom="10dp"/>
 
         <Button
+            android:id="@+id/btn_validation_request"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/validate"
             android:background="@drawable/button_green"
-            android:onClick="askForTicketValidation"
             android:textColor="@color/dark_Green"
             android:layout_marginBottom="5dp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/back"
-            android:background="@drawable/button_green"
-            android:onClick="goBack"
-            android:textColor="@color/dark_Green"/>
 
     </LinearLayout>
 

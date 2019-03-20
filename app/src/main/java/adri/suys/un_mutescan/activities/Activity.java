@@ -40,7 +40,7 @@ public abstract class Activity extends AppCompatActivity {
      * Display a Toast on the screen
      * @param msg the message that will be displayed in the toast
      */
-    void showToast(String msg){
+    public void showToast(String msg){
         Toast toast = Toast.makeText(this, msg, Toast.LENGTH_SHORT);
         toast.show();
     }

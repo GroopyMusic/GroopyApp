@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:text="@string/validate"
             android:background="@drawable/button_green"
-            android:onClick="validate"
             android:id="@+id/add_ticket_validate_btn"
             android:textColor="@color/dark_Green" />
 

@@ -19,6 +19,11 @@
             android:src="@drawable/logo_yb_stroked"
             android:layout_marginBottom="20dp"/>
 
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ticket_progress_bar"/>
+
         <TextView
             android:id="@+id/event_name"
             android:layout_width="wrap_content"

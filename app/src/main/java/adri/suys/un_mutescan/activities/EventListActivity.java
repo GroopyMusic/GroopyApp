@@ -1,77 +1,54 @@
 package adri.suys.un_mutescan.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.NoConnectionError;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.apirest.RestEvents;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
-import adri.suys.un_mutescan.model.User;
+import adri.suys.un_mutescan.presenter.EventPresenter;
 
-public class EventListActivity extends Activity implements Observer {
+public class EventListActivity extends Activity{
 
     private RecyclerView recyclerView;
     private EventAdapter adapter;
-    private List<Event> events = new ArrayList<>();
-    private User user;
-    private RestEvents restCommunication;
     private ProgressBar progressBar;
+    private EventPresenter presenter;
+    private SearchView searchView;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
         configActionBar();
-        progressBar = findViewById(R.id.progressBar_event);
-        progressBar.setVisibility(View.VISIBLE);
-        restCommunication = new RestEvents(this);
-        recyclerView = findViewById(R.id.event_recycler_view);
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        user = UnMuteDataHolder.getUser();
+        setElements();
         createEvents();
+        handleSearch();
+        handlePullToRefresh();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
-        user = UnMuteDataHolder.getUser();
         createEvents();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void update(Observable observable, Object o) {
-        if (o instanceof NoConnectionError){
-            String message = getResources().getString(R.string.no_connexion);
-            showToast(message);
-        } else if (o instanceof String){
-            String errorMsg = (String) o;
-            showToast(errorMsg);
-        } else {
-            this.events = (List<Event>) o;
-        }
-        progressBar.setVisibility(View.GONE);
-        updateEventsList();
     }
 
     @Override
@@ -79,38 +56,107 @@ public class EventListActivity extends Activity implements Observer {
         // do nothing
     }
 
-    /////////////////////
-    // private methods //
-    /////////////////////
+    /**
+     * Hide the ProgressBar
+     */
+    public void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
+    }
 
-    private void updateEventsList() {
+    /**
+     * Update the adapter with the current state of the Presenter
+     * @param isFilteredList
+     */
+    public void updateEventsList(boolean isFilteredList) {
         if (adapter == null) {
-            adapter = new EventAdapter(events);
+            adapter = new EventAdapter(presenter, isFilteredList);
             recyclerView.setAdapter(adapter);
         } else {
-            adapter.setEvents(events);
+            adapter.setPresenter(presenter);
+            adapter.setFilteredList(isFilteredList);
             adapter.notifyDataSetChanged();
         }
     }
 
-    private void createEvents() {
-        restCommunication.collectEvents(user);
+    public EventPresenter getPresenter() {
+        return presenter;
     }
 
-    private class EventHolder extends RecyclerView.ViewHolder {
+    /////////////////////
+    // private methods //
+    /////////////////////
 
-        private Event event;
+    private void createEvents() {
+        presenter.collectEvents();
+    }
+
+    private void handleSearch(){
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.onActionViewExpanded();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
+    }
+
+    private void setElements(){
+        progressBar = findViewById(R.id.progressBar_event);
+        progressBar.setVisibility(View.VISIBLE);
+        searchView = findViewById(R.id.searchview);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+        presenter = new EventPresenter(this);
+        recyclerView = findViewById(R.id.event_recycler_view);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void handlePullToRefresh(){
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                createEvents();
+                //searchView.setQuery("", false);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
+    ////////////
+    // HOLDER //
+    ////////////
+
+    public class EventHolder extends RecyclerView.ViewHolder {
+
         private TextView eventName;
         private Button statBtn;
 
         EventHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.event_item, parent, false));
+            super(inflater.inflate(R.layout.item_event, parent, false));
             initViewElements();
         }
 
-        void bind(Event event) {
-            this.event = event;
-            eventName.setText(event.getName());
+        /**
+         * Displays the event name
+         * @param name
+         */
+        public void setEventName(String name){
+            eventName.setText(name);
         }
 
         private void initViewElements() {
@@ -119,12 +165,16 @@ public class EventListActivity extends Activity implements Observer {
             setClickActions();
         }
 
+        /**
+         * When the user click on the STATS button, it changes the screen and the screen that
+         * contains the stat of the event is displayed.
+         */
         void setClickActions() {
             statBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(EventListActivity.this, EventStatActivity.class);
-                    UnMuteDataHolder.setEvent(event);
+                    Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
+                    presenter.persistEvent();
                     startActivity(intent);
                 }
             });
@@ -132,12 +182,18 @@ public class EventListActivity extends Activity implements Observer {
 
     }
 
-    private class EventAdapter extends RecyclerView.Adapter<EventHolder> {
+    /////////////
+    // ADAPTER //
+    /////////////
 
-        private List<Event> events;
+    private class EventAdapter extends RecyclerView.Adapter<EventHolder> implements Filterable {
 
-        EventAdapter(List<Event> events) {
-            this.events = events;
+        private EventPresenter presenter;
+        private boolean isFilteredList;
+
+        EventAdapter(EventPresenter presenter, boolean isFilteredList) {
+            this.presenter = presenter;
+            this.isFilteredList = isFilteredList;
         }
 
         @NonNull
@@ -149,17 +205,39 @@ public class EventListActivity extends Activity implements Observer {
 
         @Override
         public void onBindViewHolder(@NonNull EventHolder eventHolder, int i) {
-            Event event = events.get(i);
-            eventHolder.bind(event);
+            presenter.onViewEventAtPosition(i, eventHolder, isFilteredList);
         }
 
         @Override
         public int getItemCount() {
-            return events.size();
+            return presenter.getItemCount(isFilteredList);
         }
 
-        void setEvents(List<Event> events) {
-            this.events = events;
+        public void setPresenter(EventPresenter presenter) {
+            this.presenter = presenter;
+        }
+
+        public void setFilteredList(boolean filteredList) {
+            isFilteredList = filteredList;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    String pattern = charSequence.toString();
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = presenter.getFilteredResult(pattern);
+                    return filterResults;
+                }
+
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    List<Event> filteredEvents = (List<Event>) filterResults.values;
+                    presenter.notifyChanged(filteredEvents);
+                }
+            };
         }
     }
 

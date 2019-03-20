@@ -5,69 +5,41 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.volley.NoConnectionError;
-
-import java.util.Observable;
-import java.util.Observer;
-
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.apirest.RestTicket;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
-import adri.suys.un_mutescan.model.Event;
-import adri.suys.un_mutescan.model.Ticket;
+import adri.suys.un_mutescan.fragments.BarcodeScannerFragment;
+import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
 
-public class TicketInfosActivity extends Activity implements Observer {
+public class TicketInfosActivity extends Activity {
 
     private TextView barcode, name, ticketType, seatType, eventName, ticketError;
-    private Event currentEvent;
     private AlertDialog.Builder dialogBuilder;
-    private RestTicket restCommunication;
+    private TicketInfosPresenter presenter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_infos);
         configActionBar();
-        restCommunication = new RestTicket(this);
         initViewElements();
-        currentEvent = UnMuteDataHolder.getEvent();
-        dialogBuilder = new AlertDialog.Builder(this);
+        presenter = new TicketInfosPresenter(this);
+        dialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        currentEvent = UnMuteDataHolder.getEvent();
+        progressBar.setVisibility(View.VISIBLE);
         displayInfos();
     }
 
     @Override
     public void onBackPressed(){
-        startActivity(new Intent(this, EventStatActivity.class));
-    }
-
-    @Override
-    public void update(Observable observable, Object o) {
-        if (o instanceof NoConnectionError){
-            String message = getResources().getString(R.string.no_connexion);
-            showToast(message);
-        } else {
-            Ticket ticket = (Ticket) o;
-            try {
-                displayTicket(ticket);
-                displayEventName();
-                Boolean mustDisplayAlert = getIntent().getBooleanExtra("alert", false);
-                if (mustDisplayAlert) {
-                    displayAlert(getResources().getString(ticket.getErrorMessageAsResource()));
-                }
-            } catch (NullPointerException ex) {
-                showToast(getResources().getString(R.string.sth_wrong));
-            }
-        }
+        startActivity(new Intent(this, OneEventActivity.class));
     }
 
     /**
@@ -75,7 +47,7 @@ public class TicketInfosActivity extends Activity implements Observer {
      * @param v the view the Activity is linked to
      */
     public void goBack(View v){
-        startActivity(new Intent(this, EventStatActivity.class));
+        startActivity(new Intent(this, OneEventActivity.class));
     }
 
     /**
@@ -83,7 +55,76 @@ public class TicketInfosActivity extends Activity implements Observer {
      * @param v the view the Activity is linked to
      */
     public void openScan(View v){
-        startActivity(new Intent(this, BarcodeScannerActivity.class));
+        startActivity(new Intent(this, OneEventActivity.class));
+    }
+
+    /**
+     * Displays the name of the event
+     * @param eventName
+     */
+    public void displayEventName(String eventName) {
+        this.eventName.setText(eventName);
+    }
+
+    /**
+     * Displays the tickets infos
+     * @param errorString if the ticket is not valid, a message indicating the cause of the error, '' if the ticket is valid
+     * @param ticketValidatedMsg a text that says 'the ticket is valid'
+     * @param barcodeValue the barcode value of the ticket
+     * @param nameOwner the name of the buyer
+     * @param type the type of ticket (standard, adult, teen, child, vip, etc)
+     * @param seat the seat number (nothing if it is a stand up ticket)
+     * @param errorInt the resources of the string corresponding to the error message
+     */
+    public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat, int errorInt) {
+        if (errorString.equals("")){
+            ticketError.setText(ticketValidatedMsg);
+            int green = ContextCompat.getColor(this, R.color.green);
+            ticketError.setTextColor(green);
+            barcode.setText(barcodeValue);
+            name.setText(nameOwner);
+            ticketType.setText(type);
+            seatType.setText(seat);
+        } else {
+            int red = ContextCompat.getColor(this, R.color.red);
+            ticketError.setTextColor(red);
+            ticketError.setText(errorInt);
+        }
+    }
+
+    /**
+     * When a ticket is scanned, a popup opens saying if the ticket is valid or not
+     * The user can then choose between going back to the scan or see more infos on the ticket
+     * @param message the message indicating if the ticket is valid or not
+     */
+    public void displayAlert(String message){
+        dialogBuilder.setMessage(message).setTitle("");
+        dialogBuilder.setCancelable(false)
+                .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        presenter.validateTicket();
+                        startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
+                    }
+                })
+                .setNegativeButton(R.string.see_more, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        presenter.validateTicket();
+                    }
+                });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("");
+        alert.show();
+    }
+
+    /**
+     * Hide progress bar
+     */
+    public void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
     }
 
     /////////////////////
@@ -97,65 +138,14 @@ public class TicketInfosActivity extends Activity implements Observer {
         seatType = findViewById(R.id.ticket_type_seat);
         eventName = findViewById(R.id.event_name);
         ticketError = findViewById(R.id.ticket_error);
+        progressBar = findViewById(R.id.ticket_progress_bar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     private void displayInfos(){
         String barcodeValue = getIntent().getStringExtra("barcode");
-        validateTicket(barcodeValue);
+        presenter.validateBarcode(barcodeValue);
     }
 
-    private void validateTicket(String barcodeValue){
-        restCommunication.scanTicket(currentEvent.getId(), barcodeValue);
-    }
 
-    private void displayEventName() {
-        if (currentEvent == null){
-            throw new NullPointerException("L'événement n'existe pas");
-        }
-        eventName.setText(currentEvent.getName());
-    }
-
-    private void displayTicket(Ticket ticket) {
-        if (ticket == null){
-            throw new NullPointerException("Le ticket n'existe pas");
-        }
-        if (ticket.getErrorMessage().equals("")){
-            ticketError.setText(getResources().getString(R.string.ticket_ok_dialog));
-            int green = ContextCompat.getColor(this, R.color.green);
-            ticketError.setTextColor(green);
-            barcode.setText(ticket.getBarcodeText());
-            name.setText(ticket.getName());
-            ticketType.setText(ticket.getTicketType());
-            seatType.setText(ticket.getSeatType());
-            currentEvent.scanTicket(); // nb of scanned tix + 1
-        } else {
-            int red = ContextCompat.getColor(this, R.color.red);
-            ticketError.setTextColor(red);
-            ticketError.setText(ticket.getErrorMessageAsResource());
-        }
-    }
-
-    private void displayAlert(String error){
-        dialogBuilder.setMessage(error).setTitle("");
-        if (error.equals(getResources().getString(R.string.ticket_ok_dialog))){
-            currentEvent.scanTicket();
-        }
-        dialogBuilder.setCancelable(false)
-                .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                        startActivity(new Intent(TicketInfosActivity.this, BarcodeScannerActivity.class));
-                    }
-                })
-                .setNegativeButton(R.string.see_more, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog alert = dialogBuilder.create();
-        alert.setTitle("");
-        alert.show();
-    }
 }
