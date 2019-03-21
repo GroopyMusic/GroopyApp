@@ -18,7 +18,7 @@ import java.util.List;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.BuyTicketOnSiteFragment;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;

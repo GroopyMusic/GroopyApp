@@ -72,4 +72,7 @@
     <string name="error">ERREUR</string>
     <string name="show_password">Montrer le mot de passe</string>
     <string name="progress_state_payment_mode">Mode paiement (vendus sur place) (%)</string>
+    <string name="audience_btn_in">IN (%1$d)</string>
+    <string name="audience_btn_all">ALL (%1$d)</string>
+    <string name="audience_btn_out">OUT (%1$d)</string>
 </resources>

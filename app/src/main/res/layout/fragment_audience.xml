@@ -21,7 +21,7 @@
             <Button
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="ALL"
+                android:text="@string/audience_btn_all"
                 android:id="@+id/audience_btn_all"
                 android:background="@android:color/transparent"
                 android:layout_marginRight="10dp"/>
@@ -29,7 +29,7 @@
             <Button
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="IN"
+                android:text="@string/audience_btn_in"
                 android:id="@+id/audience_btn_in"
                 android:layout_marginRight="10dp"
                 android:background="@android:color/transparent"/>
@@ -37,7 +37,7 @@
             <Button
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:text="OUT"
+                android:text="@string/audience_btn_out"
                 android:id="@+id/audience_btn_out"
                 android:background="@android:color/transparent"/>
 

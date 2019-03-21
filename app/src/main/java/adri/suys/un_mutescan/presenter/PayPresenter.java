@@ -8,13 +8,12 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.PayActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
 

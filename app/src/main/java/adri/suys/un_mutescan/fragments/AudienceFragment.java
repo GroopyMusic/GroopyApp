@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.AudiencePresenter;
+import adri.suys.un_mutescan.utils.OnSwipeTouchListener;
 
 public class AudienceFragment extends Fragment {
 
@@ -27,6 +28,7 @@ public class AudienceFragment extends Fragment {
     private static final int ALL = 1;
     private static final int IN = 2;
     private static final int OUT = 3;
+    private int currentTab = ALL;
 
     public AudienceFragment(){
         // required
@@ -40,6 +42,7 @@ public class AudienceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_audience, container, false);
+        presenter = new AudiencePresenter(this);
         progressBar = view.findViewById(R.id.audience_progressbar);
         progressBar.setVisibility(View.VISIBLE);
         inBtn = view.findViewById(R.id.audience_btn_in);
@@ -48,13 +51,13 @@ public class AudienceFragment extends Fragment {
         underlineAll = view.findViewById(R.id.audience_underline_all);
         underlineIn = view.findViewById(R.id.audience_underline_in);
         underlineOut = view.findViewById(R.id.audience_underline_out);
-        setActions();
-        presenter = new AudiencePresenter(this);
+        setButtonsText();
         recyclerView = view.findViewById(R.id.audience_recyclerview);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        setActions();
         getAudience(ALL, true);
         return view;
     }
@@ -91,46 +94,83 @@ public class AudienceFragment extends Fragment {
         inBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
-                outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                underlineIn.setBackgroundResource(R.color.dark_Green);
-                underlineAll.setBackgroundResource(0);
-                underlineOut.setBackgroundResource(0);
-                progressBar.setVisibility(View.VISIBLE);
-                getAudience(IN, false);
+                clickIn();
             }
         });
         outBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
-                allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                underlineIn.setBackgroundResource(0);
-                underlineAll.setBackgroundResource(0);
-                underlineOut.setBackgroundResource(R.color.dark_Green);
-                progressBar.setVisibility(View.VISIBLE);
-                getAudience(OUT, false);
+                clickOut();
             }
         });
         allBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-                allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
-                underlineIn.setBackgroundResource(0);
-                underlineAll.setBackgroundResource(R.color.dark_Green);
-                underlineOut.setBackgroundResource(0);
-                progressBar.setVisibility(View.VISIBLE);
-                getAudience(ALL, false);
+                clickAll();
+            }
+        });
+        recyclerView.setOnTouchListener(new OnSwipeTouchListener(getContext()){
+            public void onSwipeRight() {
+                switch (currentTab){
+                    case OUT : clickIn(); break;
+                    case IN : clickAll(); break;
+                    default: break;
+                }
+            }
+            public void onSwipeLeft() {
+                switch (currentTab){
+                    case ALL : clickIn(); break;
+                    case IN : clickOut(); break;
+                    default: break;
+                }
             }
         });
     }
 
+    private void setButtonsText(){
+        inBtn.setText(getResources().getString(R.string.audience_btn_in, presenter.getNbIn()));
+        outBtn.setText(getResources().getString(R.string.audience_btn_out, presenter.getNbOut()));
+        allBtn.setText(getResources().getString(R.string.audience_btn_all, presenter.getNbAll()));
+    }
+
     private void getAudience(int options, boolean starting){
         presenter.getAudience(options, starting);
+    }
+
+    private void clickAll(){
+        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        underlineIn.setBackgroundResource(0);
+        underlineAll.setBackgroundResource(R.color.dark_Green);
+        underlineOut.setBackgroundResource(0);
+        progressBar.setVisibility(View.VISIBLE);
+        currentTab = ALL;
+        getAudience(ALL, false);
+    }
+
+    private void clickIn(){
+        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        underlineIn.setBackgroundResource(R.color.dark_Green);
+        underlineAll.setBackgroundResource(0);
+        underlineOut.setBackgroundResource(0);
+        progressBar.setVisibility(View.VISIBLE);
+        currentTab = IN;
+        getAudience(IN, false);
+    }
+
+    private void clickOut(){
+        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        underlineIn.setBackgroundResource(0);
+        underlineAll.setBackgroundResource(0);
+        underlineOut.setBackgroundResource(R.color.dark_Green);
+        progressBar.setVisibility(View.VISIBLE);
+        currentTab = OUT;
+        getAudience(OUT, false);
     }
 
     ////////////

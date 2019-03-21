@@ -1,7 +1,7 @@
 package adri.suys.un_mutescan.presenter;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.EventStatFragment;
 import adri.suys.un_mutescan.model.Event;
 

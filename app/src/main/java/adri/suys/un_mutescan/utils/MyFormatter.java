@@ -1,4 +1,4 @@
-package adri.suys.un_mutescan.chart;
+package adri.suys.un_mutescan.utils;
 
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IValueFormatter;

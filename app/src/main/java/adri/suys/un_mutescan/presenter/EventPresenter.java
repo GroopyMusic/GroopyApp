@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -26,7 +24,7 @@ import java.util.Locale;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.EventListActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
 

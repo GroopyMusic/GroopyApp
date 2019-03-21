@@ -14,12 +14,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.AudienceFragment;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
@@ -30,9 +32,6 @@ public class AudiencePresenter {
     private RestService restCommunication;
     private AudienceFragment view;
     private List<Ticket> audienceToBeDisplayed = new ArrayList<>();
-    private List<Ticket> audience;
-    private List<Ticket> audienceIn = new ArrayList<>();
-    private List<Ticket> audienceOut = new ArrayList<>();
     private Ticket currentCustomer;
     private static final int ALL = 1;
     private static final int IN = 2;
@@ -58,7 +57,7 @@ public class AudiencePresenter {
         } else {
             if (options == IN){
                 audienceToBeDisplayed = sortAudienceIn();
-            } else {
+            } else if (options == OUT) {
                 audienceToBeDisplayed = sortAudienceOut();
             }
             view.hideProgressBar();
@@ -78,6 +77,12 @@ public class AudiencePresenter {
     public void handleJSONArray(JSONArray response, Gson gson){
         try {
             UnMuteDataHolder.setAudience(getAudienceFromJSON(response, gson));
+            Collections.sort(UnMuteDataHolder.getAudience(), new Comparator<Ticket>() {
+                @Override
+                public int compare(Ticket ticket, Ticket t1) {
+                    return ticket.getName().compareTo(t1.getName());
+                }
+            });
             audienceToBeDisplayed = UnMuteDataHolder.getAudience();
         } catch (JSONException e) {
             try {
@@ -108,6 +113,20 @@ public class AudiencePresenter {
         ((Activity)view.getActivity()).showToast(message);
         view.hideProgressBar();
     }
+
+    public int getNbAll(){
+        return UnMuteDataHolder.getEvent().getNbTotalTicket() - UnMuteDataHolder.getEvent().getRemainingTicketToBeSold();
+    }
+
+    public int getNbIn(){
+        return UnMuteDataHolder.getEvent().getNbScannedTicket() + UnMuteDataHolder.getEvent().getNbTicketSoldOnSite();
+    }
+
+    public int getNbOut(){
+        return getNbAll() - getNbIn();
+    }
+
+    // private method
 
     private List<Ticket> getAudienceFromJSON(JSONArray response, Gson gson) throws JSONException {
         List<Ticket> audience = new ArrayList<>();

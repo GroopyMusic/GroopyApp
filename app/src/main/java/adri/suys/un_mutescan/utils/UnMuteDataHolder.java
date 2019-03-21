@@ -1,4 +1,4 @@
-package adri.suys.un_mutescan.dataholder;
+package adri.suys.un_mutescan.utils;
 
 import java.util.List;
 

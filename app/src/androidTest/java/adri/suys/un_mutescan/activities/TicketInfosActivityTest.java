@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 
 import static android.support.test.espresso.Espresso.onView;

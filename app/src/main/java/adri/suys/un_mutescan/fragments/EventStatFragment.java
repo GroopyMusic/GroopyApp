@@ -1,9 +1,7 @@
 package adri.suys.un_mutescan.fragments;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,6 @@ import android.widget.TextView;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -31,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.chart.MyFormatter;
+import adri.suys.un_mutescan.utils.MyFormatter;
 import adri.suys.un_mutescan.presenter.EventStatPresenter;
 
 public class EventStatFragment extends Fragment {

@@ -12,10 +12,9 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.activities.TicketInfosActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
 

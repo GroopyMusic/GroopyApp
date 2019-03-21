@@ -8,11 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.text.format.DateUtils;
 import android.view.MenuItem;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.AudienceFragment;
 import adri.suys.un_mutescan.fragments.BarcodeManualInputFragment;
 import adri.suys.un_mutescan.fragments.BarcodeScannerFragment;

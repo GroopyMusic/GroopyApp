@@ -18,7 +18,6 @@ import android.widget.TextView;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.activities.PayActivity;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
 import adri.suys.un_mutescan.presenter.BuyTicketOnSitePresenter;
 
 public class BuyTicketOnSiteFragment extends Fragment {

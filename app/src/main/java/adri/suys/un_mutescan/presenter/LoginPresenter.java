@@ -1,7 +1,6 @@
 package adri.suys.un_mutescan.presenter;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Network;
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ParseError;
@@ -15,7 +14,7 @@ import org.json.JSONObject;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.LoginActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.dataholder.UnMuteDataHolder;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.User;
 import adri.suys.un_mutescan.security.BCrypt;
 
