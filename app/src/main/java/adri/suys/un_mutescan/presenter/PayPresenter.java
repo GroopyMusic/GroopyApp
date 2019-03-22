@@ -19,9 +19,9 @@ import adri.suys.un_mutescan.model.Event;
 
 public class PayPresenter {
 
-    private PayActivity view;
-    private RestService restCommunication;
-    private Event event;
+    private final PayActivity view;
+    private final RestService restCommunication;
+    private final Event event;
     private int totalTicketSold;
     private boolean cashPayment;
 
@@ -66,31 +66,31 @@ public class PayPresenter {
      * Invites the user to try again
      */
     public void notifyTicketsNotAdded(int cpt) {
-        String msg;
+        StringBuilder msg;
         if (cpt == 0){
-            msg = view.getResources().getString(R.string.tickets_not_well_added);
+            msg = new StringBuilder(view.getResources().getString(R.string.tickets_not_well_added));
             view.hideProgressBar();
-            view.showToast(msg);
+            view.showToast(msg.toString());
         } else {
             List<Counterpart> cps = UnMuteDataHolder.getCounterparts();
-            msg = "Les tickets ";
+            msg = new StringBuilder("Les tickets ");
             for (int i = 0; i < cpt; i++){
-                msg = msg + cps.get(cpt).getName();
+                msg.append(cps.get(cpt).getName());
                 if (i != cpt - 1){
-                    msg = msg + ", ";
+                    msg.append(", ");
                 } else {
-                    msg = msg + " ";
+                    msg.append(" ");
                 }
             }
-            msg = msg + "ont été ajoutés. Pour les autres, il y a eu un problème...";
+            msg.append("ont été ajoutés. Pour les autres, il y a eu un problème...");
             view.hideProgressBar();
-            view.showToast(msg);
+            view.showToast(msg.toString());
         }
     }
 
     /**
      * If the Volley connection encounters problem, it displays an error message to the user
-     * @param error
+     * @param error the error
      */
     public void handleVolleyError(VolleyError error){
         String message = "";

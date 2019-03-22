@@ -12,10 +12,8 @@ import java.text.DecimalFormat;
  */
 public class MyFormatter implements IValueFormatter {
 
-    private DecimalFormat mFormat;
-
     public MyFormatter() {
-        mFormat = new DecimalFormat("###,###,##0.0"); // use one decimal
+        DecimalFormat mFormat = new DecimalFormat("###,###,##0.0");
     }
 
     @Override

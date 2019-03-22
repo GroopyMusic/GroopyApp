@@ -66,4 +66,13 @@ public class UnMuteDataHolder {
     public static void setEvents(List<Event> events) {
         UnMuteDataHolder.events = events;
     }
+
+    public static void reinit(){
+        user = null;
+        event = null;
+        currentFragment = 0;
+        counterparts = null;
+        audience = null;
+        events = null;
+    }
 }

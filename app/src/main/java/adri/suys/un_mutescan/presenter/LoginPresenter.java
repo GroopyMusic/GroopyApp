@@ -20,13 +20,13 @@ import adri.suys.un_mutescan.security.BCrypt;
 
 public class LoginPresenter {
 
-    private RestService restCommunication;
+    private final RestService restCommunication;
     private String password;
     private static final int NOT_FOUND = 404;
     private static final int CANT_ACCESS = 403;
     private static final int OK = 400;
     private static final int WRONG_CREDENTIAL = 405;
-    private LoginActivity view;
+    private final LoginActivity view;
 
     public LoginPresenter(LoginActivity view){
         this.view = view;
@@ -40,10 +40,6 @@ public class LoginPresenter {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public LoginActivity getView() {
-        return view;
     }
 
     private int validateUser(User user, String input){

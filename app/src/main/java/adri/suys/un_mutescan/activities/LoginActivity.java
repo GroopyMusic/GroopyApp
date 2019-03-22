@@ -1,15 +1,11 @@
 package adri.suys.un_mutescan.activities;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -24,6 +20,7 @@ public class LoginActivity extends Activity {
     private LoginPresenter presenter;
     private Button showPassword;
     private boolean isShown = false;
+    private final static String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +28,21 @@ public class LoginActivity extends Activity {
         setContentView(R.layout.activity_login);
         configActionBar();
         initViewElements();
+        if (savedInstanceState != null){
+            pwdInput.setText(savedInstanceState.getString(KEY_USERNAME));
+        }
         presenter = new LoginPresenter(this);
     }
 
     @Override
     public void onBackPressed() {
         // do nothing
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_USERNAME, pwdInput.getText().toString());
     }
 
     /**

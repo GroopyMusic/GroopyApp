@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.SparseArray;
@@ -20,6 +21,7 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
@@ -44,7 +46,7 @@ public class BarcodeScannerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barcode_scanner, container, false);
         setViewElements(view);
         return view;
@@ -73,7 +75,7 @@ public class BarcodeScannerFragment extends Fragment {
 
     private void initializeDetectorAndCameraSource(){
         detector = new BarcodeDetector.Builder(getContext()).setBarcodeFormats(Barcode.ALL_FORMATS).build();
-        cameraSrc = new CameraSource.Builder(getContext(), detector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true).build();
+        cameraSrc = new CameraSource.Builder(Objects.requireNonNull(getContext()), detector).setRequestedPreviewSize(1920, 1080).setAutoFocusEnabled(true).build();
         addCallbackToSurfaceView();
         setProcessor();
     }
@@ -83,7 +85,7 @@ public class BarcodeScannerFragment extends Fragment {
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 try {
-                    if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                         cameraSrc.start(surfaceView.getHolder());
                     } else {
                         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);

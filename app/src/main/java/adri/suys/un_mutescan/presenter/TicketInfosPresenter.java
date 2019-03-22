@@ -20,11 +20,10 @@ import adri.suys.un_mutescan.model.Ticket;
 
 public class TicketInfosPresenter {
 
-    private Event currentEvent;
-    private RestService restCommunication;
-    private TicketInfosActivity view;
+    private final Event currentEvent;
+    private final RestService restCommunication;
+    private final TicketInfosActivity view;
     private Ticket ticket;
-    private int cpt = 0;
 
     public TicketInfosPresenter(TicketInfosActivity view){
         this.view = view;
@@ -40,11 +39,6 @@ public class TicketInfosPresenter {
     public void validateBarcode(String barcodeValue){
         restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcodeValue);
     }
-
-    public TicketInfosActivity getView() {
-        return view;
-    }
-
 
     public void handleJSONObject(JSONObject response, Gson gson) {
         ticket = gson.fromJson(response.toString(), Ticket.class);

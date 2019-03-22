@@ -7,7 +7,6 @@ import com.android.volley.ParseError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
@@ -29,10 +29,9 @@ import adri.suys.un_mutescan.model.User;
 
 public class AudiencePresenter {
 
-    private RestService restCommunication;
-    private AudienceFragment view;
+    private final RestService restCommunication;
+    private final AudienceFragment view;
     private List<Ticket> audienceToBeDisplayed = new ArrayList<>();
-    private Ticket currentCustomer;
     private static final int ALL = 1;
     private static final int IN = 2;
     private static final int OUT = 3;
@@ -66,7 +65,7 @@ public class AudiencePresenter {
     }
 
     public void onViewCounterpartAtPosition(int i, AudienceFragment.AudienceHolder audienceHolder) {
-        this.currentCustomer = audienceToBeDisplayed.get(i);
+        Ticket currentCustomer = audienceToBeDisplayed.get(i);
         audienceHolder.displayInfos(currentCustomer.getName(), currentCustomer.getTicketType(), currentCustomer.getSeatType());
     }
 
@@ -74,9 +73,9 @@ public class AudiencePresenter {
         return audienceToBeDisplayed.size();
     }
 
-    public void handleJSONArray(JSONArray response, Gson gson){
+    public void handleJSONArray(JSONArray response){
         try {
-            UnMuteDataHolder.setAudience(getAudienceFromJSON(response, gson));
+            UnMuteDataHolder.setAudience(getAudienceFromJSON(response));
             Collections.sort(UnMuteDataHolder.getAudience(), new Comparator<Ticket>() {
                 @Override
                 public int compare(Ticket ticket, Ticket t1) {
@@ -87,7 +86,7 @@ public class AudiencePresenter {
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");
-                ((Activity)(view.getActivity())).showToast(error);
+                ((Activity)(Objects.requireNonNull(view.getActivity()))).showToast(error);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -110,8 +109,9 @@ public class AudiencePresenter {
         } else if (error instanceof ParseError){
             message = view.getResources().getString(R.string.volley_error_server_error);
         }
-        ((Activity)view.getActivity()).showToast(message);
+        ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
         view.hideProgressBar();
+        getAudience(ALL, true);
     }
 
     public int getNbAll(){
@@ -128,7 +128,7 @@ public class AudiencePresenter {
 
     // private method
 
-    private List<Ticket> getAudienceFromJSON(JSONArray response, Gson gson) throws JSONException {
+    private List<Ticket> getAudienceFromJSON(JSONArray response) throws JSONException {
         List<Ticket> audience = new ArrayList<>();
         JSONObject[] array = new JSONObject[response.length()];
         for (int i = 0; i < response.length(); i++){

@@ -1,5 +1,6 @@
 package adri.suys.un_mutescan.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,10 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.activities.PayActivity;
@@ -26,7 +31,6 @@ public class BuyTicketOnSiteFragment extends Fragment {
     private RecyclerView recyclerView;
     private TicketTypeAdapter adapter;
     private BuyTicketOnSitePresenter presenter;
-    private Button validateBtn;
     private int cpt = 0;
 
     public BuyTicketOnSiteFragment(){
@@ -39,7 +43,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_buy_ticket_onsite, container, false);
         progressBar = view.findViewById(R.id.progressBar_ticket_type);
         progressBar.setVisibility(View.VISIBLE);
@@ -49,7 +53,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         getTicketTypes();
-        validateBtn = view.findViewById(R.id.add_ticket_validate_btn);
+        Button validateBtn = view.findViewById(R.id.add_ticket_validate_btn);
         validateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,11 +73,11 @@ public class BuyTicketOnSiteFragment extends Fragment {
     private void validateSell(){
         if (cpt > 0){
             if (presenter.isEventSoldout(cpt)){
-                ((Activity)getActivity()).showToast(getActivity().getResources().getString(R.string.soldout));
+                ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.soldout));
             } else {
                 getCart();
                 String message = getResources().getString(R.string.order_recap, presenter.getTotalTicketSold(), presenter.getCartAmount());
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppCompatAlertDialogStyle);
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AppCompatAlertDialogStyle);
                 dialogBuilder.setMessage(message).setTitle("");
                 dialogBuilder.setCancelable(false)
                         .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
@@ -95,7 +99,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
                 alert.show();
             }
         } else {
-            ((Activity)getActivity()).showToast(getActivity().getResources().getString(R.string.min_one_cp_selected));
+            ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.min_one_cp_selected));
         }
     }
 
@@ -124,7 +128,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
         presenter.collectCounterparts();
     }
 
-    public void getCart(){
+    private void getCart(){
         for (int i=0; i<recyclerView.getChildCount(); i++){
             TicketTypeHolder th = (TicketTypeHolder) recyclerView.getChildViewHolder(recyclerView.getChildAt(i));
             String name = th.ticketName.getText().toString();
@@ -143,7 +147,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
         private TextView ticketName, ticketPrice, numberOfTicketWanted;
         private Button minusBtn, plusBtn;
 
-        public TicketTypeHolder(View v){
+        TicketTypeHolder(View v){
             super(v);
             initViewElements(v);
         }
@@ -164,6 +168,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
 
         private void setClickActions(){
             minusBtn.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
                     int currentNbOfPurchase = Integer.parseInt(numberOfTicketWanted.getText().toString());
@@ -175,10 +180,11 @@ public class BuyTicketOnSiteFragment extends Fragment {
                 }
             });
             plusBtn.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
                     if (presenter.isEventSoldout(cpt)){
-                        ((Activity)getActivity()).showToast(getActivity().getResources().getString(R.string.soldout));
+                        ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.soldout));
                     } else {
                         int currentNbOfPurchase = Integer.parseInt(numberOfTicketWanted.getText().toString());
                         currentNbOfPurchase++;
@@ -219,7 +225,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
             return presenter.getItemCount();
         }
 
-        public void setPresenter(BuyTicketOnSitePresenter presenter) {
+        void setPresenter(BuyTicketOnSitePresenter presenter) {
             this.presenter = presenter;
         }
     }

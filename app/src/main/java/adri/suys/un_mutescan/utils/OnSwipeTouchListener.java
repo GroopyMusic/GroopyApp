@@ -1,5 +1,6 @@
 package adri.suys.un_mutescan.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -15,6 +16,7 @@ public class OnSwipeTouchListener implements OnTouchListener {
         gestureDetector = new GestureDetector(ctx, new GestureListener());
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
@@ -67,9 +69,9 @@ public class OnSwipeTouchListener implements OnTouchListener {
     public void onSwipeLeft() {
     }
 
-    public void onSwipeTop() {
+    private void onSwipeTop() {
     }
 
-    public void onSwipeBottom() {
+    private void onSwipeBottom() {
     }
 }

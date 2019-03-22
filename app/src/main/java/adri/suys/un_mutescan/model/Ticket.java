@@ -28,7 +28,7 @@ public class Ticket {
         this.seat_type = seatType;
         this.barcode = barcodeText;
         this.error = errorMessage;
-        this.is_scanned = isScanned.equals("vrai") ? true : false;
+        this.is_scanned = isScanned.equals("vrai");
     }
 
     public String getName() {

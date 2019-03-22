@@ -7,7 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 
 public abstract class Activity extends AppCompatActivity {
 
@@ -15,7 +18,7 @@ public abstract class Activity extends AppCompatActivity {
      * Remove the title and the elevation (in order to remove the shadow underneath it) from the Action Bar
      */
     void configActionBar(){
-        getSupportActionBar().setTitle("");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
         getSupportActionBar().setElevation(0);
     }
 
@@ -30,6 +33,7 @@ public abstract class Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if (id == R.id.disconnect){
+            UnMuteDataHolder.reinit();
             startActivity(new Intent(this, LoginActivity.class));
             return true;
         }

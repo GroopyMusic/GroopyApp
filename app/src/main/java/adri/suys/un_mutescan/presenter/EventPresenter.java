@@ -17,6 +17,8 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -32,11 +34,11 @@ public class EventPresenter {
 
     private List<Event> events = new ArrayList<>();
     private List<Event> filteredEvents = new ArrayList<>();
-    private User user;
+    private final User user;
     private Event currentEvent;
-    private EventListActivity view;
-    private RestService restCommunication;
-    private CountingIdlingResource countingIdlingResource = new CountingIdlingResource("name");
+    private final EventListActivity view;
+    private final RestService restCommunication;
+    private final CountingIdlingResource countingIdlingResource = new CountingIdlingResource("name");
     private boolean isFiltered;
 
     public EventPresenter(EventListActivity view){
@@ -111,9 +113,15 @@ public class EventPresenter {
         try {
             events = getEventsFromJSON(response);
             UnMuteDataHolder.setEvents(events);
-            for (Event e : events){
-                System.out.println(e.getName());
-            }
+            Collections.sort(UnMuteDataHolder.getEvents(), new Comparator<Event>() {
+                @Override
+                public int compare(Event event, Event t1) {
+                    if (event.getDate() != null && t1.getDate() != null)
+                        return t1.getDate().compareTo(event.getDate());
+                    else
+                        return 0;
+                }
+            });
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");

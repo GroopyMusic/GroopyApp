@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
@@ -25,13 +26,12 @@ import adri.suys.un_mutescan.model.Event;
 
 public class BuyTicketOnSitePresenter{
 
-    private Event event;
-    private RestService restCommunication;
+    private final Event event;
+    private final RestService restCommunication;
     private List<Counterpart> counterparts = new ArrayList<>();
-    private Counterpart currentCounterpart;
     private double cartAmount = 0;
     private int totalTicketSold = 0;
-    private BuyTicketOnSiteFragment view;
+    private final BuyTicketOnSiteFragment view;
 
     public BuyTicketOnSitePresenter(BuyTicketOnSiteFragment view){
         this.view = view;
@@ -52,7 +52,7 @@ public class BuyTicketOnSitePresenter{
     /**
      * Transforms the JSONArray into a list of counterparts.
      * Set the counterparts in the DataHolder so we can share them through the app
-     * @param response
+     * @param response the json array
      */
     public void handleJSONArray(JSONArray response) {
         try {
@@ -61,7 +61,7 @@ public class BuyTicketOnSitePresenter{
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");
-                ((Activity)(view.getActivity())).showToast(error);
+                ((Activity)(Objects.requireNonNull(view.getActivity()))).showToast(error);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
@@ -73,7 +73,7 @@ public class BuyTicketOnSitePresenter{
 
     /**
      * If the Volley connection encounters problem, it displays an error message to the user
-     * @param error
+     * @param error the error
      */
     public void handleVolleyError(VolleyError error){
         String message = "";
@@ -88,7 +88,7 @@ public class BuyTicketOnSitePresenter{
         } else if (error instanceof ParseError){
             message = view.getResources().getString(R.string.volley_error_server_error);
         }
-        ((Activity)view.getActivity()).showToast(message);
+        ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
         view.hideProgressBar();
     }
 
@@ -132,17 +132,17 @@ public class BuyTicketOnSitePresenter{
 
     /**
      * Displays the informations for each counterpart (name, price, and +/- button)
-     * @param i
-     * @param view
+     * @param i the position
+     * @param view the viewHolder
      */
     public void onViewCounterpartAtPosition(int i, BuyTicketOnSiteFragment.TicketTypeHolder view) {
-        this.currentCounterpart = counterparts.get(i);
+        Counterpart currentCounterpart = counterparts.get(i);
         view.displayInfos(currentCounterpart.getName(), Double.toString(currentCounterpart.getPrice()));
     }
 
     /**
      * Checks if the event is soldout (if we still can sell tickets)
-     * @return
+     * @return a boolean indicating if the event is soldout
      */
     public boolean isEventSoldout(int toBeSold){
         return event.getRemainingTicketToBeSold() <= toBeSold;

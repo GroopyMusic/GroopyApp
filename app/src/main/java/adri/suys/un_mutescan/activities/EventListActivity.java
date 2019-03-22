@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Event;
@@ -32,7 +33,6 @@ public class EventListActivity extends Activity{
     private EventPresenter presenter;
     private SearchView searchView;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private int currentPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +66,8 @@ public class EventListActivity extends Activity{
 
     /**
      * Update the adapter with the current state of the Presenter
-     * @param isFilteredList
+     * @param isFilteredList a boolean indicating if we must pass the filtered list or
+     *                       the normal list to the adapter
      */
     public void updateEventsList(boolean isFilteredList) {
         if (adapter == null) {
@@ -93,7 +94,7 @@ public class EventListActivity extends Activity{
 
     private void handleSearch(){
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getComponentName()));
         searchView.setQueryHint(getResources().getString(R.string.search_hint));
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +154,7 @@ public class EventListActivity extends Activity{
 
         /**
          * Displays the event name
-         * @param name
+         * @param name the name of the event
          */
         public void setEventName(String name){
             eventName.setText(name);
@@ -179,7 +180,7 @@ public class EventListActivity extends Activity{
         }
 
         private void myAction(){
-            currentPosition = this.getAdapterPosition();
+            int currentPosition = this.getAdapterPosition();
             presenter.persistEvent(currentPosition);
             System.out.println();
             Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
@@ -192,6 +193,7 @@ public class EventListActivity extends Activity{
     // ADAPTER //
     /////////////
 
+    @SuppressWarnings("unchecked")
     private class EventAdapter extends RecyclerView.Adapter<EventHolder> implements Filterable {
 
         private EventPresenter presenter;
@@ -219,11 +221,11 @@ public class EventListActivity extends Activity{
             return presenter.getItemCount(isFilteredList);
         }
 
-        public void setPresenter(EventPresenter presenter) {
+        void setPresenter(EventPresenter presenter) {
             this.presenter = presenter;
         }
 
-        public void setFilteredList(boolean filteredList) {
+        void setFilteredList(boolean filteredList) {
             isFilteredList = filteredList;
         }
 

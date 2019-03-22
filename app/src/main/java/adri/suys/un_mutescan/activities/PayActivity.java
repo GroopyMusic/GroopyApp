@@ -3,6 +3,7 @@ package adri.suys.un_mutescan.activities;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -29,6 +30,7 @@ public class PayActivity extends Activity {
     private double price;
     private PayPresenter presenter;
     private ProgressBar progressBar;
+    private static final String BANCONTACT_INTENT = "mobi.inthepocket.bcmc.bancontact";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -61,8 +63,11 @@ public class PayActivity extends Activity {
         cashBtn.setVisibility(GONE);
         bcBtn.setVisibility(GONE);
         hideProgressBar();
-        Intent bcIntent = getPackageManager().getLaunchIntentForPackage("mobi.inthepocket.bcmc.bancontact");
-        if (bcIntent != null) startActivity(bcIntent);
+        Intent bcIntent = getPackageManager().getLaunchIntentForPackage(BANCONTACT_INTENT);
+        if (bcIntent == null){
+            bcIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + BANCONTACT_INTENT));
+        }
+        startActivity(bcIntent);
     }
 
     public void hideProgressBar(){

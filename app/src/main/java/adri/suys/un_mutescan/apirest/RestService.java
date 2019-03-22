@@ -38,8 +38,6 @@ public class RestService {
     private static final int USER = 2;
     private static final int EVENT = 3;
     private static final int AUDIENCE = 5;
-    private static final int AUDIENCE_IN = 6;
-    private static final int AUDIENCE_OUT = 7;
 
     private static final String BASE_URL_USER = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/loginuser?";
     private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/scanticket?";
@@ -82,7 +80,7 @@ public class RestService {
      */
     public void loginUser(String username){
         String url = BASE_URL_USER + "username=" + username;
-        createJsonObjectRequest(Request.Method.GET, url, USER);
+        createJsonObjectRequest(url, USER);
     }
 
     /**
@@ -95,7 +93,7 @@ public class RestService {
      */
     public void scanTicket(int userID, int eventID, String barcodeValue){
         String url = BASE_URL_SCAN_TICKET + "user_id=" + userID + "&event_id=" + eventID + "&barcode=" + barcodeValue;
-        createJsonObjectRequest(Request.Method.GET, url, SCAN_TICKET);
+        createJsonObjectRequest(url, SCAN_TICKET);
     }
 
     /**
@@ -105,8 +103,8 @@ public class RestService {
      * @param id the id of the current user
      */
     public void collectEvents(int id){
-        String url = BASE_URL_EVENTS + "id=" + id;;
-        createJsonArrayRequest(Request.Method.GET, url, EVENT);
+        String url = BASE_URL_EVENTS + "id=" + id;
+        createJsonArrayRequest(url, EVENT);
     }
 
     /**
@@ -118,7 +116,7 @@ public class RestService {
      */
     public void collectCounterparts(int userID, int eventID) {
         String url = BASE_URL_COUNTERPARTS + "user_id=" + userID + "&event_id=" + eventID;
-        createJsonArrayRequest(Request.Method.GET, url, COUNTERPART);
+        createJsonArrayRequest(url, COUNTERPART);
     }
 
     /**
@@ -146,7 +144,7 @@ public class RestService {
      */
     public void collectAudience(int userID, int eventID){
         String url = BASE_URL_AUDIENCE + "user_id=" + userID + "&event_id=" + eventID;
-        createJsonArrayRequest(Request.Method.GET, url, AUDIENCE);
+        createJsonArrayRequest(url, AUDIENCE);
     }
 
     //|||||||||||||||||||||//
@@ -181,8 +179,9 @@ public class RestService {
     //||PRIVATE||//
     //|||||||||||//
 
-    private void createJsonObjectRequest(int httpMethod, String url, final int hint){
-        JsonObjectRequest request = new JsonObjectRequest(httpMethod, url, null,
+    private void createJsonObjectRequest(String url, final int hint){
+        System.out.println(url);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -223,8 +222,9 @@ public class RestService {
         requestQueue.add(request);
     }
 
-    private void createJsonArrayRequest(int httpMethod, String url, final int hint){
-        JsonArrayRequest request = new JsonArrayRequest(httpMethod, url, null,
+    private void createJsonArrayRequest(String url, final int hint){
+        System.out.println(url);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -235,8 +235,8 @@ public class RestService {
                             case COUNTERPART:
                                 counterpartPresenter.handleJSONArray(response);
                                 break;
-                            case AUDIENCE: case AUDIENCE_IN: case AUDIENCE_OUT:
-                                audiencePresenter.handleJSONArray(response, gson);
+                            case AUDIENCE:
+                                audiencePresenter.handleJSONArray(response);
                                 break;
                         }
                     }
@@ -250,7 +250,7 @@ public class RestService {
                             case COUNTERPART:
                                 counterpartPresenter.handleVolleyError(error);
                                 break;
-                            case AUDIENCE: case AUDIENCE_IN : case AUDIENCE_OUT:
+                            case AUDIENCE:
                                 audiencePresenter.handleVolleyError(error);
                                 break;
                         }

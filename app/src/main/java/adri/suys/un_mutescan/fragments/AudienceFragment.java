@@ -1,5 +1,6 @@
 package adri.suys.un_mutescan.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.AudiencePresenter;
@@ -40,7 +43,7 @@ public class AudienceFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_audience, container, false);
         presenter = new AudiencePresenter(this);
         progressBar = view.findViewById(R.id.audience_progressbar);
@@ -56,7 +59,7 @@ public class AudienceFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        allBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.dark_Green));
         setActions();
         getAudience(ALL, true);
         return view;
@@ -90,6 +93,7 @@ public class AudienceFragment extends Fragment {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setActions(){
         inBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +142,7 @@ public class AudienceFragment extends Fragment {
     }
 
     private void clickAll(){
-        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.black));
         outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
         underlineIn.setBackgroundResource(0);
@@ -150,7 +154,7 @@ public class AudienceFragment extends Fragment {
     }
 
     private void clickIn(){
-        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.dark_Green));
         outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         underlineIn.setBackgroundResource(R.color.dark_Green);
@@ -162,7 +166,7 @@ public class AudienceFragment extends Fragment {
     }
 
     private void clickOut(){
-        inBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.black));
         outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         underlineIn.setBackgroundResource(0);
@@ -181,7 +185,7 @@ public class AudienceFragment extends Fragment {
 
         TextView buyerName, seatNo, ticketType;
 
-        public AudienceHolder(View v){
+        AudienceHolder(View v){
             super(v);
             initViewElements(v);
         }
@@ -207,7 +211,7 @@ public class AudienceFragment extends Fragment {
 
         private AudiencePresenter presenter;
 
-        public AudienceAdapter(AudiencePresenter presenter){
+        AudienceAdapter(AudiencePresenter presenter){
             this.presenter = presenter;
         }
 
@@ -228,7 +232,7 @@ public class AudienceFragment extends Fragment {
             return presenter.getItemCount();
         }
 
-        public void setPresenter(AudiencePresenter presenter) {
+        void setPresenter(AudiencePresenter presenter) {
             this.presenter = presenter;
         }
     }

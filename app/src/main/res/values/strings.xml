@@ -27,8 +27,8 @@
     <string name="add_ticket">Ajouter un ticket</string>
     <string name="cancel">Annuler</string>
     <string name="ticket_added">Ticket ajouté ! Bon concert !</string>
-    <string name="ticket_total">SOLDOUT GLOBAL : %1$d</string>
-    <string name="ticket_sold">VENDUS INITIALEMENT : %1$d</string>
+    <string name="ticket_total">CAPACITE DE LA SALLE : %1$d</string>
+    <string name="ticket_sold">VENDUS EN PREVENTE : %1$d (%2$.2f %%)</string>
     <string name="ticket_scanned">SCANNES : %1$d</string>
     <string name="ticket_on_site">SUR SITE : %1$d</string>
     <string name="volley_error_no_connexion">Problème de connexion. Vérifiez que vous avez internet et réessayez d\'ici quelques instants.</string>
@@ -75,4 +75,6 @@
     <string name="audience_btn_in">IN (%1$d)</string>
     <string name="audience_btn_all">ALL (%1$d)</string>
     <string name="audience_btn_out">OUT (%1$d)</string>
+    <string name="horizontalchart_label_cash">CASH (%1$d/%2$d)</string>
+    <string name="horizontalchart_label_cb">CB (%1$d/%2$d)</string>
 </resources>

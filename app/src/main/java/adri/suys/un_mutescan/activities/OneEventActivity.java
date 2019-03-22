@@ -11,16 +11,21 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.AudienceFragment;
 import adri.suys.un_mutescan.fragments.BarcodeManualInputFragment;
 import adri.suys.un_mutescan.fragments.BarcodeScannerFragment;
 import adri.suys.un_mutescan.fragments.BuyTicketOnSiteFragment;
 import adri.suys.un_mutescan.fragments.EventStatFragment;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 
 public class OneEventActivity extends Activity {
 
     private BottomNavigationView bottomNavigationView;
+    private static final int STAT_FRAGMENT = 0;
+    private static final int SCAN_FRAGMENT = 1;
+    private static final int INPUT_FRAGMENT = 2;
+    private static final int ADD_FRAGMENT = 3;
+    private static final int PUBLIC_FRAGMENT = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -36,23 +41,23 @@ public class OneEventActivity extends Activity {
     public void onResume() {
         super.onResume();
         switch (UnMuteDataHolder.getCurrentFragment()){
-            case 0 :
+            case STAT_FRAGMENT :
                 bottomNavigationView.setSelectedItemId(R.id.action_stat);
                 loadFragment(new EventStatFragment());
                 break;
-            case 1 :
+            case SCAN_FRAGMENT :
                 bottomNavigationView.setSelectedItemId(R.id.action_qrcode);
                 loadFragment(new BarcodeScannerFragment());
                 break;
-            case 2 :
+            case INPUT_FRAGMENT :
                 bottomNavigationView.setSelectedItemId(R.id.action_type_code);
                 loadFragment(new BarcodeManualInputFragment());
                 break;
-            case 3 :
+            case ADD_FRAGMENT :
                 bottomNavigationView.setSelectedItemId(R.id.action_add_ticket);
                 loadFragment(new BuyTicketOnSiteFragment());
                 break;
-            case 4 :
+            case PUBLIC_FRAGMENT :
                 bottomNavigationView.setSelectedItemId(R.id.action_get_guest);
                 loadFragment(new AudienceFragment());
                 break;
@@ -72,12 +77,12 @@ public class OneEventActivity extends Activity {
                 switch (item.getItemId()){
                     case R.id.action_stat :
                         loadFragment(new EventStatFragment());
-                        UnMuteDataHolder.setCurrentFragment(0);
+                        UnMuteDataHolder.setCurrentFragment(STAT_FRAGMENT);
                         return true;
                     case R.id.action_qrcode :
                         if (UnMuteDataHolder.getEvent().isToday()){
                             loadFragment(new BarcodeScannerFragment());
-                            UnMuteDataHolder.setCurrentFragment(1);
+                            UnMuteDataHolder.setCurrentFragment(SCAN_FRAGMENT);
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_scan));
                         }
@@ -85,7 +90,7 @@ public class OneEventActivity extends Activity {
                     case R.id.action_type_code :
                         if (UnMuteDataHolder.getEvent().isToday()) {
                             loadFragment(new BarcodeManualInputFragment());
-                            UnMuteDataHolder.setCurrentFragment(2);
+                            UnMuteDataHolder.setCurrentFragment(INPUT_FRAGMENT);
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_keyboard));
                         }
@@ -93,14 +98,14 @@ public class OneEventActivity extends Activity {
                     case R.id.action_add_ticket :
                         if (UnMuteDataHolder.getEvent().isToday()) {
                             loadFragment(new BuyTicketOnSiteFragment());
-                            UnMuteDataHolder.setCurrentFragment(3);
+                            UnMuteDataHolder.setCurrentFragment(ADD_FRAGMENT);
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_sell));
                         }
                         return true;
                     case R.id.action_get_guest:
                         loadFragment(new AudienceFragment());
-                        UnMuteDataHolder.setCurrentFragment(4);
+                        UnMuteDataHolder.setCurrentFragment(PUBLIC_FRAGMENT);
                         return true;
                     default :
                         // do noting

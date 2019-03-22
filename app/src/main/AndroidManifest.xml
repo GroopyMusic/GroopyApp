@@ -14,13 +14,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".activities.LoginActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.OneEventActivity"/>
+        <activity android:name=".activities.OneEventActivity" />
         <activity android:name=".activities.TicketInfosActivity"/>
         <activity android:name=".activities.EventListActivity"/>
         <activity android:name=".activities.PayActivity"/>

@@ -1,6 +1,7 @@
 package adri.suys.un_mutescan.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,7 @@ public class EventStatFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_event_stat, container, false);
         setViewElements(view);
         this.presenter = new EventStatPresenter(this);
@@ -145,8 +146,11 @@ public class EventStatFragment extends Fragment {
 
     private List<String> getXAxisValue(){
         List<String> xAxisValues = new ArrayList<>();
-        xAxisValues.add("Cash (" + presenter.getTotalPaidInCash() + "/" + presenter.getTotalSoldOnSite() + ")");
-        xAxisValues.add("CB (" + (presenter.getTotalSoldOnSite() - presenter.getTotalPaidInCash()) + "/" + presenter.getTotalSoldOnSite() + ")");
+        String cashLabel = view.getResources().getString(R.string.horizontalchart_label_cash, presenter.getTotalPaidInCash(), presenter.getTotalSoldOnSite());
+        xAxisValues.add(cashLabel);
+        int totalPaidWithCard = presenter.getTotalSoldOnSite() - presenter.getTotalPaidInCash();
+        String cbLabel = view.getResources().getString(R.string.horizontalchart_label_cb, totalPaidWithCard, presenter.getTotalSoldOnSite());
+        xAxisValues.add(cbLabel);
         return xAxisValues;
     }
 }

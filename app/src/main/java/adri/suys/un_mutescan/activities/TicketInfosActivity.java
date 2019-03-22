@@ -11,7 +11,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
-import adri.suys.un_mutescan.fragments.BarcodeScannerFragment;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
 
 public class TicketInfosActivity extends Activity {
@@ -62,7 +61,7 @@ public class TicketInfosActivity extends Activity {
 
     /**
      * Displays the name of the event
-     * @param eventName
+     * @param eventName the name of the event
      */
     public void displayEventName(String eventName) {
         this.eventName.setText(eventName);
@@ -80,14 +79,9 @@ public class TicketInfosActivity extends Activity {
      */
     public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat, int errorInt) {
         if (errorString.equals("")){
-            frame.setBackgroundResource(R.drawable.dark_green_border);
-            ticketError.setText(ticketValidatedMsg);
-            int green = ContextCompat.getColor(this, R.color.green);
-            ticketError.setTextColor(green);
-            barcode.setText(barcodeValue);
-            name.setText(nameOwner);
-            ticketType.setText(type);
-            seatType.setText(seat);
+            displayTicketInfos(true, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorInt);
+        } else if (errorString.equals("Ce ticket a déjà été scanné.")) {
+            displayTicketInfos(false, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorInt);
         } else {
             int red = ContextCompat.getColor(this, R.color.red);
             ticketError.setTextColor(red);
@@ -152,5 +146,21 @@ public class TicketInfosActivity extends Activity {
         presenter.validateBarcode(barcodeValue);
     }
 
+    private void displayTicketInfos(boolean isValid, String barcodeValue, String nameOwner, String type, String seat, String ticketValidatedMsg, int errorInt){
+        frame.setBackgroundResource(R.drawable.dark_green_border);
+        barcode.setText(barcodeValue);
+        name.setText(nameOwner);
+        ticketType.setText(type);
+        seatType.setText(seat);
+        if (isValid){
+            int green = ContextCompat.getColor(this, R.color.green);
+            ticketError.setTextColor(green);
+            ticketError.setText(ticketValidatedMsg);
+        } else {
+            int red = ContextCompat.getColor(this, R.color.red);
+            ticketError.setTextColor(red);
+            ticketError.setText(errorInt);
+        }
+    }
 
 }

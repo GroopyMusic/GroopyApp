@@ -8,9 +8,9 @@ package adri.suys.un_mutescan.model;
  */
 public class Counterpart {
 
-    private int id;
-    private String name;
-    private double price;
+    private final int id;
+    private final String name;
+    private final double price;
     private int quantity = 0;
 
     public Counterpart(int id, String name, double price) {
@@ -23,9 +23,6 @@ public class Counterpart {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public double getPrice() {
         return price;
@@ -41,15 +38,5 @@ public class Counterpart {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public void addTicket(){
-        quantity++;
-    }
-
-    public void removeTicket(){
-        if (quantity > 0){
-            quantity--;
-        }
     }
 }

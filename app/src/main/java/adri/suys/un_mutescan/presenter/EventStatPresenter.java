@@ -7,15 +7,14 @@ import adri.suys.un_mutescan.model.Event;
 
 public class EventStatPresenter {
 
-    private Event event;
-    private EventStatFragment view;
+    private final Event event;
 
     public EventStatPresenter(EventStatFragment view){
         this.event = UnMuteDataHolder.getEvent();
-        this.view = view;
+        double presalePercentageOnOne = ((double) event.getNbSoldTicket()) / event.getNbTotalTicket();
+        float presalePercentageOnHundred = (float) (presalePercentageOnOne * 100);
         String totalTicket = view.getResources().getString(R.string.ticket_total, event.getNbTotalTicket());
-        String totalSold = view.getResources().getString(R.string.ticket_sold, event.getNbSoldTicket());
-
+        String totalSold = view.getResources().getString(R.string.ticket_sold, event.getNbSoldTicket(), presalePercentageOnHundred);
         view.displayEvent(event.getName(), event.getDate(), totalTicket, totalSold);
     }
 
