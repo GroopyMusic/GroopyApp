@@ -104,8 +104,12 @@ public class OneEventActivity extends Activity {
                         }
                         return true;
                     case R.id.action_get_guest:
-                        loadFragment(new AudienceFragment());
-                        UnMuteDataHolder.setCurrentFragment(PUBLIC_FRAGMENT);
+                        if (UnMuteDataHolder.getEvent().isToday()) {
+                            loadFragment(new AudienceFragment());
+                            UnMuteDataHolder.setCurrentFragment(PUBLIC_FRAGMENT);
+                        } else {
+                            showAlertDialog(getResources().getString(R.string.nav_error_audience));
+                        }
                         return true;
                     default :
                         // do noting

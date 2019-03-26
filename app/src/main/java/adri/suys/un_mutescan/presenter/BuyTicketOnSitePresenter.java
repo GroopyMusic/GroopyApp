@@ -36,7 +36,6 @@ public class BuyTicketOnSitePresenter{
     public BuyTicketOnSitePresenter(BuyTicketOnSiteFragment view){
         this.view = view;
         this.restCommunication = new RestService((Activity)view.getActivity());
-        restCommunication.setCounterpartPresenter(this);
         this.event = UnMuteDataHolder.getEvent();
     }
 
@@ -46,7 +45,10 @@ public class BuyTicketOnSitePresenter{
      * Fetches in the DB all the counterparts that are linked to the currentEvent
      */
     public void collectCounterparts(){
-        restCommunication.collectCounterparts(UnMuteDataHolder.getUser().getId(), event.getId());
+        //restCommunication.collectCounterparts(UnMuteDataHolder.getUser().getId(), event.getId());
+        counterparts = UnMuteDataHolder.getCounterparts();
+        view.hideProgressBar();
+        view.updateTicketTypesList();
     }
 
     /**
@@ -54,7 +56,7 @@ public class BuyTicketOnSitePresenter{
      * Set the counterparts in the DataHolder so we can share them through the app
      * @param response the json array
      */
-    public void handleJSONArray(JSONArray response) {
+    /*public void handleJSONArray(JSONArray response) {
         try {
             counterparts = getCounterpartsFromJSON(response);
             UnMuteDataHolder.setCounterparts(counterparts);
@@ -69,13 +71,13 @@ public class BuyTicketOnSitePresenter{
         }
         view.hideProgressBar();
         view.updateTicketTypesList();
-    }
+    }*/
 
     /**
      * If the Volley connection encounters problem, it displays an error message to the user
      * @param error the error
      */
-    public void handleVolleyError(VolleyError error){
+    /*public void handleVolleyError(VolleyError error){
         String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
             message = view.getResources().getString(R.string.volley_error_no_connexion);
@@ -90,9 +92,9 @@ public class BuyTicketOnSitePresenter{
         }
         ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
         view.hideProgressBar();
-    }
+    }*/
 
-    private List<Counterpart> getCounterpartsFromJSON(JSONArray response) throws JSONException {
+    /*private List<Counterpart> getCounterpartsFromJSON(JSONArray response) throws JSONException {
         List<Counterpart> tickets = new ArrayList<>();
         JSONObject[] array = new JSONObject[response.length()];
         for (int i = 0; i < response.length(); i++){
@@ -106,7 +108,7 @@ public class BuyTicketOnSitePresenter{
             tickets.add(counterpart);
         }
         return tickets;
-    }
+    }*/
 
     // SELL TICKET AT THE GATES
 

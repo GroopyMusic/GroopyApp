@@ -3,8 +3,10 @@ package adri.suys.un_mutescan.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +26,8 @@ import java.util.Objects;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.presenter.EventPresenter;
+
+import static adri.suys.un_mutescan.R.color.red;
 
 public class EventListActivity extends Activity{
 
@@ -48,8 +52,6 @@ public class EventListActivity extends Activity{
     @Override
     protected void onResume(){
         super.onResume();
-        progressBar.setVisibility(View.VISIBLE);
-        createEvents(false);
     }
 
     @Override
@@ -187,6 +189,13 @@ public class EventListActivity extends Activity{
             startActivity(intent);
         }
 
+        public void setEventNameInRed() {
+            eventName.setTextColor(Color.RED);
+        }
+
+        public void setEventNameInGreen(){
+            eventName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.dark_Green));
+        }
     }
 
     /////////////

@@ -1,18 +1,21 @@
 package adri.suys.un_mutescan.model;
 
+import java.io.Serializable;
+
 import adri.suys.un_mutescan.R;
 
 /**
  * A ticket is a ticket generated, sold, bought for an event
  */
-public class Ticket {
+public class Ticket implements Serializable {
 
     private final String buyer;
     private final String ticket_type;
     private final String seat_type;
     private final String barcode;
     private final String error;
-    private final boolean is_scanned;
+    private String is_validated;
+    private int event;
 
     /**
      *
@@ -28,7 +31,7 @@ public class Ticket {
         this.seat_type = seatType;
         this.barcode = barcodeText;
         this.error = errorMessage;
-        this.is_scanned = isScanned.equals("vrai");
+        this.is_validated = isScanned;
     }
 
     public String getName() {
@@ -52,7 +55,7 @@ public class Ticket {
     }
 
     public boolean isScanned(){
-        return is_scanned;
+        return is_validated.equals("vrai");
     }
 
     /**
@@ -82,8 +85,16 @@ public class Ticket {
         return error.equals("");
     }
 
+    public void setIs_validated(boolean scanned){
+        is_validated = scanned ? "vrai" : "faux";
+    }
+
+    public void setEvent(int id){
+        this.event = id;
+    }
+
     @Override
     public String toString() {
-        return buyer + " - " + is_scanned;
+        return buyer + " - " + is_validated;
     }
 }

@@ -75,17 +75,16 @@ public class TicketInfosActivity extends Activity {
      * @param nameOwner the name of the buyer
      * @param type the type of ticket (standard, adult, teen, child, vip, etc)
      * @param seat the seat number (nothing if it is a stand up ticket)
-     * @param errorInt the resources of the string corresponding to the error message
      */
-    public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat, int errorInt) {
+    public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat) {
         if (errorString.equals("")){
-            displayTicketInfos(true, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorInt);
+            displayTicketInfos(true, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorString);
         } else if (errorString.equals("Ce ticket a déjà été scanné.")) {
-            displayTicketInfos(false, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorInt);
+            displayTicketInfos(false, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorString);
         } else {
             int red = ContextCompat.getColor(this, R.color.red);
             ticketError.setTextColor(red);
-            ticketError.setText(errorInt);
+            ticketError.setText(errorString);
         }
     }
 
@@ -146,7 +145,7 @@ public class TicketInfosActivity extends Activity {
         presenter.validateBarcode(barcodeValue);
     }
 
-    private void displayTicketInfos(boolean isValid, String barcodeValue, String nameOwner, String type, String seat, String ticketValidatedMsg, int errorInt){
+    private void displayTicketInfos(boolean isValid, String barcodeValue, String nameOwner, String type, String seat, String ticketValidatedMsg, String error){
         frame.setBackgroundResource(R.drawable.dark_green_border);
         barcode.setText(barcodeValue);
         name.setText(nameOwner);
@@ -159,7 +158,7 @@ public class TicketInfosActivity extends Activity {
         } else {
             int red = ContextCompat.getColor(this, R.color.red);
             ticketError.setTextColor(red);
-            ticketError.setText(errorInt);
+            ticketError.setText(error);
         }
     }
 

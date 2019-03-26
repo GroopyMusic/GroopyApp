@@ -6,10 +6,10 @@
     <string name="password">MOT DE PASSE</string>
     <string name="forgotten_pwd">Mot de passe oublié ?</string>
     <string name="login_um">Se connecter via Un-Mute</string>
-    <string name="login_fb">Se connecter via Facebook</string>
+    <string name="login_smartlock">Se connecter avec Smart Lock</string>
     <string name="scan_status">scannés : </string>
     <string name="ticket_ok">Ticket validé !</string>
-    <string name="ticket_ok_dialog">Ticket validé ! Bon concert !</string>
+    <string name="ticket_ok_dialog">Ticket validé !</string>
     <string name="see_more">Plus d\'infos</string>
     <string name="back_to_scan">Retour au scan</string>
     <string name="ok">OK</string>
@@ -69,6 +69,7 @@
     <string name="nav_error_scan">L\'événément ne se déroule pas aujourd\'hui. Vous ne pouvez pas scanner des tickets...</string>
     <string name="nav_error_keyboard">L\'événément ne se déroule pas aujourd\'hui. Vous ne pouvez pas introduire des code-barres à la main...</string>
     <string name="nav_error_sell">L\'événément ne se déroule pas aujourd\'hui. Vous ne pouvez pas vendre des tickets sur place.</string>
+    <string name="nav_error_audience">L\'événément ne se déroule pas aujourd\'hui. Vous ne pouvez pas afficher la liste des participants.</string>
     <string name="error">ERREUR</string>
     <string name="show_password">Montrer le mot de passe</string>
     <string name="progress_state_payment_mode">Mode paiement (vendus sur place) (%)</string>
@@ -77,4 +78,11 @@
     <string name="audience_btn_out">OUT (%1$d)</string>
     <string name="horizontalchart_label_cash">CASH (%1$d/%2$d)</string>
     <string name="horizontalchart_label_cb">CB (%1$d/%2$d)</string>
+    <string name="already_passed">[Déjà passé] </string>
+    <string name="credentials_saved">Informations de connexion sauvées</string>
+    <string name="credentials_not_saved">Problème lors de stockage des informations de connexion</string>
+    <string name="right_account">Voulez-vous vous connecter automatiquement avec le compte %1$s ?</string>
+    <string name="yes">OUI</string>
+    <string name="no">NON</string>
+    <string name="no_internet_back_up">Vous n\'avez pas internet. Vous serez connecté mais les données que vous verrez ne seront pas à jour...</string>
 </resources>

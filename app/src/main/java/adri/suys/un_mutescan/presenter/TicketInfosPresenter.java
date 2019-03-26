@@ -37,16 +37,38 @@ public class TicketInfosPresenter {
     }
 
     public void validateBarcode(String barcodeValue){
-        restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcodeValue);
+        String message;
+        for (Ticket t : UnMuteDataHolder.getAudience()){
+            if (t.getBarcodeText().equals(barcodeValue)){
+                String errorMsg;
+                if (t.isScanned()){
+                    message = view.getResources().getString(R.string.scan_error_already_scanned);
+                    errorMsg = message;
+                } else {
+                    t.setIs_validated(true);
+                    restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcodeValue);
+                    message = view.getResources().getString(R.string.ticket_ok_dialog);
+                    errorMsg = "";
+                }
+                view.hideProgressBar();
+                view.displayTicket(errorMsg, message, t.getBarcodeText(), t.getName(), t.getTicketType(), t.getSeatType());
+                view.displayEventName(currentEvent.getName());
+                view.displayAlert(view.getResources().getString(ticket.getErrorMessageAsResource()));
+            } else {
+                message = view.getResources().getString(R.string.scan_error_no_match_event_tix);
+                view.displayAlert(message);
+            }
+        }
     }
 
     public void handleJSONObject(JSONObject response, Gson gson) {
-        ticket = gson.fromJson(response.toString(), Ticket.class);
+        /*ticket = gson.fromJson(response.toString(), Ticket.class);
         try {
             String validatedMsg = view.getResources().getString(R.string.ticket_ok_dialog);
             if (ticket != null) {
                 view.hideProgressBar();
                 view.displayTicket(ticket.getErrorMessage(), validatedMsg, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatType(), ticket.getErrorMessageAsResource());
+                UnMuteDataHolder.scanTicket(ticket);
             }
             if (currentEvent != null) {
                 view.displayEventName(currentEvent.getName());
@@ -58,7 +80,7 @@ public class TicketInfosPresenter {
         } catch (NullPointerException ex) {
             view.hideProgressBar();
             view.showToast(view.getResources().getString(R.string.sth_wrong));
-        }
+        }*/
     }
 
     public void handleVolleyError(VolleyError error){

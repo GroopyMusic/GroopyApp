@@ -1,6 +1,8 @@
 package adri.suys.un_mutescan.model;
 
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * An user of the app, he must be in the UM database + he must organize event to access the app
@@ -12,6 +14,7 @@ public class User implements Serializable {
     private final String name;
     private final String password;
     private final String error;
+    private long lastConnection;
 
     /**
      *
@@ -32,6 +35,10 @@ public class User implements Serializable {
         return Integer.parseInt(id);
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -46,5 +53,21 @@ public class User implements Serializable {
 
     public String toString(){
         return id + "-" + username + "-" + password + "-" + error;
+    }
+
+    public void setLastConnection(long lastConnection) {
+        this.lastConnection = lastConnection;
+    }
+
+    public long getLastConnection() {
+        return lastConnection;
+    }
+
+    public boolean isTokenStillActive(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date(lastConnection));
+        cal.add(Calendar.HOUR_OF_DAY, 3);
+        Date lastConnectionPlus3 = cal.getTime();
+        return (lastConnectionPlus3.getTime() <= new Date().getTime());
     }
 }

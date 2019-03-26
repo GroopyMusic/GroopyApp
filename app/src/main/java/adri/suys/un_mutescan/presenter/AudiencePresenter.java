@@ -39,20 +39,13 @@ public class AudiencePresenter {
     public AudiencePresenter(AudienceFragment view){
         this.view = view;
         this.restCommunication = new RestService((Activity) view.getActivity());
-        restCommunication.setAudiencePresenter(this);
     }
 
-    public void getAudience(int options, boolean starting) {
-        Event event = UnMuteDataHolder.getEvent();
-        User user = UnMuteDataHolder.getUser();
+    public void getAudience(int options) {
         if (options == ALL){
-            if (starting) {
-                restCommunication.collectAudience(user.getId(), event.getId());
-            } else {
-                audienceToBeDisplayed = UnMuteDataHolder.getAudience();
-                view.hideProgressBar();
-                view.updateAudienceList();
-            }
+            audienceToBeDisplayed = UnMuteDataHolder.getAudience();
+            view.hideProgressBar();
+            view.updateAudienceList();
         } else {
             if (options == IN){
                 audienceToBeDisplayed = sortAudienceIn();
@@ -73,7 +66,7 @@ public class AudiencePresenter {
         return audienceToBeDisplayed.size();
     }
 
-    public void handleJSONArray(JSONArray response){
+    /*public void handleJSONArray(JSONArray response){
         try {
             UnMuteDataHolder.setAudience(getAudienceFromJSON(response));
             Collections.sort(UnMuteDataHolder.getAudience(), new Comparator<Ticket>() {
@@ -94,9 +87,9 @@ public class AudiencePresenter {
         }
         view.hideProgressBar();
         view.updateAudienceList();
-    }
+    }*/
 
-    public void handleVolleyError(VolleyError error) {
+    /*public void handleVolleyError(VolleyError error) {
         String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
             message = view.getResources().getString(R.string.volley_error_no_connexion);
@@ -112,7 +105,7 @@ public class AudiencePresenter {
         ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
         view.hideProgressBar();
         getAudience(ALL, true);
-    }
+    }*/
 
     public int getNbAll(){
         return UnMuteDataHolder.getEvent().getNbTotalTicket() - UnMuteDataHolder.getEvent().getRemainingTicketToBeSold();
@@ -128,7 +121,7 @@ public class AudiencePresenter {
 
     // private method
 
-    private List<Ticket> getAudienceFromJSON(JSONArray response) throws JSONException {
+    /*private List<Ticket> getAudienceFromJSON(JSONArray response) throws JSONException {
         List<Ticket> audience = new ArrayList<>();
         JSONObject[] array = new JSONObject[response.length()];
         for (int i = 0; i < response.length(); i++){
@@ -154,7 +147,7 @@ public class AudiencePresenter {
             e.printStackTrace();
             return null;
         }
-    }
+    }*/
 
     private List<Ticket> sortAudienceIn() {
         List<Ticket> audienceSorted = new ArrayList<>();

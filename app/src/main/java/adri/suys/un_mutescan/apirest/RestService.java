@@ -34,30 +34,21 @@ import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
 public class RestService {
 
     private static final int SCAN_TICKET = 0;
-    private static final int COUNTERPART = 1;
     private static final int USER = 2;
-    private static final int EVENT = 3;
-    private static final int AUDIENCE = 5;
 
     private static final String BASE_URL_USER = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/loginuser?";
     private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/scanticket?";
     private static final String BASE_URL_EVENTS = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getevents?";
-    private static final String BASE_URL_COUNTERPARTS = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getcounterpart?";
     private static final String BASE_URL_ADD_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/addticket?";
-    private static final String BASE_URL_AUDIENCE = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getaudience?";
 
     /*private static final String BASE_URL_USER = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/loginuser?";
     private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/scanticket?";
     private static final String BASE_URL_EVENTS = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/getevents?";
-    private static final String BASE_URL_COUNTERPARTS = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/getcounterpart?";
-    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/addticket?";
-    private static final String BASE_URL_AUDIENCE = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/getaudience?";*/
+    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/addticket?";*/
 
     private TicketInfosPresenter ticketPresenter;
     private LoginPresenter userPresenter;
     private EventPresenter eventPresenter;
-    private BuyTicketOnSitePresenter counterpartPresenter;
-    private AudiencePresenter audiencePresenter;
     private PayPresenter payPresenter;
 
     private final RequestQueue requestQueue;
@@ -80,7 +71,7 @@ public class RestService {
      */
     public void loginUser(String username){
         String url = BASE_URL_USER + "username=" + username;
-        createJsonObjectRequest(url, USER);
+        createJsonObjectRequest(url, USER, false);
     }
 
     /**
@@ -93,7 +84,12 @@ public class RestService {
      */
     public void scanTicket(int userID, int eventID, String barcodeValue){
         String url = BASE_URL_SCAN_TICKET + "user_id=" + userID + "&event_id=" + eventID + "&barcode=" + barcodeValue;
-        createJsonObjectRequest(url, SCAN_TICKET);
+        if (userPresenter.getView().isInternetConnected()) {
+            createJsonObjectRequest(url, SCAN_TICKET, false);
+        } else {
+            UnMuteDataHolder.addRequest(url);
+            userPresenter.getView().backUpUrls();
+        }
     }
 
     /**
@@ -104,19 +100,7 @@ public class RestService {
      */
     public void collectEvents(int id){
         String url = BASE_URL_EVENTS + "id=" + id;
-        createJsonArrayRequest(url, EVENT);
-    }
-
-    /**
-     * Creates the url we need to reach the api
-     * Create a request with that url
-     * According to the event id, fetches all the counterparts (type of tickets) linked to that event
-     * @param userID the id of the current user
-     * @param eventID the id of the event we want the counterpart for
-     */
-    public void collectCounterparts(int userID, int eventID) {
-        String url = BASE_URL_COUNTERPARTS + "user_id=" + userID + "&event_id=" + eventID;
-        createJsonArrayRequest(url, COUNTERPART);
+        createJsonArrayRequest(url);
     }
 
     /**
@@ -127,24 +111,30 @@ public class RestService {
     public void addTicket(boolean paidInCash){
         urls = getUrlFromEvent(paidInCash);
         cpt = 0;
-        createAddRequest(urls.get(cpt));
+        if (userPresenter.getView().isInternetConnected()){
+            createAddRequest(urls.get(cpt), false);
+        } else {
+            for (String url : urls){
+                UnMuteDataHolder.addRequest(url);
+            }
+            userPresenter.getView().backUpUrls();
+        }
     }
 
     public void addAnotherTicket(){
         cpt++;
-        createAddRequest(urls.get(cpt));
+        createAddRequest(urls.get(cpt), false);
     }
 
-    /**
-     * Creates the url we need to reach the api
-     * Create a request with that url
-     * According to the event id, fetches all the tickets
-     * @param userID the id of the current user
-     * @param eventID the if of the event we want the ticket for
-     */
-    public void collectAudience(int userID, int eventID){
-        String url = BASE_URL_AUDIENCE + "user_id=" + userID + "&event_id=" + eventID;
-        createJsonArrayRequest(url, AUDIENCE);
+    public void makePendingRequest() {
+        for (String url : UnMuteDataHolder.getRequestURLs()){
+            if (url.contains("scanticket")){
+                createJsonObjectRequest(url, SCAN_TICKET, true);
+            } else if (url.contains("addticket")){
+                System.out.println("making request : " + url);
+                createAddRequest(url, true);
+            }
+        }
     }
 
     //|||||||||||||||||||||//
@@ -163,14 +153,6 @@ public class RestService {
         this.eventPresenter = eventPresenter;
     }
 
-    public void setCounterpartPresenter(BuyTicketOnSitePresenter counterpartPresenter) {
-        this.counterpartPresenter = counterpartPresenter;
-    }
-
-    public void setAudiencePresenter(AudiencePresenter audiencePresenter){
-        this.audiencePresenter = audiencePresenter;
-    }
-
     public void setPayPresenter(PayPresenter payPresenter) {
         this.payPresenter = payPresenter;
     }
@@ -179,38 +161,45 @@ public class RestService {
     //||PRIVATE||//
     //|||||||||||//
 
-    private void createJsonObjectRequest(String url, final int hint){
-        System.out.println(url);
+    private void createJsonObjectRequest(final String url, final int hint, final boolean isSilent){
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        switch (hint){
-                            case SCAN_TICKET:
-                                ticketPresenter.handleJSONObject(response, gson);
-                                break;
-                            case USER:
-                                userPresenter.handleJSONObject(response, gson);
-                                break;
-                            default:
-                                // nothing
-                                break;
+                        if (isSilent){
+                            handleSilentResponse(response, url);
+                        } else {
+                            switch (hint) {
+                                case SCAN_TICKET:
+                                    ticketPresenter.handleJSONObject(response, gson);
+                                    break;
+                                case USER:
+                                    userPresenter.handleJSONObject(response, gson);
+                                    break;
+                                default:
+                                    // nothing
+                                    break;
+                            }
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        switch (hint){
-                            case SCAN_TICKET:
-                                ticketPresenter.handleVolleyError(error);
-                                break;
-                            case USER:
-                                userPresenter.handleVolleyError(error);
-                                break;
-                            default:
-                                // nothing
-                                break;
+                        if (isSilent){
+                            // do nothing
+                        } else {
+                            switch (hint) {
+                                case SCAN_TICKET:
+                                    ticketPresenter.handleVolleyError(error);
+                                    break;
+                                case USER:
+                                    userPresenter.handleVolleyError(error);
+                                    break;
+                                default:
+                                    // nothing
+                                    break;
+                            }
                         }
                     }
                 });
@@ -222,67 +211,63 @@ public class RestService {
         requestQueue.add(request);
     }
 
-    private void createJsonArrayRequest(String url, final int hint){
+    private void handleSilentResponse(JSONObject response, String url) {
+        UnMuteDataHolder.getRequestURLs().remove(url);
+        userPresenter.getView().backUpUrls();
+    }
+
+    private void createJsonArrayRequest(String url){
         System.out.println(url);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        switch(hint){
-                            case EVENT:
-                                eventPresenter.handleJSONArray(response);
-                                break;
-                            case COUNTERPART:
-                                counterpartPresenter.handleJSONArray(response);
-                                break;
-                            case AUDIENCE:
-                                audiencePresenter.handleJSONArray(response);
-                                break;
-                        }
+                        eventPresenter.handleJSONArray(response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        switch(hint){
-                            case EVENT:
-                                eventPresenter.handleVolleyError(error);
-                                break;
-                            case COUNTERPART:
-                                counterpartPresenter.handleVolleyError(error);
-                                break;
-                            case AUDIENCE:
-                                audiencePresenter.handleVolleyError(error);
-                                break;
-                        }
+                        eventPresenter.handleVolleyError(error);
                     }
                 });
-        if (hint == AUDIENCE || hint == EVENT){
-            request.setShouldCache(false);
-        }
+        request.setShouldCache(false);
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                0,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(request);
     }
 
-    private void createAddRequest(String url){
+    private void createAddRequest(final String url, final boolean isSilent){
         JsonObjectRequest jsonArrayRequest = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            String feedback = response.getString("error");
-                            if (feedback.equals("Tout s'est bien passé !")){
-                                payPresenter.notifyTicketsWellAdded(cpt, urls.size());
-                            } else {
-                                payPresenter.notifyTicketsNotAdded(cpt);
+                        if (isSilent){
+                            handleSilentResponse(response, url);
+                        } else {
+                            try {
+                                String feedback = response.getString("error");
+                                if (feedback.equals("Tout s'est bien passé !")) {
+                                    payPresenter.notifyTicketsWellAdded(cpt, urls.size());
+                                } else {
+                                    payPresenter.notifyTicketsNotAdded(cpt);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        payPresenter.handleVolleyError(error);
+                        if (isSilent){
+                            System.out.println("PROBLEME IS SILENT ADDING TICKET " + error.getMessage());
+                            // do nothing
+                        } else {
+                            payPresenter.handleVolleyError(error);
+                        }
                     }
                 }
         );

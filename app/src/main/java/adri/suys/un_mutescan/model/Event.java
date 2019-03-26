@@ -4,6 +4,7 @@ import android.text.format.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * A event is a event organized by an user for which he/she wants to scan ticket at the gates
@@ -19,6 +20,8 @@ public class Event implements Serializable {
     private int nbTicketSoldOnSite;
     private final Date date;
     private int nbTicketBoughtInCash;
+    private List<Ticket> audience;
+    private List<Counterpart> counterparts;
 
     /**
      *
@@ -95,5 +98,29 @@ public class Event implements Serializable {
 
     public boolean isToday() {
         return date != null && DateUtils.isToday(date.getTime());
+    }
+
+    public boolean isPassed(){
+        if (date == null){
+            return true;
+        } else {
+            return date.before(new Date());
+        }
+    }
+
+    public List<Ticket> getAudience() {
+        return audience;
+    }
+
+    public void setAudience(List<Ticket> audience) {
+        this.audience = audience;
+    }
+
+    public List<Counterpart> getCounterparts() {
+        return counterparts;
+    }
+
+    public void setCounterparts(List<Counterpart> counterparts) {
+        this.counterparts = counterparts;
     }
 }

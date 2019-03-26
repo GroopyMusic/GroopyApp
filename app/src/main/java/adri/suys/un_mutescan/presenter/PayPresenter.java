@@ -47,6 +47,7 @@ public class PayPresenter {
             // fini
             String msg = view.getResources().getString(R.string.tickets_well_added);
             view.showToast(msg);
+            UnMuteDataHolder.addTickets();
             event.addTicketSoldOnSite(totalTicketSold);
             if (cashPayment){
                 event.addTicketPaidInCash(totalTicketSold);

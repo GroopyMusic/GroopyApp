@@ -47,7 +47,7 @@ public class AudienceFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_audience, container, false);
         presenter = new AudiencePresenter(this);
         progressBar = view.findViewById(R.id.audience_progressbar);
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         inBtn = view.findViewById(R.id.audience_btn_in);
         outBtn = view.findViewById(R.id.audience_btn_out);
         allBtn = view.findViewById(R.id.audience_btn_all);
@@ -61,7 +61,7 @@ public class AudienceFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         allBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.dark_Green));
         setActions();
-        getAudience(ALL, true);
+        getAudience(ALL);
         return view;
     }
 
@@ -69,7 +69,7 @@ public class AudienceFragment extends Fragment {
     public void onResume(){
         super.onResume();
         progressBar.setVisibility(View.VISIBLE);
-        getAudience(ALL, true);
+        getAudience(ALL);
     }
 
     /**
@@ -77,6 +77,10 @@ public class AudienceFragment extends Fragment {
      */
     public void hideProgressBar() {
         progressBar.setVisibility(View.GONE);
+    }
+
+    public void showProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -137,8 +141,8 @@ public class AudienceFragment extends Fragment {
         allBtn.setText(getResources().getString(R.string.audience_btn_all, presenter.getNbAll()));
     }
 
-    private void getAudience(int options, boolean starting){
-        presenter.getAudience(options, starting);
+    private void getAudience(int options){
+        presenter.getAudience(options);
     }
 
     private void clickAll(){
@@ -148,9 +152,9 @@ public class AudienceFragment extends Fragment {
         underlineIn.setBackgroundResource(0);
         underlineAll.setBackgroundResource(R.color.dark_Green);
         underlineOut.setBackgroundResource(0);
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         currentTab = ALL;
-        getAudience(ALL, false);
+        getAudience(ALL);
     }
 
     private void clickIn(){
@@ -160,9 +164,9 @@ public class AudienceFragment extends Fragment {
         underlineIn.setBackgroundResource(R.color.dark_Green);
         underlineAll.setBackgroundResource(0);
         underlineOut.setBackgroundResource(0);
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         currentTab = IN;
-        getAudience(IN, false);
+        getAudience(IN);
     }
 
     private void clickOut(){
@@ -172,9 +176,9 @@ public class AudienceFragment extends Fragment {
         underlineIn.setBackgroundResource(0);
         underlineAll.setBackgroundResource(0);
         underlineOut.setBackgroundResource(R.color.dark_Green);
-        progressBar.setVisibility(View.VISIBLE);
+        showProgressBar();
         currentTab = OUT;
-        getAudience(OUT, false);
+        getAudience(OUT);
     }
 
     ////////////

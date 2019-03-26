@@ -9,6 +9,8 @@ import com.android.volley.ParseError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +28,8 @@ import java.util.Locale;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.EventListActivity;
 import adri.suys.un_mutescan.apirest.RestService;
+import adri.suys.un_mutescan.model.Counterpart;
+import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
@@ -55,7 +59,13 @@ public class EventPresenter {
         } else {
             this.currentEvent = events.get(position);
         }
-        view.setEventName(currentEvent.getName());
+        if (currentEvent.isPassed()){
+            view.setEventName(this.view.getResources().getString(R.string.already_passed) + currentEvent.getName());
+            view.setEventNameInRed();
+        } else {
+            view.setEventNameInGreen();
+            view.setEventName(currentEvent.getName());
+        }
     }
 
     public void persistEvent(int position){
@@ -77,19 +87,20 @@ public class EventPresenter {
 
     public void collectEvents(boolean forceRefresh) {
         countingIdlingResource.increment();
-        if (UnMuteDataHolder.getEvents() == null){
-            restCommunication.collectEvents(user.getId());
-        } else {
+        if (UnMuteDataHolder.getEvent() != null){
             if (forceRefresh){
-                restCommunication.collectEvents(user.getId());
+                fetchEventsInDB();
             } else {
                 events = UnMuteDataHolder.getEvents();
                 view.hideProgressBar();
                 view.updateEventsList(false);
                 countingIdlingResource.decrement();
             }
+        } else {
+            fetchEventsInDB();
         }
     }
+
 
     public void handleVolleyError(VolleyError error){
         String message = "";
@@ -113,15 +124,8 @@ public class EventPresenter {
         try {
             events = getEventsFromJSON(response);
             UnMuteDataHolder.setEvents(events);
-            Collections.sort(UnMuteDataHolder.getEvents(), new Comparator<Event>() {
-                @Override
-                public int compare(Event event, Event t1) {
-                    if (event.getDate() != null && t1.getDate() != null)
-                        return t1.getDate().compareTo(event.getDate());
-                    else
-                        return 0;
-                }
-            });
+            view.backUpEvents();
+            events = UnMuteDataHolder.getEvents();
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");
@@ -145,6 +149,7 @@ public class EventPresenter {
             array[i] = (JSONObject) response.get(i);
         }
         for (JSONObject jsonObject : array){
+            Event e;
             int id = jsonObject.getInt("id");
             String name = jsonObject.getString("name");
             int nbTotalTicket = jsonObject.getInt("nbTotalTicket");
@@ -153,13 +158,20 @@ public class EventPresenter {
             int nbTicketSoldOnSite = jsonObject.getInt("nbBoughtOnSiteTicket");
             int nbTicketPaidInCash = jsonObject.getInt("nbTicketBoughtInCash");
             if (jsonObject.get("date") instanceof String){
-                events.add(new Event(id, name, nbTotalTicket, nbScannedTicket, nbSoldTicket, nbTicketSoldOnSite, null, nbTicketPaidInCash));
+                e = new Event(id, name, nbTotalTicket, nbScannedTicket, nbSoldTicket, nbTicketSoldOnSite, null, nbTicketPaidInCash);
             } else {
                 String dateStr = ((JSONObject) jsonObject.get("date")).getString("date");
                 dateStr = dateStr.substring(0, dateStr.length() - 7);
                 Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE).parse(dateStr);
-                events.add(new Event(id, name, nbTotalTicket, nbScannedTicket, nbSoldTicket, nbTicketSoldOnSite, date, nbTicketPaidInCash));
+                e = new Event(id, name, nbTotalTicket, nbScannedTicket, nbSoldTicket, nbTicketSoldOnSite, date, nbTicketPaidInCash);
             }
+            JSONArray audienceJSON = (JSONArray) jsonObject.get("audience");
+            List<Ticket> audience = new Gson().fromJson(audienceJSON.toString(), new TypeToken<List<Ticket>>(){}.getType());
+            e.setAudience(audience);
+            JSONArray counterpartJSON = (JSONArray) jsonObject.get("counterparts");
+            List<Counterpart> counterparts = new Gson().fromJson(counterpartJSON.toString(), new TypeToken<List<Counterpart>>(){}.getType());
+            e.setCounterparts(counterparts);
+            events.add(e);
         }
         return events;
     }
@@ -185,5 +197,19 @@ public class EventPresenter {
 
     public CountingIdlingResource getCountingIdlingResource() {
         return countingIdlingResource;
+    }
+
+    private void fetchEventsInDB(){
+        if (view.isInternetConnected()){
+            restCommunication.collectEvents(user.getId());
+        } else {
+            events = view.retrieveEvents();
+            if (events != null){
+                UnMuteDataHolder.setEvents(events);
+                events = UnMuteDataHolder.getEvents();
+                view.updateEventsList(false);
+            }
+            view.hideProgressBar();
+        }
     }
 }
