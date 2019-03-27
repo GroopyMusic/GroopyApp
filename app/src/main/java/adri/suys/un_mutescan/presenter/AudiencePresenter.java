@@ -59,53 +59,13 @@ public class AudiencePresenter {
 
     public void onViewCounterpartAtPosition(int i, AudienceFragment.AudienceHolder audienceHolder) {
         Ticket currentCustomer = audienceToBeDisplayed.get(i);
-        audienceHolder.displayInfos(currentCustomer.getName(), currentCustomer.getTicketType(), currentCustomer.getSeatType());
+        String name = currentCustomer.getName() + " (" + currentCustomer.getBarcodeText() + ")";
+        audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatType());
     }
 
     public int getItemCount() {
         return audienceToBeDisplayed.size();
     }
-
-    /*public void handleJSONArray(JSONArray response){
-        try {
-            UnMuteDataHolder.setAudience(getAudienceFromJSON(response));
-            Collections.sort(UnMuteDataHolder.getAudience(), new Comparator<Ticket>() {
-                @Override
-                public int compare(Ticket ticket, Ticket t1) {
-                    return ticket.getName().compareTo(t1.getName());
-                }
-            });
-            audienceToBeDisplayed = UnMuteDataHolder.getAudience();
-        } catch (JSONException e) {
-            try {
-                String error = ((JSONObject) response.get(0)).getString("error");
-                ((Activity)(Objects.requireNonNull(view.getActivity()))).showToast(error);
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
-        }
-        view.hideProgressBar();
-        view.updateAudienceList();
-    }*/
-
-    /*public void handleVolleyError(VolleyError error) {
-        String message = "";
-        if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
-        } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        }
-        ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
-        view.hideProgressBar();
-        getAudience(ALL, true);
-    }*/
 
     public int getNbAll(){
         return UnMuteDataHolder.getEvent().getNbTotalTicket() - UnMuteDataHolder.getEvent().getRemainingTicketToBeSold();
@@ -120,34 +80,6 @@ public class AudiencePresenter {
     }
 
     // private method
-
-    /*private List<Ticket> getAudienceFromJSON(JSONArray response) throws JSONException {
-        List<Ticket> audience = new ArrayList<>();
-        JSONObject[] array = new JSONObject[response.length()];
-        for (int i = 0; i < response.length(); i++){
-            array[i] = (JSONObject) response.get(i);
-        }
-        for (JSONObject jsonObject : array){
-            Ticket ticket = createTicketFromJSON(jsonObject);
-            audience.add(ticket);
-        }
-        return audience;
-    }
-
-    private Ticket createTicketFromJSON(JSONObject obj){
-        try {
-            String buyer = obj.getString("buyer");
-            String ticketType = obj.getString("ticket_type");
-            String seatType = obj.getString("seat_type");
-            String barcode = obj.getString("barcode");
-            String error = obj.getString("error");
-            String isScanned = obj.getString("is_validated");
-            return new Ticket(buyer, ticketType, seatType, barcode, error, isScanned);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }*/
 
     private List<Ticket> sortAudienceIn() {
         List<Ticket> audienceSorted = new ArrayList<>();

@@ -37,7 +37,7 @@
     <string name="scan_error_ticket_not_exist">Ce ticket n\'existe pas.</string>
     <string name="scan_error_event_not_exist">Cet événement n\'existe pas.</string>
     <string name="scan_error_incorrect_date">Cet événement n\'a pas lieu aujourd'hui.</string>
-    <string name="scan_error_no_match_event_tix">Ce ticket ne correspond pas à l\'évenement sélectionné</string>
+    <string name="scan_error_no_match_event_tix">Code-barre inconnu</string>
     <string name="scan_error_tix_refund">Ce ticket a été remboursé et n\'est donc plus valide.</string>
     <string name="scan_error_already_scanned">Ce ticket a déjà été scanné.</string>
     <string name="enter_manually_barcode">Entrer le code</string>

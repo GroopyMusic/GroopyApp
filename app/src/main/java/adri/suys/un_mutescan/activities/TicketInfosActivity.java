@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 
 public class TicketInfosActivity extends Activity {
 
@@ -29,12 +30,6 @@ public class TicketInfosActivity extends Activity {
         initViewElements();
         presenter = new TicketInfosPresenter(this);
         dialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        progressBar.setVisibility(View.VISIBLE);
         displayInfos();
     }
 
@@ -52,14 +47,6 @@ public class TicketInfosActivity extends Activity {
     }
 
     /**
-     * Open the scanner in order to scan qr-code
-     * @param v the view the Activity is linked to
-     */
-    public void openScan(View v){
-        startActivity(new Intent(this, OneEventActivity.class));
-    }
-
-    /**
      * Displays the name of the event
      * @param eventName the name of the event
      */
@@ -67,25 +54,29 @@ public class TicketInfosActivity extends Activity {
         this.eventName.setText(eventName);
     }
 
-    /**
-     * Displays the tickets infos
-     * @param errorString if the ticket is not valid, a message indicating the cause of the error, '' if the ticket is valid
-     * @param ticketValidatedMsg a text that says 'the ticket is valid'
-     * @param barcodeValue the barcode value of the ticket
-     * @param nameOwner the name of the buyer
-     * @param type the type of ticket (standard, adult, teen, child, vip, etc)
-     * @param seat the seat number (nothing if it is a stand up ticket)
-     */
-    public void displayTicket(String errorString, String ticketValidatedMsg, String barcodeValue, String nameOwner, String type, String seat) {
-        if (errorString.equals("")){
-            displayTicketInfos(true, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorString);
-        } else if (errorString.equals("Ce ticket a déjà été scanné.")) {
-            displayTicketInfos(false, barcodeValue, nameOwner, type, seat, ticketValidatedMsg, errorString);
+    public void displayTicket(boolean isValid, String message, String barcodeText, String name, String ticketType, String seatType) {
+        frame.setBackgroundResource(R.drawable.dark_green_border);
+        barcode.setText(barcodeText);
+        this.name.setText(name);
+        this.ticketType.setText(ticketType);
+        this.seatType.setText(seatType);
+        if (isValid){
+            int green = ContextCompat.getColor(this, R.color.green);
+            ticketError.setTextColor(green);
+            ticketError.setText(message);
         } else {
             int red = ContextCompat.getColor(this, R.color.red);
             ticketError.setTextColor(red);
-            ticketError.setText(errorString);
+            ticketError.setText(message);
         }
+    }
+
+    public void displayTicketUnknwn(String message, String barcodeText){
+        frame.setBackgroundResource(R.drawable.dark_green_border);
+        int red = ContextCompat.getColor(this, R.color.red);
+        ticketError.setTextColor(red);
+        ticketError.setText(message);
+        barcode.setText(barcodeText);
     }
 
     /**
@@ -93,14 +84,16 @@ public class TicketInfosActivity extends Activity {
      * The user can then choose between going back to the scan or see more infos on the ticket
      * @param message the message indicating if the ticket is valid or not
      */
-    public void displayAlert(String message){
+    public void displayAlert(final String message){
         dialogBuilder.setMessage(message).setTitle("");
         dialogBuilder.setCancelable(false)
                 .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        presenter.validateTicket();
+                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
+                            presenter.updateDB();
+                        }
                         startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
                     }
                 })
@@ -108,7 +101,9 @@ public class TicketInfosActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        presenter.validateTicket();
+                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
+                            presenter.updateDB();
+                        }
                     }
                 });
         AlertDialog alert = dialogBuilder.create();
@@ -135,7 +130,6 @@ public class TicketInfosActivity extends Activity {
         eventName = findViewById(R.id.event_name);
         ticketError = findViewById(R.id.ticket_error);
         progressBar = findViewById(R.id.ticket_progress_bar);
-        progressBar.setVisibility(View.VISIBLE);
         frame = findViewById(R.id.frame_ticket);
         frame.setBackgroundResource(0);
     }
@@ -145,21 +139,5 @@ public class TicketInfosActivity extends Activity {
         presenter.validateBarcode(barcodeValue);
     }
 
-    private void displayTicketInfos(boolean isValid, String barcodeValue, String nameOwner, String type, String seat, String ticketValidatedMsg, String error){
-        frame.setBackgroundResource(R.drawable.dark_green_border);
-        barcode.setText(barcodeValue);
-        name.setText(nameOwner);
-        ticketType.setText(type);
-        seatType.setText(seat);
-        if (isValid){
-            int green = ContextCompat.getColor(this, R.color.green);
-            ticketError.setTextColor(green);
-            ticketError.setText(ticketValidatedMsg);
-        } else {
-            int red = ContextCompat.getColor(this, R.color.red);
-            ticketError.setTextColor(red);
-            ticketError.setText(error);
-        }
-    }
 
 }

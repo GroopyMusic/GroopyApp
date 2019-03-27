@@ -1,6 +1,8 @@
 package adri.suys.un_mutescan.model;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -64,10 +66,9 @@ public class User implements Serializable {
     }
 
     public boolean isTokenStillActive(){
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date(lastConnection));
-        cal.add(Calendar.HOUR_OF_DAY, 3);
-        Date lastConnectionPlus3 = cal.getTime();
-        return (lastConnectionPlus3.getTime() <= new Date().getTime());
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String lastConnection = formatter.format(new Date(this.lastConnection));
+        String now = formatter.format(new Date());
+        return lastConnection.equals(now);
     }
 }

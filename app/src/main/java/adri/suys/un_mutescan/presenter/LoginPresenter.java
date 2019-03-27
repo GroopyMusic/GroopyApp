@@ -195,7 +195,6 @@ public class LoginPresenter {
                     String message = view.getResources().getString(R.string.credentials_saved);
                     view.showToast(message);
                 } else {
-                    view.showToast(view.getResources().getString(R.string.credentials_not_saved));
                     resolveResult(status, RC_SAVE);
                 }
             }

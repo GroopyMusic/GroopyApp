@@ -23,6 +23,7 @@ public class TicketInfosPresenter {
     private final Event currentEvent;
     private final RestService restCommunication;
     private final TicketInfosActivity view;
+    private String barcode;
     private Ticket ticket;
 
     public TicketInfosPresenter(TicketInfosActivity view){
@@ -32,55 +33,41 @@ public class TicketInfosPresenter {
         restCommunication.setTicketPresenter(this);
     }
 
-    public void validateTicket(){
-        if (ticket.isValid()) currentEvent.scanTicket();
+    public void updateDB(){
+        ticket.setIs_validated(true);
+        currentEvent.scanTicket();
+        restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcode);
     }
 
     public void validateBarcode(String barcodeValue){
+        barcode = barcodeValue;
         String message;
-        for (Ticket t : UnMuteDataHolder.getAudience()){
-            if (t.getBarcodeText().equals(barcodeValue)){
-                String errorMsg;
-                if (t.isScanned()){
-                    message = view.getResources().getString(R.string.scan_error_already_scanned);
-                    errorMsg = message;
-                } else {
-                    t.setIs_validated(true);
-                    restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcodeValue);
-                    message = view.getResources().getString(R.string.ticket_ok_dialog);
-                    errorMsg = "";
-                }
-                view.hideProgressBar();
-                view.displayTicket(errorMsg, message, t.getBarcodeText(), t.getName(), t.getTicketType(), t.getSeatType());
-                view.displayEventName(currentEvent.getName());
-                view.displayAlert(view.getResources().getString(ticket.getErrorMessageAsResource()));
+        boolean isValid = false;
+        int i = UnMuteDataHolder.isValidatedTicket(barcodeValue);
+        if (i == -2){
+            message = view.getResources().getString(R.string.scan_error_no_match_event_tix);
+            view.hideProgressBar();
+            view.displayEventName(currentEvent.getName());
+            view.displayTicketUnknwn(message, barcodeValue);
+            view.displayAlert(message);
+        } else {
+            ticket = UnMuteDataHolder.getAudience().get(i);
+            if (ticket.isScanned()){
+                message = view.getResources().getString(R.string.scan_error_already_scanned);
             } else {
-                message = view.getResources().getString(R.string.scan_error_no_match_event_tix);
-                view.displayAlert(message);
+                message = view.getResources().getString(R.string.ticket_ok_dialog);
+                isValid = true;
             }
+            view.hideProgressBar();
+            view.displayEventName(currentEvent.getName());
+            view.displayTicket(isValid, message, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatType());
+            view.displayAlert(message);
         }
     }
 
     public void handleJSONObject(JSONObject response, Gson gson) {
-        /*ticket = gson.fromJson(response.toString(), Ticket.class);
-        try {
-            String validatedMsg = view.getResources().getString(R.string.ticket_ok_dialog);
-            if (ticket != null) {
-                view.hideProgressBar();
-                view.displayTicket(ticket.getErrorMessage(), validatedMsg, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatType(), ticket.getErrorMessageAsResource());
-                UnMuteDataHolder.scanTicket(ticket);
-            }
-            if (currentEvent != null) {
-                view.displayEventName(currentEvent.getName());
-            }
-            Boolean mustDisplayAlert = view.getIntent().getBooleanExtra("alert", false);
-            if (mustDisplayAlert) {
-                view.displayAlert(view.getResources().getString(ticket.getErrorMessageAsResource()));
-            }
-        } catch (NullPointerException ex) {
-            view.hideProgressBar();
-            view.showToast(view.getResources().getString(R.string.sth_wrong));
-        }*/
+        System.out.println("J'ai fini ma requete");
+        // do nothing
     }
 
     public void handleVolleyError(VolleyError error){

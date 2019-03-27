@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
@@ -55,8 +56,10 @@ public class RestService {
     private final Gson gson;
     private int cpt;
     private List<String> urls = new ArrayList<>();
+    private Activity activity;
 
     public RestService(AppCompatActivity activity){
+        this.activity = (Activity) activity;
         requestQueue = Volley.newRequestQueue(activity);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
@@ -84,11 +87,11 @@ public class RestService {
      */
     public void scanTicket(int userID, int eventID, String barcodeValue){
         String url = BASE_URL_SCAN_TICKET + "user_id=" + userID + "&event_id=" + eventID + "&barcode=" + barcodeValue;
-        if (userPresenter.getView().isInternetConnected()) {
+        if (activity.isInternetConnected()) {
             createJsonObjectRequest(url, SCAN_TICKET, false);
         } else {
             UnMuteDataHolder.addRequest(url);
-            userPresenter.getView().backUpUrls();
+            activity.backUpUrls();
         }
     }
 
@@ -111,13 +114,13 @@ public class RestService {
     public void addTicket(boolean paidInCash){
         urls = getUrlFromEvent(paidInCash);
         cpt = 0;
-        if (userPresenter.getView().isInternetConnected()){
+        if (activity.isInternetConnected()){
             createAddRequest(urls.get(cpt), false);
         } else {
             for (String url : urls){
                 UnMuteDataHolder.addRequest(url);
             }
-            userPresenter.getView().backUpUrls();
+            activity.backUpUrls();
         }
     }
 
@@ -162,6 +165,7 @@ public class RestService {
     //|||||||||||//
 
     private void createJsonObjectRequest(final String url, final int hint, final boolean isSilent){
+        System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -213,7 +217,7 @@ public class RestService {
 
     private void handleSilentResponse(JSONObject response, String url) {
         UnMuteDataHolder.getRequestURLs().remove(url);
-        userPresenter.getView().backUpUrls();
+        activity.backUpUrls();
     }
 
     private void createJsonArrayRequest(String url){

@@ -110,16 +110,6 @@
                         android:text="@string/back"
                         android:textColor="@color/dark_Green" />
 
-                    <Button
-                        android:id="@+id/back_scan_btn"
-                        style="?android:attr/borderlessButtonStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/button_green"
-                        android:onClick="openScan"
-                        android:text="@string/scan"
-                        android:textColor="@color/dark_Green" />
-
                 </LinearLayout>
 
             </LinearLayout>

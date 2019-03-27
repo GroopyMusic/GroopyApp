@@ -58,33 +58,6 @@ public class Ticket implements Serializable {
         return is_validated.equals("vrai");
     }
 
-    /**
-     * Get the resource string associated to the error message.
-     * @return the int value of the resource string
-     */
-    public int getErrorMessageAsResource(){
-        switch (error){
-            case "Ce ticket n'existe pas." :
-                return R.string.scan_error_ticket_not_exist;
-            case "Cet événement n\\'existe pas." :
-                return R.string.scan_error_event_not_exist;
-            case "Cet événement n\\'a pas lieu aujourd'hui." :
-                return R.string.scan_error_incorrect_date;
-            case "Ce ticket ne correspond pas à l\\'évenement sélectionné" :
-                return R.string.scan_error_no_match_event_tix;
-            case "Ce ticket a été remboursé et n\\'est donc plus valide." :
-                return R.string.scan_error_tix_refund;
-            case "Ce ticket a déjà été scanné." :
-                return R.string.scan_error_already_scanned;
-            default :
-                return R.string.ticket_ok_dialog;
-        }
-    }
-
-    public boolean isValid(){
-        return error.equals("");
-    }
-
     public void setIs_validated(boolean scanned){
         is_validated = scanned ? "vrai" : "faux";
     }

@@ -128,5 +128,12 @@ public class UnMuteDataHolder {
         return sorted;
     }
 
-
+    public static int isValidatedTicket(String barcode){
+        for (int i = 0; i < getAudience().size(); i++){
+            if (getAudience().get(i).getBarcodeText().equals(barcode)){
+                return i;
+            }
+        }
+        return -2;
+    }
 }

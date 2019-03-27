@@ -76,6 +76,7 @@ public class OneEventActivity extends Activity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.action_stat :
+                        makePendingRequest();
                         loadFragment(new EventStatFragment());
                         UnMuteDataHolder.setCurrentFragment(STAT_FRAGMENT);
                         return true;
@@ -86,6 +87,7 @@ public class OneEventActivity extends Activity {
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_scan));
                         }
+                        makePendingRequest();
                         return true;
                     case R.id.action_type_code :
                         if (UnMuteDataHolder.getEvent().isToday()) {
@@ -94,6 +96,7 @@ public class OneEventActivity extends Activity {
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_keyboard));
                         }
+                        makePendingRequest();
                         return true;
                     case R.id.action_add_ticket :
                         if (UnMuteDataHolder.getEvent().isToday()) {
@@ -102,6 +105,7 @@ public class OneEventActivity extends Activity {
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_sell));
                         }
+                        makePendingRequest();
                         return true;
                     case R.id.action_get_guest:
                         if (UnMuteDataHolder.getEvent().isToday()) {
@@ -110,6 +114,7 @@ public class OneEventActivity extends Activity {
                         } else {
                             showAlertDialog(getResources().getString(R.string.nav_error_audience));
                         }
+                        makePendingRequest();
                         return true;
                     default :
                         // do noting

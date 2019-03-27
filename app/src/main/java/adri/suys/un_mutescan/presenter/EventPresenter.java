@@ -101,7 +101,6 @@ public class EventPresenter {
         }
     }
 
-
     public void handleVolleyError(VolleyError error){
         String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
@@ -200,6 +199,7 @@ public class EventPresenter {
     }
 
     private void fetchEventsInDB(){
+        System.out.println("fecthEvents");
         if (view.isInternetConnected()){
             restCommunication.collectEvents(user.getId());
         } else {

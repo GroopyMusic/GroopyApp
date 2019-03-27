@@ -36,9 +36,6 @@ public abstract class Activity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle state){
         super.onCreate(state);
-        List<String> requests = retrievePendingRequest();
-        UnMuteDataHolder.setRequestURLs(requests);
-        makePendingRequest();
     }
 
     /**
@@ -60,6 +57,7 @@ public abstract class Activity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         int id = item.getItemId();
         if (id == R.id.disconnect){
+            makePendingRequest();
             UnMuteDataHolder.reinit();
             startActivity(new Intent(this, LoginActivity.class));
             return true;
@@ -70,7 +68,6 @@ public abstract class Activity extends AppCompatActivity {
     @Override
     public void onPause(){
         super.onPause();
-        makePendingRequest();
     }
 
     /**
@@ -200,11 +197,14 @@ public abstract class Activity extends AppCompatActivity {
         return requests;
     }
 
-    private void makePendingRequest(){
-        if (UnMuteDataHolder.getRequestURLs() != null && UnMuteDataHolder.getRequestURLs().size() > 0){
-            System.out.println("-------------ca passe par ici");
-            RestService restService = new RestService(this);
-            restService.makePendingRequest();
+    public void makePendingRequest(){
+        if (isInternetConnected()) {
+            List<String> pendingRequests = retrievePendingRequest();
+            UnMuteDataHolder.setRequestURLs(pendingRequests);
+            if (UnMuteDataHolder.getRequestURLs() != null && UnMuteDataHolder.getRequestURLs().size() > 0) {
+                RestService restService = new RestService(this);
+                restService.makePendingRequest();
+            }
         }
     }
 }
