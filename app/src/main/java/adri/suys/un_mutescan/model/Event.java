@@ -14,7 +14,7 @@ public class Event implements Serializable {
 
     private final int id;
     private final String name;
-    private final int nbTotalTicket;
+    private int nbTotalTicket;
     private final int nbSoldTicket;
     private int nbScannedTicket;
     private int nbTicketSoldOnSite;
@@ -122,5 +122,9 @@ public class Event implements Serializable {
 
     public void setCounterparts(List<Counterpart> counterparts) {
         this.counterparts = counterparts;
+    }
+
+    public void setNbTotalTicket(int nbTotalTicket) {
+        this.nbTotalTicket = nbTotalTicket;
     }
 }

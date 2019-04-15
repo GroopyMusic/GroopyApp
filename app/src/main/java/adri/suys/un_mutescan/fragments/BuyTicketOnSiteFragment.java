@@ -73,22 +73,16 @@ public class BuyTicketOnSiteFragment extends Fragment {
     private void validateSell(){
         if (cpt > 0){
             if (presenter.isEventSoldout(cpt)){
-                ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.soldout));
-            } else {
-                getCart();
-                String message = getResources().getString(R.string.order_recap, presenter.getTotalTicketSold(), presenter.getCartAmount());
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AppCompatAlertDialogStyle);
-                dialogBuilder.setMessage(message).setTitle("");
+                dialogBuilder.setMessage(Objects.requireNonNull(getActivity()).getResources().getString(R.string.soldout)).setTitle("");
                 dialogBuilder.setCancelable(false)
-                        .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                progressBar.setVisibility(View.VISIBLE);
-                                presenter.addTicket();
-                                dialogInterface.cancel();
+                                initiateSell();
                             }
                         })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dialogInterface.cancel();
@@ -97,10 +91,37 @@ public class BuyTicketOnSiteFragment extends Fragment {
                 AlertDialog alert = dialogBuilder.create();
                 alert.setTitle("");
                 alert.show();
+            } else {
+                initiateSell();
             }
         } else {
             ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.min_one_cp_selected));
         }
+    }
+
+    public void initiateSell(){
+        getCart();
+        String message = getResources().getString(R.string.order_recap, presenter.getTotalTicketSold(), presenter.getCartAmount());
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Objects.requireNonNull(getContext()), R.style.AppCompatAlertDialogStyle);
+        dialogBuilder.setMessage(message).setTitle("");
+        dialogBuilder.setCancelable(false)
+                .setPositiveButton(R.string.validate, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        presenter.addTicket();
+                        dialogInterface.cancel();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("");
+        alert.show();
     }
 
     public void hideProgressBar() {
@@ -183,14 +204,10 @@ public class BuyTicketOnSiteFragment extends Fragment {
                 @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View view) {
-                    if (presenter.isEventSoldout(cpt)){
-                        ((Activity) Objects.requireNonNull(getActivity())).showToast(Objects.requireNonNull(getActivity()).getResources().getString(R.string.soldout));
-                    } else {
-                        int currentNbOfPurchase = Integer.parseInt(numberOfTicketWanted.getText().toString());
-                        currentNbOfPurchase++;
-                        numberOfTicketWanted.setText(Integer.toString(currentNbOfPurchase));
-                        cpt++;
-                    }
+                    int currentNbOfPurchase = Integer.parseInt(numberOfTicketWanted.getText().toString());
+                    currentNbOfPurchase++;
+                    numberOfTicketWanted.setText(Integer.toString(currentNbOfPurchase));
+                    cpt++;
                 }
             });
         }

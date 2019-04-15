@@ -51,65 +51,6 @@ public class BuyTicketOnSitePresenter{
         view.updateTicketTypesList();
     }
 
-    /**
-     * Transforms the JSONArray into a list of counterparts.
-     * Set the counterparts in the DataHolder so we can share them through the app
-     * @param response the json array
-     */
-    /*public void handleJSONArray(JSONArray response) {
-        try {
-            counterparts = getCounterpartsFromJSON(response);
-            UnMuteDataHolder.setCounterparts(counterparts);
-        } catch (JSONException e) {
-            try {
-                String error = ((JSONObject) response.get(0)).getString("error");
-                ((Activity)(Objects.requireNonNull(view.getActivity()))).showToast(error);
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
-            e.printStackTrace();
-        }
-        view.hideProgressBar();
-        view.updateTicketTypesList();
-    }*/
-
-    /**
-     * If the Volley connection encounters problem, it displays an error message to the user
-     * @param error the error
-     */
-    /*public void handleVolleyError(VolleyError error){
-        String message = "";
-        if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
-        } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
-        }
-        ((Activity) Objects.requireNonNull(view.getActivity())).showToast(message);
-        view.hideProgressBar();
-    }*/
-
-    /*private List<Counterpart> getCounterpartsFromJSON(JSONArray response) throws JSONException {
-        List<Counterpart> tickets = new ArrayList<>();
-        JSONObject[] array = new JSONObject[response.length()];
-        for (int i = 0; i < response.length(); i++){
-            array[i] = (JSONObject) response.get(i);
-        }
-        for (JSONObject jsonObject : array){
-            int id = jsonObject.getInt("id");
-            String name = jsonObject.getString("name");
-            double price = jsonObject.getDouble("price");
-            Counterpart counterpart = new Counterpart(id, name, price);
-            tickets.add(counterpart);
-        }
-        return tickets;
-    }*/
-
     // SELL TICKET AT THE GATES
 
     /**
@@ -148,6 +89,11 @@ public class BuyTicketOnSitePresenter{
      */
     public boolean isEventSoldout(int toBeSold){
         return event.getRemainingTicketToBeSold() <= toBeSold;
+    }
+
+    public void setNewSoldout(int toBeSold){
+        int newSoldout = event.getNbSoldTicket() + event.getNbTicketSoldOnSite() + toBeSold;
+        event.setNbTotalTicket(newSoldout);
     }
 
     public int getTotalTicketSold(){
