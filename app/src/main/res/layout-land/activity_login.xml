@@ -84,16 +84,17 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <Button
+                        <android.support.v7.widget.AppCompatButton
                             android:id="@+id/login_um_btn"
                             android:layout_width="250dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="50dp"
                             android:layout_marginBottom="20dp"
-                            android:background="@drawable/button_green"
+                            android:backgroundTint="@color/dark_Green"
                             android:onClick="loginViaUm"
                             android:padding="5dp"
+                            android:drawableStart="@drawable/ic_person_white_24dp"
                             android:text="@string/login_um"
-                            android:textColor="@color/dark_Green"
+                            android:textColor="@color/white"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"

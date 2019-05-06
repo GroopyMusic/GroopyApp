@@ -121,20 +121,27 @@ public class RestService {
                 UnMuteDataHolder.addRequest(url);
             }
             activity.backUpUrls();
+            payPresenter.notifyTicketsWellAdded(urls.size()-1, urls.size());
         }
     }
 
+    /**
+     * After having added one ticket, inserts another ticket to the db
+     */
     public void addAnotherTicket(){
         cpt++;
         createAddRequest(urls.get(cpt), false);
     }
 
+    /**
+     * Make pending request
+     * Loop through a url lists and try to launch a request per url.
+     */
     public void makePendingRequest() {
         for (String url : UnMuteDataHolder.getRequestURLs()){
             if (url.contains("scanticket")){
                 createJsonObjectRequest(url, SCAN_TICKET, true);
             } else if (url.contains("addticket")){
-                System.out.println("making request : " + url);
                 createAddRequest(url, true);
             }
         }
@@ -165,7 +172,6 @@ public class RestService {
     //|||||||||||//
 
     private void createJsonObjectRequest(final String url, final int hint, final boolean isSilent){
-        System.out.println(url);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -267,7 +273,7 @@ public class RestService {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (isSilent){
-                            System.out.println("PROBLEME IS SILENT ADDING TICKET " + error.getMessage());
+                            System.out.println("PROBLEM IS SILENT ADDING TICKET " + error.getMessage());
                             // do nothing
                         } else {
                             payPresenter.handleVolleyError(error);

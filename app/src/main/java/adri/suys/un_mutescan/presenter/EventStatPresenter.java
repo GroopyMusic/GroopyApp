@@ -1,21 +1,27 @@
 package adri.suys.un_mutescan.presenter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.EventStatFragment;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.viewinterfaces.EventStatViewInterface;
 
 public class EventStatPresenter {
 
     private final Event event;
+    private EventStatViewInterface view;
 
-    public EventStatPresenter(EventStatFragment view){
+    public EventStatPresenter(EventStatViewInterface view){
+        this.view = view;
         this.event = UnMuteDataHolder.getEvent();
+        System.out.println(event.getId()+"-"+event.getName()+"-"+event.getStatsPerCp());
         double presalePercentageOnOne = ((double) event.getNbSoldTicket()) / event.getNbTotalTicket();
         float presalePercentageOnHundred = (float) (presalePercentageOnOne * 100);
-        String totalTicket = view.getResources().getString(R.string.ticket_total, event.getNbTotalTicket());
-        String totalSold = view.getResources().getString(R.string.ticket_sold, event.getNbSoldTicket(), presalePercentageOnHundred);
-        view.displayEvent(event.getName(), event.getDate(), totalTicket, totalSold);
+        view.displayEvent(event.getName(), event.getDate(), event.getNbTotalTicket(), event.getNbSoldTicket(), presalePercentageOnHundred);
     }
 
     public int getTotalScanned(){
@@ -36,6 +42,14 @@ public class EventStatPresenter {
 
     public int getTotalPaidInCash(){
         return event.getNbTicketBoughtInCash();
+    }
+
+    public Map<Counterpart, Integer> getDetailsOfSellCp(){
+        return event.getStatsPerCp();
+    }
+
+    public boolean checkIfEventToday(){
+        return event.isToday();
     }
 
 }

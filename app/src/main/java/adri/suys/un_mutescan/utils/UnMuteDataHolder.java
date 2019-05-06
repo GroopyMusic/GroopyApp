@@ -76,6 +76,7 @@ public class UnMuteDataHolder {
                 Ticket t = new Ticket("anonyme", cp.getName(), "", "000", "", "vrai");
                 event.getAudience().add(t);
             }
+            event.updateMap(cp, cp.getQuantity());
         }
         Collections.sort(event.getAudience(), new Comparator<Ticket>() {
             @Override
@@ -102,9 +103,12 @@ public class UnMuteDataHolder {
         List<Event> past = new ArrayList<>();
         List<Event> future = new ArrayList<>();
         List<Event> undetermined = new ArrayList<>();
+        List<Event> today = new ArrayList<>();
         for (Event e : events){
             if (e.getDate() == null){
                 undetermined.add(e);
+            } else if (e.isToday()){
+                today.add(e);
             } else if (e.getDate().compareTo(new Date()) >= 0){
                 future.add(e);
             } else {
@@ -123,6 +127,7 @@ public class UnMuteDataHolder {
                 return t1.getDate().compareTo(event.getDate());
             }
         });
+        sorted.addAll(today);
         sorted.addAll(future);
         sorted.addAll(past);
         return sorted;

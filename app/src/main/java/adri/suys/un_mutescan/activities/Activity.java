@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -79,12 +78,19 @@ public abstract class Activity extends AppCompatActivity {
         toast.show();
     }
 
+    /**
+     * Checks if the device has an internet connexion
+     * @return true if the device is connected to the internet, false otherwise
+     */
     public boolean isInternetConnected(){
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
 
+    /**
+     * Write all the data on the user in a internal storage file
+     */
     public void backUpUser() {
         ObjectOutputStream oos = null;
         try {
@@ -107,6 +113,9 @@ public abstract class Activity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Write all the data on the events in a internal storage file
+     */
     public void backUpEvents() {
         ObjectOutputStream oos = null;
         try {
@@ -129,6 +138,9 @@ public abstract class Activity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Write all the pending requests' url in a internal storage file.
+     */
     public void backUpUrls() {
         try {
             FileOutputStream fos = openFileOutput(URLS, Context.MODE_PRIVATE);
@@ -143,6 +155,10 @@ public abstract class Activity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the user's data stored in a internal storage file
+     * @return the user
+     */
     public User retrieveUser(){
         User user = null;
         try {
@@ -161,6 +177,11 @@ public abstract class Activity extends AppCompatActivity {
         return user;
     }
 
+    @SuppressWarnings("unchecked")
+    /**
+     * Get the events' data stored in a internal storage file
+     * @return the list of events
+     */
     public List<Event> retrieveEvents(){
         List<Event> events = null;
         try {
@@ -179,7 +200,12 @@ public abstract class Activity extends AppCompatActivity {
         return events;
     }
 
-    public List<String> retrievePendingRequest(){
+    @SuppressWarnings("unchecked")
+    /**
+     * Get the pending requests' url stored in a internal storage file
+     * @return the list of requests' url
+     */
+    private List<String> retrievePendingRequest(){
         List<String> requests = null;
         try {
             FileInputStream fis = openFileInput(URLS);
@@ -197,7 +223,11 @@ public abstract class Activity extends AppCompatActivity {
         return requests;
     }
 
-    public void makePendingRequest(){
+    /**
+     * If the device is connected to the internet, tries to connect with the server
+     * and make all the pending requests.
+     */
+    void makePendingRequest(){
         if (isInternetConnected()) {
             List<String> pendingRequests = retrievePendingRequest();
             UnMuteDataHolder.setRequestURLs(pendingRequests);

@@ -1,6 +1,8 @@
 package adri.suys.un_mutescan.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import adri.suys.un_mutescan.R;
 
@@ -11,7 +13,7 @@ public class Ticket implements Serializable {
 
     private final String buyer;
     private final String ticket_type;
-    private final String seat_type;
+    private String seat_type;
     private final String barcode;
     private final String error;
     private String is_validated;
@@ -32,6 +34,30 @@ public class Ticket implements Serializable {
         this.barcode = barcodeText;
         this.error = errorMessage;
         this.is_validated = isScanned;
+    }
+
+    public String getSeatValue(){
+        if (seat_type.equals("")){
+            return "Siège: N/A";
+        } else if (seat_type.equals("Placement libre")){
+            return "Placement libre";
+        } else {
+            List<String> seatDetails = getSeatDetails();
+            return "B:" + seatDetails.get(0) + " | R:" + seatDetails.get(1) + " | S:" + seatDetails.get(2);
+        }
+    }
+
+    private List<String> getSeatDetails(){
+        List<String> seatDetails = new ArrayList<>();
+        seat_type = seat_type.replace("\\s+","");
+        String[] arr = seat_type.split("-");
+        String blk = (arr[0].split(":"))[1];
+        String row = (arr[1].split(":"))[1];
+        String seat = (arr[2].split(":"))[1];
+        seatDetails.add(blk);
+        seatDetails.add(row);
+        seatDetails.add(seat);
+        return seatDetails;
     }
 
     public String getName() {

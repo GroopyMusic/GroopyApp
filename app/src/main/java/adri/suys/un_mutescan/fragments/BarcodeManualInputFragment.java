@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class BarcodeManualInputFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_barcode_manually_input, container, false);
         input = view.findViewById(R.id.input_barcode_value);
-        Button validationBtn = view.findViewById(R.id.btn_validation_request);
+        AppCompatButton validationBtn = view.findViewById(R.id.btn_validation_request);
         validationBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

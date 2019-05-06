@@ -21,10 +21,14 @@ public class Counterpart implements Serializable {
         this.price = price;
     }
 
-    public String getName() {
+    @Override
+    public String toString() {
         return name;
     }
 
+    public String getName() {
+        return name;
+    }
 
     public double getPrice() {
         return price;

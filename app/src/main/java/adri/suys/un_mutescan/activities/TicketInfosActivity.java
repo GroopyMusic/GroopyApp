@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
+import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
-public class TicketInfosActivity extends Activity {
+public class TicketInfosActivity extends Activity implements TicketInfosViewInterface {
 
     private TextView barcode, name, ticketType, seatType, eventName, ticketError;
     private AlertDialog.Builder dialogBuilder;
@@ -54,12 +54,27 @@ public class TicketInfosActivity extends Activity {
         this.eventName.setText(eventName);
     }
 
-    public void displayTicket(boolean isValid, String message, String barcodeText, String name, String ticketType, String seatType) {
+    /**
+     * Display the infos of the ticket
+     * @param isValid a boolean indicating if the ticket is valid or not
+     * @param isScanned a boolean indicating if the ticket has already been scanned
+     * @param barcodeText the value of the barcode
+     * @param name the name of the buyer
+     * @param ticketType the type of ticket
+     * @param seatType the seat number
+     */
+    public void displayTicket(boolean isValid, boolean isScanned, String barcodeText, String name, String ticketType, String seatType) {
         frame.setBackgroundResource(R.drawable.dark_green_border);
         barcode.setText(barcodeText);
         this.name.setText(name);
         this.ticketType.setText(ticketType);
         this.seatType.setText(seatType);
+        String message;
+        if (isScanned){
+            message = getResources().getString(R.string.scan_error_already_scanned);
+        } else {
+            message = getResources().getString(R.string.ticket_ok_dialog);
+        }
         if (isValid){
             int green = ContextCompat.getColor(this, R.color.green);
             ticketError.setTextColor(green);
@@ -71,7 +86,22 @@ public class TicketInfosActivity extends Activity {
         }
     }
 
-    public void displayTicketUnknwn(String message, String barcodeText){
+    @Override
+    public void showNoConnectionRetryToast() {
+        showToast(getResources().getString(R.string.volley_error_no_connexion));
+    }
+
+    @Override
+    public void showServerConnectionProblemToast() {
+        showToast(getResources().getString(R.string.volley_error_server_error));
+    }
+
+    /**
+     * Display a message indicating that the scanned barcode is unknown.
+     * @param barcodeText
+     */
+    public void displayTicketUnknwn(String barcodeText){
+        String message = getResources().getString(R.string.scan_error_no_match_event_tix);
         frame.setBackgroundResource(R.drawable.dark_green_border);
         int red = ContextCompat.getColor(this, R.color.red);
         ticketError.setTextColor(red);
@@ -80,11 +110,48 @@ public class TicketInfosActivity extends Activity {
     }
 
     /**
-     * When a ticket is scanned, a popup opens saying if the ticket is valid or not
+     * When a ticket is scanned, a popup opens saying that the ticket is unknown.
      * The user can then choose between going back to the scan or see more infos on the ticket
-     * @param message the message indicating if the ticket is valid or not
      */
-    public void displayAlert(final String message){
+    public void displayAlert(){
+        final String message = getResources().getString(R.string.scan_error_no_match_event_tix);
+        dialogBuilder.setMessage(message).setTitle("");
+        dialogBuilder.setCancelable(false)
+                .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
+                            presenter.updateDB();
+                        }
+                        startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
+                    }
+                })
+                .setNegativeButton(R.string.see_more, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
+                            presenter.updateDB();
+                        }
+                    }
+                });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("");
+        alert.show();
+    }
+
+    /**
+     * When a ticket is scanned, a popup opens saying if the ticket is valid or not.
+     * The user can then choose between going back to the scan or see more infos on the ticket
+     */
+    public void displayAlertMsg(boolean isScanned){
+        final String message;
+        if (isScanned){
+            message = getResources().getString(R.string.scan_error_already_scanned);
+        } else {
+            message = getResources().getString(R.string.ticket_ok_dialog);
+        }
         dialogBuilder.setMessage(message).setTitle("");
         dialogBuilder.setCancelable(false)
                 .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {

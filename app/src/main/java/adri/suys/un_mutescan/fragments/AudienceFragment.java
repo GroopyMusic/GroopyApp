@@ -1,6 +1,9 @@
 package adri.suys.un_mutescan.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,14 +16,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.AudiencePresenter;
 import adri.suys.un_mutescan.utils.OnSwipeTouchListener;
+import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
-public class AudienceFragment extends Fragment {
+public class AudienceFragment extends Fragment implements AudienceViewInterface {
 
     private ProgressBar progressBar;
     private Button inBtn, outBtn, allBtn;
@@ -204,6 +209,34 @@ public class AudienceFragment extends Fragment {
             buyerName = v.findViewById(R.id.audience_buyer_name);
             seatNo = v.findViewById(R.id.audience_seat_no);
             ticketType = v.findViewById(R.id.audience_ticket_type);
+            buyerName.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return copyBarcode(view);
+                }
+            });
+            seatNo.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return copyBarcode(view);
+                }
+            });
+            ticketType.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return copyBarcode(view);
+                }
+            });
+        }
+
+        public boolean copyBarcode(View view) {
+            int currentPosition = this.getAdapterPosition();
+            String barcodeValue = presenter.getBarcodeValue(currentPosition);
+            ClipboardManager clipboardManager = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText("barcode", barcodeValue);
+            clipboardManager.setPrimaryClip(clipData);
+            Toast.makeText(view.getContext(), "Valeur du QR-Code copié : "+barcodeValue, Toast.LENGTH_SHORT).show();
+            return true;
         }
     }
 

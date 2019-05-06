@@ -23,6 +23,8 @@ import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.BuyTicketOnSiteFragment;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.viewinterfaces.BuyTicketOnSiteViewInterface;
+import adri.suys.un_mutescan.viewinterfaces.PurchaseRowViewInterface;
 
 public class BuyTicketOnSitePresenter{
 
@@ -31,7 +33,7 @@ public class BuyTicketOnSitePresenter{
     private List<Counterpart> counterparts = new ArrayList<>();
     private double cartAmount = 0;
     private int totalTicketSold = 0;
-    private final BuyTicketOnSiteFragment view;
+    private final BuyTicketOnSiteViewInterface view;
 
     public BuyTicketOnSitePresenter(BuyTicketOnSiteFragment view){
         this.view = view;
@@ -78,7 +80,7 @@ public class BuyTicketOnSitePresenter{
      * @param i the position
      * @param view the viewHolder
      */
-    public void onViewCounterpartAtPosition(int i, BuyTicketOnSiteFragment.TicketTypeHolder view) {
+    public void onViewCounterpartAtPosition(int i, PurchaseRowViewInterface view) {
         Counterpart currentCounterpart = counterparts.get(i);
         view.displayInfos(currentCounterpart.getName(), Double.toString(currentCounterpart.getPrice()));
     }

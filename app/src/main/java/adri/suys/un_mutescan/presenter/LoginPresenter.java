@@ -1,9 +1,7 @@
 package adri.suys.un_mutescan.presenter;
 
-import android.content.Intent;
 import android.content.IntentSender;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkError;
@@ -15,20 +13,12 @@ import com.android.volley.VolleyError;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.credentials.Credential;
 import com.google.android.gms.auth.api.credentials.CredentialRequest;
-import com.google.android.gms.auth.api.credentials.CredentialRequestResponse;
 import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
-import com.google.android.gms.auth.api.credentials.Credentials;
-import com.google.android.gms.auth.api.credentials.CredentialsClient;
 import com.google.android.gms.auth.api.credentials.CredentialsOptions;
-import com.google.android.gms.common.api.Api;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -41,18 +31,21 @@ import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.User;
 import adri.suys.un_mutescan.security.BCrypt;
+import adri.suys.un_mutescan.viewinterfaces.LoginViewInterface;
 
 public class LoginPresenter {
 
     private final RestService restCommunication;
     private String username;
     private String password;
+
     private static final int NOT_FOUND = 404;
     private static final int CANT_ACCESS = 403;
     private static final int OK = 400;
     private static final int WRONG_CREDENTIAL = 405;
     private static final int RC_SAVE = 999;
-    private final LoginActivity view;
+
+    private final LoginViewInterface view;
     private final GoogleApiClient credentialsClient;
     private boolean hasCredentialsStocked;
     private Credential credential;
@@ -70,8 +63,8 @@ public class LoginPresenter {
                 .build();
     }
 
-    public void logUser(String username){
-        if (view.isInternetConnected()){
+    public void logUser(boolean isInternetConnected, String username){
+        if (isInternetConnected){
             this.username = username;
             this.password = view.getPassword();
             restCommunication.loginUser(username);
@@ -79,10 +72,10 @@ public class LoginPresenter {
             User userInDB = view.retrieveUser();
             if (userInDB != null && userInDB.getUsername().equals(username) && userInDB.isTokenStillActive()){
                 handleNewConnection(userInDB);
-                view.showToast(view.getResources().getString(R.string.no_internet_back_up));
+                view.showNoAccessToInternetToast();
                 view.changeScreen();
             } else {
-                view.showToast(view.getResources().getString(R.string.volley_error_no_connexion));
+                view.showConnectionProblemToast();
             }
         }
     }
@@ -97,42 +90,40 @@ public class LoginPresenter {
         User user = gson.fromJson(response.toString(), User.class);
         switch (validateUser(user, password)) {
             case NOT_FOUND:
-                view.showToast(view.getResources().getString(R.string.user_not_found));
+                view.showUnvalidUsernameToast();
                 break;
             case CANT_ACCESS:
-                view.showToast(view.getResources().getString(R.string.user_cant_access));
+                view.showCantUseAppToast();
                 break;
             case OK:
                 if (!hasCredentialsStocked) saveCredentials();
                 handleNewConnection(user);
-                view.showToast(view.getResources().getString(R.string.user_logged, user.getName()));
+                view.showHelloToast(user.getName());
                 view.changeScreen();
                 break;
             default:
-                view.showToast(view.getResources().getString(R.string.user_wrong_credentials));
+                view.showBadCredentialsToast();
                 break;
         }
         view.hideProgressBar();
     }
 
     public void handleVolleyError(VolleyError error) {
-        String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
+            view.showNoConnectionRetryToast();
         } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         }
-        view.showToast(message);
         view.hideProgressBar();
     }
 
-    public LoginActivity getView() {
+    public LoginViewInterface getView() {
         return view;
     }
 
@@ -192,32 +183,12 @@ public class LoginPresenter {
             @Override
             public void onResult(@NonNull Status status) {
                 if (status.isSuccess()){
-                    String message = view.getResources().getString(R.string.credentials_saved);
-                    view.showToast(message);
+                    view.showCredentialsSavedToast();
                 } else {
-                    resolveResult(status, RC_SAVE);
+                    view.resolveResult(status, RC_SAVE, mIsResolving);
                 }
             }
         });
-    }
-
-    private void resolveResult(Status status, int rcSave) {
-        if (mIsResolving) {
-            System.out.println("resolveResult: already resolving.");
-            return;
-        }
-        System.out.println("Resolving: " + status);
-        if (status.hasResolution()) {
-            System.out.println("STATUS: RESOLVING");
-            try {
-                status.startResolutionForResult(view, rcSave);
-                mIsResolving = true;
-            } catch (IntentSender.SendIntentException e) {
-                System.out.println( "STATUS: Failed to send resolution." + e);
-            }
-        } else {
-            System.out.println("STATUS: FAIL");
-        }
     }
 
     private int validateUser(User user, String input){

@@ -17,12 +17,13 @@ import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
+import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
 public class TicketInfosPresenter {
 
     private final Event currentEvent;
     private final RestService restCommunication;
-    private final TicketInfosActivity view;
+    private final TicketInfosViewInterface view;
     private String barcode;
     private Ticket ticket;
 
@@ -45,23 +46,23 @@ public class TicketInfosPresenter {
         boolean isValid = false;
         int i = UnMuteDataHolder.isValidatedTicket(barcodeValue);
         if (i == -2){
-            message = view.getResources().getString(R.string.scan_error_no_match_event_tix);
             view.hideProgressBar();
             view.displayEventName(currentEvent.getName());
-            view.displayTicketUnknwn(message, barcodeValue);
-            view.displayAlert(message);
+            view.displayTicketUnknwn(barcodeValue);
+            view.displayAlert();
         } else {
             ticket = UnMuteDataHolder.getAudience().get(i);
+            boolean isScanned;
             if (ticket.isScanned()){
-                message = view.getResources().getString(R.string.scan_error_already_scanned);
+                isScanned = true;
             } else {
-                message = view.getResources().getString(R.string.ticket_ok_dialog);
+                isScanned = false;
                 isValid = true;
             }
             view.hideProgressBar();
             view.displayEventName(currentEvent.getName());
-            view.displayTicket(isValid, message, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatType());
-            view.displayAlert(message);
+            view.displayTicket(isValid, isScanned, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatValue());
+            view.displayAlertMsg(isScanned);
         }
     }
 
@@ -71,19 +72,17 @@ public class TicketInfosPresenter {
     }
 
     public void handleVolleyError(VolleyError error){
-        String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
+            view.showNoConnectionRetryToast();
         } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         }
         view.hideProgressBar();
-        view.showToast(message);
     }
 }

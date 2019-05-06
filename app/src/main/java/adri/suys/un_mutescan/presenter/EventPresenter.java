@@ -1,5 +1,6 @@
 package adri.suys.un_mutescan.presenter;
 
+import android.support.annotation.NonNull;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
 import com.android.volley.AuthFailureError;
@@ -19,11 +20,16 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.EventListActivity;
@@ -33,6 +39,8 @@ import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
+import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
+import adri.suys.un_mutescan.viewinterfaces.EventRowViewInterface;
 
 public class EventPresenter {
 
@@ -40,7 +48,7 @@ public class EventPresenter {
     private List<Event> filteredEvents = new ArrayList<>();
     private final User user;
     private Event currentEvent;
-    private final EventListActivity view;
+    private final EventListViewInterface view;
     private final RestService restCommunication;
     private final CountingIdlingResource countingIdlingResource = new CountingIdlingResource("name");
     private boolean isFiltered;
@@ -52,15 +60,15 @@ public class EventPresenter {
         restCommunication.setEventPresenter(this);
     }
 
-    public void onViewEventAtPosition(int position, EventListActivity.EventHolder view, boolean isFilteredList){
+    public void onViewEventAtPosition(int position, EventRowViewInterface view, boolean isFilteredList){
         isFiltered = isFilteredList;
         if (isFilteredList){
             this.currentEvent = filteredEvents.get(position);
         } else {
             this.currentEvent = events.get(position);
         }
-        if (currentEvent.isPassed()){
-            view.setEventName(this.view.getResources().getString(R.string.already_passed) + currentEvent.getName());
+        if (!currentEvent.isToday() && currentEvent.isPassed()){
+            view.setPastEventName(currentEvent.getName());
             view.setEventNameInRed();
         } else {
             view.setEventNameInGreen();
@@ -85,11 +93,11 @@ public class EventPresenter {
         }
     }
 
-    public void collectEvents(boolean forceRefresh) {
+    public void collectEvents(boolean forceRefresh, boolean isInternetConnected) {
         countingIdlingResource.increment();
         if (UnMuteDataHolder.getEvent() != null){
             if (forceRefresh){
-                fetchEventsInDB();
+                fetchEventsInDB(isInternetConnected);
             } else {
                 events = UnMuteDataHolder.getEvents();
                 view.hideProgressBar();
@@ -97,24 +105,22 @@ public class EventPresenter {
                 countingIdlingResource.decrement();
             }
         } else {
-            fetchEventsInDB();
+            fetchEventsInDB(isInternetConnected);
         }
     }
 
     public void handleVolleyError(VolleyError error){
-        String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
+            view.showNoConnectionRetryToast();
         } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         }
-        view.showToast(message);
         view.hideProgressBar();
         countingIdlingResource.decrement();
     }
@@ -170,6 +176,9 @@ public class EventPresenter {
             JSONArray counterpartJSON = (JSONArray) jsonObject.get("counterparts");
             List<Counterpart> counterparts = new Gson().fromJson(counterpartJSON.toString(), new TypeToken<List<Counterpart>>(){}.getType());
             e.setCounterparts(counterparts);
+            JSONArray detailsTixPerCp = (JSONArray) jsonObject.get("detailsTixPerCp");
+            Map<String, String> map = retrieveDetailsTixPerCp(detailsTixPerCp);
+            e.setMap(map);
             events.add(e);
         }
         return events;
@@ -198,9 +207,9 @@ public class EventPresenter {
         return countingIdlingResource;
     }
 
-    private void fetchEventsInDB(){
+    private void fetchEventsInDB(boolean isInternetConnected){
         System.out.println("fecthEvents");
-        if (view.isInternetConnected()){
+        if (isInternetConnected){
             restCommunication.collectEvents(user.getId());
         } else {
             events = view.retrieveEvents();
@@ -211,5 +220,23 @@ public class EventPresenter {
             }
             view.hideProgressBar();
         }
+    }
+
+    private Map<String, String> retrieveDetailsTixPerCp(JSONArray jsonArray){
+        Map<String, String> detailsTixPerCp = new HashMap<>();
+        for (int i=0; i<jsonArray.length(); i++){
+            try {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                Iterator it = jsonObject.keys();
+                while(it.hasNext()){
+                    String cpId = (String) it.next();
+                    String nbTix = jsonObject.getString(cpId);
+                    detailsTixPerCp.put(cpId, nbTix);
+                }
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+        }
+        return detailsTixPerCp;
     }
 }

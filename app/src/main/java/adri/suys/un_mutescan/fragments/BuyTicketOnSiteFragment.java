@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,8 +25,10 @@ import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.activities.PayActivity;
 import adri.suys.un_mutescan.presenter.BuyTicketOnSitePresenter;
+import adri.suys.un_mutescan.viewinterfaces.BuyTicketOnSiteViewInterface;
+import adri.suys.un_mutescan.viewinterfaces.PurchaseRowViewInterface;
 
-public class BuyTicketOnSiteFragment extends Fragment {
+public class BuyTicketOnSiteFragment extends Fragment implements BuyTicketOnSiteViewInterface {
 
     private ProgressBar progressBar;
     private RecyclerView recyclerView;
@@ -53,7 +56,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         getTicketTypes();
-        Button validateBtn = view.findViewById(R.id.add_ticket_validate_btn);
+        AppCompatButton validateBtn = view.findViewById(R.id.add_ticket_validate_btn);
         validateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -163,7 +166,7 @@ public class BuyTicketOnSiteFragment extends Fragment {
     // HOLDER //
     ////////////
 
-    public class TicketTypeHolder extends RecyclerView.ViewHolder {
+    public class TicketTypeHolder extends RecyclerView.ViewHolder implements PurchaseRowViewInterface {
 
         private TextView ticketName, ticketPrice, numberOfTicketWanted;
         private Button minusBtn, plusBtn;

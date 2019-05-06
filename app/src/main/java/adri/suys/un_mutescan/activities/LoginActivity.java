@@ -2,6 +2,7 @@ package adri.suys.un_mutescan.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,15 +16,13 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-
-import java.sql.SQLOutput;
+import com.google.android.gms.common.api.Status;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.presenter.LoginPresenter;
+import adri.suys.un_mutescan.viewinterfaces.LoginViewInterface;
 
-public class LoginActivity extends Activity implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends Activity implements LoginViewInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private EditText usernameInput;
     private EditText pwdInput;
@@ -105,7 +104,7 @@ public class LoginActivity extends Activity implements
         String username = usernameInput.getText().toString();
         if (!username.equals("")){
             showProgressBar();
-            presenter.logUser(username.toLowerCase());
+            presenter.logUser(isInternetConnected(), username.toLowerCase());
         } else {
             showToast(getResources().getString(R.string.user_no_login));
         }
@@ -125,7 +124,10 @@ public class LoginActivity extends Activity implements
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    public void showProgressBar() {
+    /**
+     * Show the ProgressBar
+     */
+    private void showProgressBar() {
         progressBar.setVisibility(View.VISIBLE);
     }
 
@@ -137,6 +139,56 @@ public class LoginActivity extends Activity implements
         return pwdInput.getText().toString();
     }
 
+    @Override
+    public void showNoAccessToInternetToast() {
+        showToast(getResources().getString(R.string.no_internet_back_up));
+    }
+
+    @Override
+    public void showConnectionProblemToast() {
+        showToast(getResources().getString(R.string.volley_error_no_connexion));
+    }
+
+    @Override
+    public void showUnvalidUsernameToast() {
+        showToast(getResources().getString(R.string.user_not_found));
+    }
+
+    @Override
+    public void showCantUseAppToast() {
+        showToast(getResources().getString(R.string.user_cant_access));
+    }
+
+    @Override
+    public void showHelloToast(String username) {
+        showToast(getResources().getString(R.string.user_logged, username));
+    }
+
+    @Override
+    public void showBadCredentialsToast() {
+        showToast(getResources().getString(R.string.user_wrong_credentials));
+    }
+
+    @Override
+    public void showNoConnectionRetryToast() {
+        showToast(getResources().getString(R.string.volley_error_no_connexion));
+    }
+
+    @Override
+    public void showServerConnectionProblemToast() {
+        showToast(getResources().getString(R.string.volley_error_server_error));
+    }
+
+    @Override
+    public void showCredentialsSavedToast() {
+        showToast(getResources().getString(R.string.credentials_saved));
+    }
+
+    /**
+     * Displays a pop up that asks the user if he wants to save its credential on its Google account
+     * with the Smart Lock for Password functionality.
+     * @param username
+     */
     public void showSmartLockPopUp(String username) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
         String message = getResources().getString(R.string.right_account, username);
@@ -160,6 +212,26 @@ public class LoginActivity extends Activity implements
         AlertDialog alert = dialogBuilder.create();
         alert.setTitle("Smart Lock");
         alert.show();
+    }
+
+    @Override
+    public void resolveResult(Status status, int rcSave, boolean isResolving) {
+        if (isResolving) {
+            System.out.println("resolveResult: already resolving.");
+            return;
+        }
+        System.out.println("Resolving: " + status);
+        if (status.hasResolution()) {
+            System.out.println("STATUS: RESOLVING");
+            try {
+                status.startResolutionForResult(this, rcSave);
+                isResolving = true;
+            } catch (IntentSender.SendIntentException e) {
+                System.out.println( "STATUS: Failed to send resolution." + e);
+            }
+        } else {
+            System.out.println("STATUS: FAIL");
+        }
     }
 
     /////////////////////

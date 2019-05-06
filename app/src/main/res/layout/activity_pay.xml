@@ -42,44 +42,20 @@
                     android:layout_marginBottom="10dp"
                     android:textAlignment="center" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/pay_cash_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
-                    android:background="@drawable/button_green"
+                    android:backgroundTint="@color/dark_Green"
+                    android:drawableStart="@drawable/ic_attach_money_white_24dp"
                     android:text="@string/via_cash"
-                    android:textColor="@color/dark_Green" />
-
-                <Button
-                    android:id="@+id/pay_bancontact_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:background="@drawable/button_green"
-                    android:padding="5dp"
-                    android:text="@string/via_bc"
-                    android:textColor="@color/dark_Green" />
+                    android:textColor="@color/white" />
 
                 <ProgressBar
                     android:id="@+id/pay_progressBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-
-                <ImageView
-                    android:id="@+id/bancontact_qrcode"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
-                    android:layout_marginBottom="5dp" />
-
-                <Button
-                    android:id="@+id/pay_done_btn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_green"
-                    android:padding="5dp"
-                    android:text="@string/done_payment"
-                    android:textColor="@color/dark_Green" />
 
             </LinearLayout>
 

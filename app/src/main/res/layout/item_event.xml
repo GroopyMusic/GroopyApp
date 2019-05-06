@@ -11,29 +11,12 @@
     android:background="@drawable/button_green"
     android:gravity="right">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="3dp">
-
-        <TextView
-            android:layout_width="270dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/event_info_name"
-            android:textColor="@color/dark_Green"
-            android:text="Mon événement debdenjned jndenjdejndjednedjnejnde c"
-            android:layout_marginRight="10dp"/>
-
-    </LinearLayout>
-
     <Button
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_info_stat"
-        android:background="@drawable/button_green"
-        android:textColor="@color/dark_Green"
-        android:text="@string/stat"
-        />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:attr/borderlessButtonStyle"
+        android:textAlignment="textStart"
+        android:layout_marginTop="3dp"
+        android:id="@+id/event"/>
 
 </LinearLayout>

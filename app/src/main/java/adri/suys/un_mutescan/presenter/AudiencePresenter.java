@@ -26,11 +26,12 @@ import adri.suys.un_mutescan.fragments.AudienceFragment;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.model.User;
+import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
 public class AudiencePresenter {
 
     private final RestService restCommunication;
-    private final AudienceFragment view;
+    private final AudienceViewInterface view;
     private List<Ticket> audienceToBeDisplayed = new ArrayList<>();
     private static final int ALL = 1;
     private static final int IN = 2;
@@ -44,23 +45,21 @@ public class AudiencePresenter {
     public void getAudience(int options) {
         if (options == ALL){
             audienceToBeDisplayed = UnMuteDataHolder.getAudience();
-            view.hideProgressBar();
-            view.updateAudienceList();
         } else {
             if (options == IN){
                 audienceToBeDisplayed = sortAudienceIn();
             } else if (options == OUT) {
                 audienceToBeDisplayed = sortAudienceOut();
             }
-            view.hideProgressBar();
-            view.updateAudienceList();
         }
+        view.hideProgressBar();
+        view.updateAudienceList();
     }
 
     public void onViewCounterpartAtPosition(int i, AudienceFragment.AudienceHolder audienceHolder) {
         Ticket currentCustomer = audienceToBeDisplayed.get(i);
         String name = currentCustomer.getName() + " (" + currentCustomer.getBarcodeText() + ")";
-        audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatType());
+        audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatValue());
     }
 
     public int getItemCount() {
@@ -103,4 +102,7 @@ public class AudiencePresenter {
     }
 
 
+    public String getBarcodeValue(int currentPosition) {
+        return audienceToBeDisplayed.get(currentPosition).getBarcodeText();
+    }
 }

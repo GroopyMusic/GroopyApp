@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,10 +25,10 @@ import java.util.Objects;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.presenter.EventPresenter;
+import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
+import adri.suys.un_mutescan.viewinterfaces.EventRowViewInterface;
 
-import static adri.suys.un_mutescan.R.color.red;
-
-public class EventListActivity extends Activity{
+public class EventListActivity extends Activity implements EventListViewInterface{
 
     private RecyclerView recyclerView;
     private EventAdapter adapter;
@@ -47,11 +46,6 @@ public class EventListActivity extends Activity{
         createEvents(false);
         handleSearch();
         handlePullToRefresh();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
     }
 
     @Override
@@ -82,6 +76,16 @@ public class EventListActivity extends Activity{
         }
     }
 
+    @Override
+    public void showNoConnectionRetryToast() {
+        showToast(getResources().getString(R.string.volley_error_no_connexion));
+    }
+
+    @Override
+    public void showServerConnectionProblemToast() {
+        showToast(getResources().getString(R.string.volley_error_server_error));
+    }
+
     public EventPresenter getPresenter() {
         return presenter;
     }
@@ -91,7 +95,7 @@ public class EventListActivity extends Activity{
     /////////////////////
 
     private void createEvents(boolean forceRefresh) {
-        presenter.collectEvents(forceRefresh);
+        presenter.collectEvents(forceRefresh, isInternetConnected());
     }
 
     private void handleSearch(){
@@ -140,14 +144,15 @@ public class EventListActivity extends Activity{
         });
     }
 
+
+
     ////////////
     // HOLDER //
     ////////////
 
-    public class EventHolder extends RecyclerView.ViewHolder {
+    public class EventHolder extends RecyclerView.ViewHolder implements EventRowViewInterface {
 
-        private TextView eventName;
-        private Button statBtn;
+        private Button eventBtn;
 
         EventHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_event, parent, false));
@@ -159,12 +164,16 @@ public class EventListActivity extends Activity{
          * @param name the name of the event
          */
         public void setEventName(String name){
-            eventName.setText(name);
+            eventBtn.setText(name);
+        }
+
+        @Override
+        public void setPastEventName(String eventName) {
+            this.eventBtn.setText(getResources().getString(R.string.already_passed) + eventName);
         }
 
         private void initViewElements() {
-            eventName = itemView.findViewById(R.id.event_info_name);
-            statBtn = itemView.findViewById(R.id.event_info_stat);
+            eventBtn = itemView.findViewById(R.id.event);
             setClickActions();
         }
 
@@ -173,7 +182,7 @@ public class EventListActivity extends Activity{
          * contains the stat of the event is displayed.
          */
         void setClickActions() {
-            statBtn.setOnClickListener(new View.OnClickListener() {
+            eventBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     myAction();
@@ -184,17 +193,16 @@ public class EventListActivity extends Activity{
         private void myAction(){
             int currentPosition = this.getAdapterPosition();
             presenter.persistEvent(currentPosition);
-            System.out.println();
             Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
             startActivity(intent);
         }
 
         public void setEventNameInRed() {
-            eventName.setTextColor(Color.RED);
+            eventBtn.setTextColor(Color.RED);
         }
 
         public void setEventNameInGreen(){
-            eventName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.dark_Green));
+            eventBtn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.dark_Green));
         }
     }
 

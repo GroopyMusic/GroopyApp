@@ -4,7 +4,9 @@ import android.text.format.DateUtils;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A event is a event organized by an user for which he/she wants to scan ticket at the gates
@@ -22,6 +24,7 @@ public class Event implements Serializable {
     private int nbTicketBoughtInCash;
     private List<Ticket> audience;
     private List<Counterpart> counterparts;
+    private Map<Counterpart, Integer> statsPerCp;
 
     /**
      *
@@ -46,6 +49,16 @@ public class Event implements Serializable {
         this.nbTicketSoldOnSite = nbTicketSoldOnSite;
         this.date = date;
         this.nbTicketBoughtInCash = nbTicketBoughtInCash;
+        this.statsPerCp = new HashMap<>();
+    }
+
+    public Counterpart findCpById(String id){
+        for (Counterpart cp : counterparts){
+            if (cp.getId() == Integer.parseInt(id)){
+                return cp;
+            }
+        }
+        return null;
     }
 
     public int getId() {
@@ -126,5 +139,26 @@ public class Event implements Serializable {
 
     public void setNbTotalTicket(int nbTotalTicket) {
         this.nbTotalTicket = nbTotalTicket;
+    }
+
+    public void setMap(Map<String, String> stats){
+        statsPerCp.clear();
+        for (Map.Entry<String, String> stat : stats.entrySet()){
+            Counterpart cp = findCpById(stat.getKey());
+            int nb = Integer.parseInt(stat.getValue());
+            statsPerCp.put(cp, nb);
+        }
+    }
+
+    public void updateMap(Counterpart cp, int nbTixToAdd){
+        Integer nbTixAlreadySold = statsPerCp.get(cp);
+        if (nbTixAlreadySold != null) {
+            int updatedNb = nbTixAlreadySold + nbTixToAdd;
+            statsPerCp.put(cp, updatedNb);
+        }
+    }
+
+    public Map<Counterpart, Integer> getStatsPerCp() {
+        return statsPerCp;
     }
 }

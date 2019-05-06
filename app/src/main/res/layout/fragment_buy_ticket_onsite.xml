@@ -42,14 +42,15 @@
                     app:layout_constraintBottom_toTopOf="@+id/add_ticket_validate_btn"
                     app:layout_constraintTop_toBottomOf="@+id/add_ticket_instructions" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/add_ticket_validate_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_green"
+                    android:layout_height="50dp"
+                    android:backgroundTint="@color/dark_Green"
                     android:screenOrientation="portrait"
+                    android:drawableStart="@drawable/ic_check_white_24dp"
                     android:text="@string/validate"
-                    android:textColor="@color/dark_Green"
+                    android:textColor="@color/white"
                     android:layout_marginBottom="60dp"/>
 
             </LinearLayout>

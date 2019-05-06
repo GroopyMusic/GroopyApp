@@ -16,10 +16,11 @@ import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.viewinterfaces.PayViewInterface;
 
 public class PayPresenter {
 
-    private final PayActivity view;
+    private final PayViewInterface view;
     private final RestService restCommunication;
     private final Event event;
     private int totalTicketSold;
@@ -45,8 +46,7 @@ public class PayPresenter {
     public void notifyTicketsWellAdded(int cpt, int nbUrls) {
         if (cpt == nbUrls-1){
             // fini
-            String msg = view.getResources().getString(R.string.tickets_well_added);
-            view.showToast(msg);
+            view.showTicketAddedToast();
             UnMuteDataHolder.addTickets();
             event.addTicketSoldOnSite(totalTicketSold);
             if (cashPayment){
@@ -54,7 +54,7 @@ public class PayPresenter {
                 view.hideProgressBar();
                 view.onBackPressed();
             } else {
-                view.setUpBancontactPayment();
+                // si bancontact / plus applicable
             }
         } else {
             restCommunication.addAnotherTicket();
@@ -69,9 +69,8 @@ public class PayPresenter {
     public void notifyTicketsNotAdded(int cpt) {
         StringBuilder msg;
         if (cpt == 0){
-            msg = new StringBuilder(view.getResources().getString(R.string.tickets_not_well_added));
             view.hideProgressBar();
-            view.showToast(msg.toString());
+            view.showTicketNotAddedToast();
         } else {
             List<Counterpart> cps = UnMuteDataHolder.getCounterparts();
             msg = new StringBuilder("Les tickets ");
@@ -94,19 +93,17 @@ public class PayPresenter {
      * @param error the error
      */
     public void handleVolleyError(VolleyError error){
-        String message = "";
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
-            message = view.getResources().getString(R.string.volley_error_no_connexion);
+            view.showNoConnectionRetryToast();
         } else if (error instanceof AuthFailureError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ServerError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof NetworkError) {
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         } else if (error instanceof ParseError){
-            message = view.getResources().getString(R.string.volley_error_server_error);
+            view.showServerConnectionProblemToast();
         }
-        view.showToast(message);
     }
 
     public void setTotalTicketSold(int totalTicketSold) {
