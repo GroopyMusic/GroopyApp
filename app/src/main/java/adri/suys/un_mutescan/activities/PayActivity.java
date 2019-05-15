@@ -54,6 +54,11 @@ public class PayActivity extends Activity implements PayViewInterface {
     }
 
     @Override
+    public void showErrorMessage(String message) {
+        showToast(message);
+    }
+
+    @Override
     public void showTicketAddedToast() {
         showToast(getResources().getString(R.string.tickets_well_added));
     }

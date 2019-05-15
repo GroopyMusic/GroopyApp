@@ -76,11 +76,11 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
             message = getResources().getString(R.string.ticket_ok_dialog);
         }
         if (isValid){
-            int green = ContextCompat.getColor(this, R.color.green);
+            int green = ContextCompat.getColor(this, R.color.aurora_green);
             ticketError.setTextColor(green);
             ticketError.setText(message);
         } else {
-            int red = ContextCompat.getColor(this, R.color.red);
+            int red = ContextCompat.getColor(this, R.color.tomato_red);
             ticketError.setTextColor(red);
             ticketError.setText(message);
         }
@@ -103,7 +103,7 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
     public void displayTicketUnknwn(String barcodeText){
         String message = getResources().getString(R.string.scan_error_no_match_event_tix);
         frame.setBackgroundResource(R.drawable.dark_green_border);
-        int red = ContextCompat.getColor(this, R.color.red);
+        int red = ContextCompat.getColor(this, R.color.tomato_red);
         ticketError.setTextColor(red);
         ticketError.setText(message);
         barcode.setText(barcodeText);

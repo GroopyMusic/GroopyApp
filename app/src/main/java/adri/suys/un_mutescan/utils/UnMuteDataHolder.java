@@ -1,11 +1,15 @@
 package adri.suys.un_mutescan.utils;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
@@ -140,5 +144,35 @@ public class UnMuteDataHolder {
             }
         }
         return -2;
+    }
+
+    public static int[] getColorsArrayForStatPieChart(Context ctx){
+        int auroraGreen = ContextCompat.getColor(ctx, R.color.aurora_green);
+        int azraqBlue = ContextCompat.getColor(ctx, R.color.azraq_blue);
+        int jalapenoRed = ContextCompat.getColor(ctx, R.color.jalapeno_red);
+        int spray = ContextCompat.getColor(ctx, R.color.spray);
+        return new int[]{
+            auroraGreen, azraqBlue, jalapenoRed, spray
+        };
+    }
+
+    public static int[] getColorsArrayForCounterpartStat(Context ctx){
+        int mandarinRed = ContextCompat.getColor(ctx, R.color.mandarin_red);
+        int reefEncounter = ContextCompat.getColor(ctx, R.color.reef_encounter);
+        int carrotOrange = ContextCompat.getColor(ctx, R.color.carrot_orange);
+        int paradiseGreen = ContextCompat.getColor(ctx, R.color.paradise_green);
+        int livid = ContextCompat.getColor(ctx, R.color.livid);
+        return new int[]{
+            mandarinRed, reefEncounter, carrotOrange, paradiseGreen, livid
+        };
+    }
+
+    public static int[] getColorsArrayForHorizontalBarchart(Context ctx){
+        int yueGuangLanBlue = ContextCompat.getColor(ctx, R.color.yue_guang_lan_blue);
+        int tomatoRed = ContextCompat.getColor(ctx, R.color.tomato_red);
+        int waterfall = ContextCompat.getColor(ctx, R.color.waterfall);
+        return new int[]{
+            tomatoRed, yueGuangLanBlue, waterfall
+        };
     }
 }

@@ -66,11 +66,11 @@ public class PayPresenter {
      * Reinit all the value
      * Invites the user to try again
      */
-    public void notifyTicketsNotAdded(int cpt) {
+    public void notifyTicketsNotAdded(int cpt, String message) {
         StringBuilder msg;
         if (cpt == 0){
             view.hideProgressBar();
-            view.showTicketNotAddedToast();
+            view.showErrorMessage(message);
         } else {
             List<Counterpart> cps = UnMuteDataHolder.getCounterparts();
             msg = new StringBuilder("Les tickets ");
@@ -95,14 +95,20 @@ public class PayPresenter {
     public void handleVolleyError(VolleyError error){
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
             view.showNoConnectionRetryToast();
+            System.out.println("1");
         } else if (error instanceof AuthFailureError){
             view.showServerConnectionProblemToast();
+            System.out.println("2");
         } else if (error instanceof ServerError){
             view.showServerConnectionProblemToast();
+            System.out.println("3");
         } else if (error instanceof NetworkError) {
             view.showServerConnectionProblemToast();
+            System.out.println("4");
         } else if (error instanceof ParseError){
             view.showServerConnectionProblemToast();
+            System.out.println(error.getMessage());
+            System.out.println("5");
         }
     }
 

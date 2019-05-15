@@ -3,12 +3,17 @@ package adri.suys.un_mutescan.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,6 +87,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         if (isInternetConnected()) {
             presenter.retrieveCredentials();
         } else {
+            showInstructionPopUp();
             hideProgressBar();
         }
     }
@@ -211,6 +217,20 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
                 });
         AlertDialog alert = dialogBuilder.create();
         alert.setTitle("Smart Lock");
+        alert.show();
+    }
+
+    private void showInstructionPopUp(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogNoInternetStyle);
+        String title = getResources().getString(R.string.no_internet);
+        builder.setMessage(R.string.instructions).setTitle(title);
+        builder.setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
         alert.show();
     }
 

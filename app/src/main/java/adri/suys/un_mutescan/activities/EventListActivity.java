@@ -14,6 +14,7 @@ import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -126,6 +127,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         progressBar = findViewById(R.id.progressBar_event);
         progressBar.setVisibility(View.VISIBLE);
         searchView = findViewById(R.id.searchview);
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         presenter = new EventPresenter(this);
         recyclerView = findViewById(R.id.event_recycler_view);
@@ -202,7 +204,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         }
 
         public void setEventNameInGreen(){
-            eventBtn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.dark_Green));
+            eventBtn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.reef_encounter));
         }
     }
 
@@ -251,12 +253,11 @@ public class EventListActivity extends Activity implements EventListViewInterfac
             return new Filter() {
                 @Override
                 protected FilterResults performFiltering(CharSequence charSequence) {
-                    String pattern = charSequence.toString();
+                    String pattern = charSequence.toString().toLowerCase().trim();
                     FilterResults filterResults = new FilterResults();
                     filterResults.values = presenter.getFilteredResult(pattern);
                     return filterResults;
                 }
-
                 @Override
                 protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                     List<Event> filteredEvents = (List<Event>) filterResults.values;

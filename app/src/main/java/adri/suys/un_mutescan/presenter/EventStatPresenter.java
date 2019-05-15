@@ -36,6 +36,10 @@ public class EventStatPresenter {
         return event.getNbSoldTicket() - event.getNbScannedTicket();
     }
 
+    public int getTotalSold(){
+        return event.getNbSoldTicket() + event.getNbTicketSoldOnSite();
+    }
+
     public int getTotalRemaining(){
         return event.getRemainingTicketToBeSold();
     }
@@ -50,6 +54,10 @@ public class EventStatPresenter {
 
     public boolean checkIfEventToday(){
         return event.isToday();
+    }
+
+    public boolean isEventInTheFuture(){
+        return event.isFuture();
     }
 
 }

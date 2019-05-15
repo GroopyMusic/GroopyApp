@@ -1,6 +1,7 @@
 package adri.suys.un_mutescan.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -10,17 +11,23 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.presenter.AudiencePresenter;
 import adri.suys.un_mutescan.utils.OnSwipeTouchListener;
 import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
@@ -33,6 +40,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     private RecyclerView recyclerView;
     private AudiencePresenter presenter;
     private AudienceAdapter adapter;
+    private SearchView searchView;
     private static final int ALL = 1;
     private static final int IN = 2;
     private static final int OUT = 3;
@@ -64,9 +72,12 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        allBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.dark_Green));
+        allBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.reef_encounter));
         setActions();
         getAudience(ALL);
+        searchView = view.findViewById(R.id.searchview_audience);
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        handleSearch();
         return view;
     }
 
@@ -147,43 +158,70 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     }
 
     private void getAudience(int options){
-        presenter.getAudience(options);
+        presenter.getAudience(options, currentTab);
     }
 
     private void clickAll(){
         inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.black));
         outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.reef_encounter));
         underlineIn.setBackgroundResource(0);
-        underlineAll.setBackgroundResource(R.color.dark_Green);
+        underlineAll.setBackgroundResource(R.color.reef_encounter);
         underlineOut.setBackgroundResource(0);
         showProgressBar();
         currentTab = ALL;
+        searchView.setQuery("", false);
         getAudience(ALL);
     }
 
     private void clickIn(){
-        inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.dark_Green));
+        inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.reef_encounter));
         outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
-        underlineIn.setBackgroundResource(R.color.dark_Green);
+        underlineIn.setBackgroundResource(R.color.reef_encounter);
         underlineAll.setBackgroundResource(0);
         underlineOut.setBackgroundResource(0);
         showProgressBar();
         currentTab = IN;
+        searchView.setQuery("", false);
         getAudience(IN);
     }
 
     private void clickOut(){
         inBtn.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.black));
-        outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.dark_Green));
+        outBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.reef_encounter));
         allBtn.setTextColor(ContextCompat.getColor(getContext(), R.color.black));
         underlineIn.setBackgroundResource(0);
         underlineAll.setBackgroundResource(0);
-        underlineOut.setBackgroundResource(R.color.dark_Green);
+        underlineOut.setBackgroundResource(R.color.reef_encounter);
         showProgressBar();
         currentTab = OUT;
+        searchView.setQuery("", false);
         getAudience(OUT);
+    }
+
+    private void handleSearch(){
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+        searchView.setSearchableInfo(Objects.requireNonNull(searchManager).getSearchableInfo(getActivity().getComponentName()));
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchView.onActionViewExpanded();
+            }
+        });
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+        });
     }
 
     ////////////
@@ -193,6 +231,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     public class AudienceHolder extends RecyclerView.ViewHolder {
 
         TextView buyerName, seatNo, ticketType;
+        Button copyBtn;
 
         AudienceHolder(View v){
             super(v);
@@ -209,6 +248,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
             buyerName = v.findViewById(R.id.audience_buyer_name);
             seatNo = v.findViewById(R.id.audience_seat_no);
             ticketType = v.findViewById(R.id.audience_ticket_type);
+            copyBtn = v.findViewById(R.id.copyBtn);
             buyerName.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -225,6 +265,12 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
                 @Override
                 public boolean onLongClick(View view) {
                     return copyBarcode(view);
+                }
+            });
+            copyBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    copyBarcode(view);
                 }
             });
         }
@@ -244,7 +290,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     // ADAPTER //
     /////////////
 
-    private class AudienceAdapter extends RecyclerView.Adapter<AudienceHolder>{
+    private class AudienceAdapter extends RecyclerView.Adapter<AudienceHolder> implements Filterable {
 
         private AudiencePresenter presenter;
 
@@ -271,6 +317,24 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
 
         void setPresenter(AudiencePresenter presenter) {
             this.presenter = presenter;
+        }
+
+        @Override
+        public Filter getFilter() {
+            return new Filter() {
+                @Override
+                protected FilterResults performFiltering(CharSequence charSequence) {
+                    String pattern = charSequence.toString().toLowerCase().trim();
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = presenter.getFilteredResult(pattern, currentTab);
+                    return filterResults;
+                }
+                @Override
+                protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                    List<Ticket> filteredList = (List<Ticket>) filterResults.values;
+                    presenter.notifyChanged(filteredList);
+                }
+            };
         }
     }
 

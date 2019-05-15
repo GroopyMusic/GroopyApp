@@ -186,11 +186,11 @@ public class EventPresenter {
 
     public List<Event> getFilteredResult(String pattern) {
         List<Event> filteredEvents = new ArrayList<>();
-        if (pattern.isEmpty()){
+        if (pattern.isEmpty() || pattern == null){
             filteredEvents = events;
         } else {
             for (Event event : events){
-                if (event.getName().toLowerCase().contains(pattern.toLowerCase())){
+                if (event.getName().toLowerCase().contains(pattern)){
                     filteredEvents.add(event);
                 }
             }

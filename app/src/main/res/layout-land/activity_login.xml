@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/gradient_bg">
+    android:background="@color/flat_flesh">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,8 +47,8 @@
                             android:background="@drawable/edittext_background"
                             android:hint="@string/username"
                             android:inputType="textEmailAddress"
-                            android:textColor="@color/orange"
-                            android:textColorHint="@color/orange"
+                            android:textColor="@color/iceland_poppy"
+                            android:textColorHint="@color/iceland_poppy"
                             android:textSize="15dp" />
 
                         <LinearLayout
@@ -66,8 +66,8 @@
                                 android:background="@android:color/transparent"
                                 android:hint="@string/password"
                                 android:inputType="textPassword"
-                                android:textColor="@color/orange"
-                                android:textColorHint="@color/orange" />
+                                android:textColor="@color/iceland_poppy"
+                                android:textColorHint="@color/iceland_poppy" />
 
                             <Button
                                 android:id="@+id/password_visibility"
@@ -89,7 +89,7 @@
                             android:layout_width="250dp"
                             android:layout_height="50dp"
                             android:layout_marginBottom="20dp"
-                            android:backgroundTint="@color/dark_Green"
+                            android:backgroundTint="@color/reef_encounter"
                             android:onClick="loginViaUm"
                             android:padding="5dp"
                             android:drawableStart="@drawable/ic_person_white_24dp"

@@ -1,31 +1,13 @@
 package adri.suys.un_mutescan.presenter;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.AudienceFragment;
-import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
-import adri.suys.un_mutescan.model.User;
 import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
 public class AudiencePresenter {
@@ -42,13 +24,16 @@ public class AudiencePresenter {
         this.restCommunication = new RestService((Activity) view.getActivity());
     }
 
-    public void getAudience(int options) {
+    public void getAudience(int options, int currentState) {
         if (options == ALL){
+            currentState = ALL;
             audienceToBeDisplayed = UnMuteDataHolder.getAudience();
         } else {
             if (options == IN){
+                currentState = IN;
                 audienceToBeDisplayed = sortAudienceIn();
             } else if (options == OUT) {
+                currentState = OUT;
                 audienceToBeDisplayed = sortAudienceOut();
             }
         }
@@ -78,8 +63,6 @@ public class AudiencePresenter {
         return getNbAll() - getNbIn();
     }
 
-    // private method
-
     private List<Ticket> sortAudienceIn() {
         List<Ticket> audienceSorted = new ArrayList<>();
         for (Ticket t : UnMuteDataHolder.getAudience()){
@@ -104,5 +87,35 @@ public class AudiencePresenter {
 
     public String getBarcodeValue(int currentPosition) {
         return audienceToBeDisplayed.get(currentPosition).getBarcodeText();
+    }
+
+    public List<Ticket> getFilteredResult(String pattern, int currentState) {
+        List<Ticket> filteredList = new ArrayList<>();
+        if (pattern.isEmpty() || pattern == null){
+            switch (currentState){
+                case ALL : audienceToBeDisplayed = UnMuteDataHolder.getAudience(); break;
+                case IN : audienceToBeDisplayed = sortAudienceIn(); break;
+                default: audienceToBeDisplayed = sortAudienceOut(); break;
+            }
+            filteredList = audienceToBeDisplayed;
+        } else {
+            List<Ticket> unfilteredList;
+            switch (currentState){
+                case ALL : unfilteredList = UnMuteDataHolder.getAudience(); break;
+                case IN : unfilteredList = sortAudienceIn(); break;
+                default: unfilteredList = sortAudienceOut(); break;
+            }
+            for (Ticket t : unfilteredList){
+                if (t.getName().toLowerCase().contains(pattern)){
+                    filteredList.add(t);
+                }
+            }
+        }
+        return filteredList;
+    }
+
+    public void notifyChanged(List<Ticket> filteredList) {
+        audienceToBeDisplayed = filteredList;
+        view.updateAudienceList();
     }
 }

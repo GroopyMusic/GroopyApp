@@ -132,7 +132,7 @@ public class OneEventActivity extends Activity {
     }
 
     private void showAlertDialog(String message){
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogNotTodayStyle);
         alertDialogBuilder.setMessage(message).setTitle("");
         alertDialogBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             @Override

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg">
+    android:background="@color/flat_flesh">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textAlignment="center"
-                        android:text="B:OUEST | R:C | S:20"
+                        android:text="                 "
                         android:textSize="20dp" />
 
                 </LinearLayout>
@@ -105,7 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
-                        android:backgroundTint="@color/dark_Green"
+                        android:backgroundTint="@color/reef_encounter"
                         android:onClick="goBack"
                         android:drawableStart="@drawable/ic_arrow_back_white_24dp"
                         android:text="@string/back"

@@ -3,24 +3,50 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/flat_flesh</item>
+        <item name="colorPrimaryDark">@color/flat_flesh</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">@font/montserrat_medium</item>
         <item name="fontFamily">@font/montserrat_medium</item>
     </style>
 
+    <!-- Theme for dialog SMART LOCK -->
     <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/dark_Green</item>
-        <item name="android:textColorPrimary">@color/orange</item>
+        <item name="colorAccent">@color/reef_encounter</item>
+        <item name="android:textColorPrimary">@color/iceland_poppy</item>
         <item name="android:background">@color/beige</item>
+        <item name="android:windowTitleStyle">@style/DialogTitleStyle</item>
     </style>
-    
-    <style name="ProgressBarPaymentMode" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
-        <item name="android:progressBackgroundTint">@color/grey</item>
-        <item name="android:progressTint">@color/greyBlue</item>
-        <item name="android:minHeight">20dp</item>
-        <item name="android:maxHeight">21dp</item>
+    <style name="DialogTitleStyle">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:drawableRight">@drawable/ic_lock_outline_black_24dp</item>
+    </style>
+
+    <!-- Theme for dialog NO INTERNET -->
+    <style name="AppCompatAlertDialogNoInternetStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowTitleStyle">@style/DialogNoInternetTitleStyle</item>
+    </style>
+    <style name="DialogNoInternetTitleStyle">
+        <item name="android:textColor">@color/iceland_poppy</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:drawableRight">@drawable/ic_signal_cellular_connected_no_internet_0_bar_black_24dp</item>
+    </style>
+
+    <!-- Theme for dialog NOT TODAY -->
+    <style name="AppCompatAlertDialogNotTodayStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/reef_encounter</item>
+        <item name="android:textColorPrimary">@color/iceland_poppy</item>
+        <item name="android:background">@color/beige</item>
+        <item name="android:windowTitleStyle">@style/DialogNotTodayTitleStyle</item>
+    </style>
+    <style name="DialogNotTodayTitleStyle">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">18dp</item>
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
+        <item name="android:drawableRight">@drawable/ic_error_black_24dp</item>
     </style>
 
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg">
+    android:background="@color/flat_flesh">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/my_events"
-                android:textColor="@color/dark_Green"
+                android:textColor="@color/reef_encounter"
                 android:textSize="30dp"
                 app:layout_constraintBottom_toTopOf="@+id/event_recycler_view"
                 app:layout_constraintTop_toBottomOf="@+id/logo" />

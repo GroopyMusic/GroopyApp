@@ -4,12 +4,12 @@
         <shape
             android:dither="false"
             android:shape="rectangle">
-            <stroke android:width="2dp" android:color="@color/dark_Green"></stroke>
+            <stroke android:width="2dp" android:color="@color/reef_encounter"></stroke>
         </shape>
     </item>
     <item android:bottom="6dp">
         <shape android:shape="rectangle">
-            <stroke android:width="2dp" android:color="@color/orange"/>
+            <stroke android:width="2dp" android:color="@color/iceland_poppy"/>
         </shape>
     </item>
 </layer-list>

@@ -37,10 +37,10 @@ public class RestService {
     private static final int SCAN_TICKET = 0;
     private static final int USER = 2;
 
-    private static final String BASE_URL_USER = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/loginuser?";
-    private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/scanticket?";
-    private static final String BASE_URL_EVENTS = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/getevents?";
-    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/addticket?";
+    private static final String BASE_URL_USER = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/loginuser?";
+    private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/scanticket?";
+    private static final String BASE_URL_EVENTS = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/getevents?";
+    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/addticket?";
 
     /*private static final String BASE_URL_USER = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/loginuser?";
     private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/scanticket?";
@@ -257,11 +257,14 @@ public class RestService {
                             handleSilentResponse(response, url);
                         } else {
                             try {
+                                System.out.println("FEEDBACK");
                                 String feedback = response.getString("error");
-                                if (feedback.equals("Tout s'est bien passé !")) {
+                                System.out.println("FEEDBACK" + feedback);
+                                if (feedback.contains("Tout s'est bien passé !")) {
                                     payPresenter.notifyTicketsWellAdded(cpt, urls.size());
                                 } else {
-                                    payPresenter.notifyTicketsNotAdded(cpt);
+                                    System.out.println("MF-PROBLEM " + feedback);
+                                    payPresenter.notifyTicketsNotAdded(cpt, feedback);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -274,7 +277,6 @@ public class RestService {
                     public void onErrorResponse(VolleyError error) {
                         if (isSilent){
                             System.out.println("PROBLEM IS SILENT ADDING TICKET " + error.getMessage());
-                            // do nothing
                         } else {
                             payPresenter.handleVolleyError(error);
                         }

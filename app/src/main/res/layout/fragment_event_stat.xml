@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg">
+    android:background="@color/flat_flesh">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                     android:layout_marginBottom="5dp"
                     android:text="            "
                     android:textAlignment="center"
-                    android:textColor="@color/dark_Green"
+                    android:textColor="@color/reef_encounter"
                     android:textSize="30dp" />
 
                 <TextView
@@ -48,14 +48,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="4 avril 2018"
-                    android:textColor="@color/dark_Green" />
+                    android:textColor="@color/reef_encounter" />
 
                 <TextView
                     android:id="@+id/stat_event_total_ticket"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="TOTAL :    "
-                    android:textColor="@color/dark_Green" />
+                    android:textColor="@color/reef_encounter" />
 
                 <TextView
                     android:id="@+id/stat_event_total_ticket_sold"
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:text="VENDUS :    "
-                    android:textColor="@color/dark_Green" />
+                    android:textColor="@color/reef_encounter" />
 
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/piechart"
@@ -76,8 +76,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="@string/progress_state_payment_mode"
-                    android:textColor="@color/dark_Green"
-                    android:textSize="18dp" />
+                    android:textColor="@color/reef_encounter"
+                    android:textSize="18dp"
+                    android:id="@+id/horizontal_barchart_title"/>
 
                 <com.github.mikephil.charting.charts.HorizontalBarChart
                     android:id="@+id/horizontal_barchart"
@@ -90,15 +91,31 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="@string/payment_per_cp"
-                    android:textColor="@color/dark_Green"
+                    android:textColor="@color/reef_encounter"
                     android:textSize="18dp"
-                    android:id="@+id/barchart_title"/>
+                    android:textAlignment="center"
+                    android:id="@+id/piechart_title_ticket"/>
 
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/barchart"
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/piechart_ticket"
                     android:layout_width="271dp"
-                    android:layout_height="270dp"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_height="220dp"
+                    android:layout_marginBottom="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/money_per_cp"
+                    android:textColor="@color/reef_encounter"
+                    android:textSize="18dp"
+                    android:id="@+id/piechart_title_money"/>
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/piechart_money"
+                    android:layout_width="271dp"
+                    android:layout_height="220dp"
+                    android:layout_marginBottom="20dp" />
 
             </LinearLayout>
 

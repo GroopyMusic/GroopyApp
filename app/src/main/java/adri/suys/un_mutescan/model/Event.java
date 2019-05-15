@@ -3,6 +3,8 @@ package adri.suys.un_mutescan.model;
 import android.text.format.DateUtils;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -121,12 +123,28 @@ public class Event implements Serializable {
         }
     }
 
+    public boolean isFuture(){
+        if (isToday()){
+            return false;
+        } else if (isPassed()){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public List<Ticket> getAudience() {
         return audience;
     }
 
     public void setAudience(List<Ticket> audience) {
         this.audience = audience;
+        Collections.sort(this.audience, new Comparator<Ticket>() {
+            @Override
+            public int compare(Ticket ticket, Ticket t1) {
+                return ticket.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+            }
+        });
     }
 
     public List<Counterpart> getCounterparts() {

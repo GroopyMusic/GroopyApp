@@ -2,8 +2,13 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/faq"
+        android:title="FAQ"
+        android:icon="@drawable/ic_info_outline_green_24dp"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/disconnect"
         android:title="Se déconnecter"
-        android:icon="@drawable/baseline_exit_to_app_black_24dp"
-        app:showAsAction="ifRoom" />
+        android:icon="@drawable/ic_exit_to_app_green_24dp"
+        app:showAsAction="ifRoom"/>
 </menu>

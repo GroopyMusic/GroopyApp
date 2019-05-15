@@ -9,4 +9,5 @@ public interface PayViewInterface {
     void showToast(String message);
     void showNoConnectionRetryToast();
     void showServerConnectionProblemToast();
+    void showErrorMessage(String message);
 }

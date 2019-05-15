@@ -37,7 +37,7 @@ public class Ticket implements Serializable {
     }
 
     public String getSeatValue(){
-        if (seat_type.equals("")){
+        if (seat_type.equals("") || seat_type.equals("N/A")){
             return "Siège: N/A";
         } else if (seat_type.equals("Placement libre")){
             return "Placement libre";
@@ -96,4 +96,5 @@ public class Ticket implements Serializable {
     public String toString() {
         return buyer + " - " + is_validated;
     }
+
 }

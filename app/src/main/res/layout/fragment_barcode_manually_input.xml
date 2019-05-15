@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg">
+    android:background="@color/flat_flesh">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,15 +40,15 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/edittext_background"
-                    android:textColor="@color/orange"
-                    android:textColorHint="@color/orange" />
+                    android:textColor="@color/iceland_poppy"
+                    android:textColorHint="@color/iceland_poppy" />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/btn_validation_request"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginBottom="5dp"
-                    android:backgroundTint="@color/dark_Green"
+                    android:backgroundTint="@color/reef_encounter"
                     android:screenOrientation="portrait"
                     android:drawableStart="@drawable/ic_check_white_24dp"
                     android:text="@string/validate"

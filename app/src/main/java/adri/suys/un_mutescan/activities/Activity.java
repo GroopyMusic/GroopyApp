@@ -60,6 +60,10 @@ public abstract class Activity extends AppCompatActivity {
             UnMuteDataHolder.reinit();
             startActivity(new Intent(this, LoginActivity.class));
             return true;
+        } else if (id == R.id.faq){
+            makePendingRequest();
+            startActivity(new Intent(this, FAQActivity.class));
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
