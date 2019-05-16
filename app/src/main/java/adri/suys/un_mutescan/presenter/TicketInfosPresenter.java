@@ -11,38 +11,33 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.TicketInfosActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.Ticket;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
 public class TicketInfosPresenter {
 
     private final Event currentEvent;
-    private final RestService restCommunication;
     private final TicketInfosViewInterface view;
     private String barcode;
     private Ticket ticket;
 
-    public TicketInfosPresenter(TicketInfosActivity view){
+    public TicketInfosPresenter(TicketInfosViewInterface view){
         this.view = view;
         this.currentEvent = UnMuteDataHolder.getEvent();
-        this.restCommunication = new RestService(view);
-        restCommunication.setTicketPresenter(this);
     }
 
     public void updateDB(){
         ticket.setIs_validated(true);
         currentEvent.scanTicket();
-        restCommunication.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcode);
+        view.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcode);
     }
 
-    public void validateBarcode(String barcodeValue){
+    public boolean validateBarcode(String barcodeValue){
         barcode = barcodeValue;
-        String message;
         boolean isValid = false;
         int i = UnMuteDataHolder.isValidatedTicket(barcodeValue);
         if (i == -2){
@@ -58,12 +53,14 @@ public class TicketInfosPresenter {
             } else {
                 isScanned = false;
                 isValid = true;
+                ticket.setIs_validated(true);
             }
             view.hideProgressBar();
             view.displayEventName(currentEvent.getName());
             view.displayTicket(isValid, isScanned, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatValue());
             view.displayAlertMsg(isScanned);
         }
+        return isValid;
     }
 
     public void handleJSONObject(JSONObject response, Gson gson) {

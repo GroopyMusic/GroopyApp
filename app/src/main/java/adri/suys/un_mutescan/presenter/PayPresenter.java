@@ -9,33 +9,31 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.PayActivity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.PayViewInterface;
 
 public class PayPresenter {
 
     private final PayViewInterface view;
-    private final RestService restCommunication;
     private final Event event;
     private int totalTicketSold;
     private boolean cashPayment;
 
-    public PayPresenter(PayActivity view){
+    public PayPresenter(PayViewInterface view){
         this.view = view;
-        this.restCommunication = new RestService(view);
-        restCommunication.setPayPresenter(this);
         event = UnMuteDataHolder.getEvent();
     }
 
-    public void addTickets(boolean paidInCash){
+    public void addTickets(boolean paidInCash, String email, String firstname, String lastname){
         cashPayment = paidInCash;
-        restCommunication.addTicket(paidInCash);
+        view.addTicket(paidInCash, email, firstname, lastname);
     }
 
     /**
@@ -57,7 +55,7 @@ public class PayPresenter {
                 // si bancontact / plus applicable
             }
         } else {
-            restCommunication.addAnotherTicket();
+            view.addAnotherTicket();
         }
     }
 
@@ -114,5 +112,20 @@ public class PayPresenter {
 
     public void setTotalTicketSold(int totalTicketSold) {
         this.totalTicketSold = totalTicketSold;
+    }
+
+    public boolean validateEmail(String email){
+        if (email == null) return false;
+        String regExpn =
+                "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@"
+                        +"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                        +"[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\."
+                        +"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\\.([0-1]?"
+                        +"[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
+                        +"([a-zA-Z]+[\\w-]+\\.)+[a-zA-Z]{2,4})$";
+        CharSequence inputStr = email;
+        Pattern pattern = Pattern.compile(regExpn,Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(inputStr);
+        return matcher.matches();
     }
 }

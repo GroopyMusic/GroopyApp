@@ -1,43 +1,27 @@
 package adri.suys.un_mutescan.presenter;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.BuyTicketOnSiteFragment;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.BuyTicketOnSiteViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.PurchaseRowViewInterface;
 
 public class BuyTicketOnSitePresenter{
 
     private final Event event;
-    private final RestService restCommunication;
     private List<Counterpart> counterparts = new ArrayList<>();
     private double cartAmount = 0;
     private int totalTicketSold = 0;
     private final BuyTicketOnSiteViewInterface view;
 
-    public BuyTicketOnSitePresenter(BuyTicketOnSiteFragment view){
+    public BuyTicketOnSitePresenter(BuyTicketOnSiteViewInterface view){
         this.view = view;
-        this.restCommunication = new RestService((Activity)view.getActivity());
         this.event = UnMuteDataHolder.getEvent();
     }
 
@@ -47,7 +31,6 @@ public class BuyTicketOnSitePresenter{
      * Fetches in the DB all the counterparts that are linked to the currentEvent
      */
     public void collectCounterparts(){
-        //restCommunication.collectCounterparts(UnMuteDataHolder.getUser().getId(), event.getId());
         counterparts = UnMuteDataHolder.getCounterparts();
         view.hideProgressBar();
         view.updateTicketTypesList();
@@ -58,7 +41,7 @@ public class BuyTicketOnSitePresenter{
     /**
      * Add tickets to the database
      */
-    public void addTicket() {
+    public void completeCart() {
         double amountToPay = cartAmount;
         int numberTicketsSold = totalTicketSold;
         reinit();
@@ -91,11 +74,6 @@ public class BuyTicketOnSitePresenter{
      */
     public boolean isEventSoldout(int toBeSold){
         return event.getRemainingTicketToBeSold() <= toBeSold;
-    }
-
-    public void setNewSoldout(int toBeSold){
-        int newSoldout = event.getNbSoldTicket() + event.getNbTicketSoldOnSite() + toBeSold;
-        event.setNbTotalTicket(newSoldout);
     }
 
     public int getTotalTicketSold(){

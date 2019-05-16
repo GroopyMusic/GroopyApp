@@ -3,6 +3,7 @@ package adri.suys.un_mutescan.model;
 import android.text.format.DateUtils;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -112,7 +113,23 @@ public class Event implements Serializable {
     }
 
     public boolean isToday() {
-        return date != null && DateUtils.isToday(date.getTime());
+        if (date == null){
+            return false;
+        }
+        Calendar calToday = Calendar.getInstance();
+        calToday.setTime(new Date());
+        int todayDay = calToday.get(Calendar.DAY_OF_MONTH);
+        int todayMonth = calToday.get(Calendar.MONTH);
+        int todayYear = calToday.get(Calendar.YEAR);
+        Calendar calEvent = Calendar.getInstance();
+        calEvent.setTime(date);
+        int eventDay = calEvent.get(Calendar.DAY_OF_MONTH);
+        int eventMonth = calEvent.get(Calendar.MONTH);
+        int eventYear = calEvent.get(Calendar.YEAR);
+        if (todayDay != eventDay) return false;
+        if (todayMonth != eventMonth) return false;
+        if (todayYear != eventYear) return false;
+        return true;
     }
 
     public boolean isPassed(){
@@ -120,16 +137,6 @@ public class Event implements Serializable {
             return true;
         } else {
             return date.before(new Date());
-        }
-    }
-
-    public boolean isFuture(){
-        if (isToday()){
-            return false;
-        } else if (isPassed()){
-            return false;
-        } else {
-            return true;
         }
     }
 

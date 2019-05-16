@@ -21,16 +21,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import adri.suys.un_mutescan.activities.Activity;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
-import adri.suys.un_mutescan.presenter.AudiencePresenter;
-import adri.suys.un_mutescan.presenter.BuyTicketOnSitePresenter;
 import adri.suys.un_mutescan.presenter.EventPresenter;
 import adri.suys.un_mutescan.presenter.LoginPresenter;
 import adri.suys.un_mutescan.presenter.PayPresenter;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 
 public class RestService {
 
@@ -111,8 +109,8 @@ public class RestService {
      * Create a request with that url
      * Add a/some ticket(s) to the DB --> the tickets that are sold on site during the event
      */
-    public void addTicket(boolean paidInCash){
-        urls = getUrlFromEvent(paidInCash);
+    public void addTicket(boolean paidInCash, String email, String firstname, String lastname){
+        urls = getUrlFromEvent(paidInCash, email, firstname, lastname);
         cpt = 0;
         if (activity.isInternetConnected()){
             createAddRequest(urls.get(cpt), false);
@@ -287,22 +285,24 @@ public class RestService {
         requestQueue.add(jsonArrayRequest);
     }
 
-    private List<String> getUrlFromEvent(boolean paidInCash){
+    private List<String> getUrlFromEvent(boolean paidInCash, String email, String firstname, String lastname){
         List<String> urls = new ArrayList<>();
         User user = UnMuteDataHolder.getUser();
         Event event = UnMuteDataHolder.getEvent();
         for (Counterpart cp : UnMuteDataHolder.getCounterparts()){
             if (cp.getQuantity() > 0){
-                String url = getUrlFromCounterpart(user.getId(), cp, event.getId(), paidInCash);
+                String url = getUrlFromCounterpart(user.getId(), cp, event.getId(), paidInCash, email, firstname, lastname);
                 urls.add(url);
             }
         }
         return urls;
     }
 
-    private String getUrlFromCounterpart(int userID, Counterpart cp, int eventID, boolean paidInCash) {
+    private String getUrlFromCounterpart(int userID, Counterpart cp, int eventID, boolean paidInCash, String email, String firstname, String lastname) {
         String mode = paidInCash ? "cash" : "bancontact";
-        return BASE_URL_ADD_TICKET + "user_id=" + userID + "&event_id=" + eventID + "&counterpart_id=" + cp.getId() + "&quantity=" + cp.getQuantity() + "&mode=" + mode;
+        return BASE_URL_ADD_TICKET + "user_id=" + userID + "&event_id=" + eventID
+                + "&counterpart_id=" + cp.getId() + "&quantity=" + cp.getQuantity()
+                + "&mode=" + mode + "&email=" + email + "&firstname=" + firstname + "&lastname=" + lastname;
     }
 
 }

@@ -48,7 +48,7 @@
     <string name="order_recap">Vous rajoutez %1$d ticket(s) pour %2$.2f euros. Confirmer ?</string>
     <string name="payment_mode">Mode de paiement</string>
     <string name="via_bancontact">Pour BANCONTACT, scanner le QR-CODE ci-dessous.</string>
-    <string name="via_cash">VIA CASH</string>
+    <string name="via_cash">PAYER VIA CASH</string>
     <string name="via_bc">VIA BANCONTACT</string>
     <string name="amount_to_pay">A payer : %1$.2f euro(s)</string>
     <string name="done_payment">C\'est payé !</string>
@@ -95,4 +95,11 @@
     <string name="faq_answer3">Seule les personnes renseignées comme organisatrices d’un événement (sur la plateforme Ticked-it) peuvent utiliser l’application. Dès lors, cette personne peut soit utiliser le compte d’un organisateur ou vous pouvez l’ajouter, depuis la plateforme, dans votre organisation le temps de l’événement.</string>
     <string name="instructions">Afin de pouvoir scanner des tickets, il vous faut vous assurer que votre application soit bien synchronisée avec notre base de données. Pour ce faire, il vous suffit de vous connecter, au moins 1 fois, à l’application avec une connexion internet (Wi-Fi, 3G, 4G, etc.) le jour de l’événement. Attention, tous les tickets vendus après cette connexion ne seront pas synchronisés, donc il vous faudra vous reconnecter à nouveau.</string>
     <string name="no_internet">Pas d\'internet ?!</string>
+    <string name="save_buyers_infos">Enregistrer les données de l\'acheteur</string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="firstname">Prénom</string>
+    <string name="lastname">Nom</string>
+    <string name="optional">(Optionnel)</string>
+    <string name="name_but_no_email">Les 3 champs doivent être remplis !</string>
+    <string name="email_no_valid">Adresse email non valide</string>
 </resources>

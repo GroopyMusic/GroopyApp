@@ -17,8 +17,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
@@ -112,7 +110,7 @@ public class BuyTicketOnSiteFragment extends Fragment implements BuyTicketOnSite
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         progressBar.setVisibility(View.VISIBLE);
-                        presenter.addTicket();
+                        presenter.completeCart();
                         dialogInterface.cancel();
                     }
                 })

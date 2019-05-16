@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.presenter.EventPresenter;
 import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
@@ -37,6 +38,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
     private EventPresenter presenter;
     private SearchView searchView;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private RestService restCommunication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,11 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         showToast(getResources().getString(R.string.volley_error_server_error));
     }
 
+    @Override
+    public void collectEventsInDB(int id) {
+        restCommunication.collectEvents(id);
+    }
+
     public EventPresenter getPresenter() {
         return presenter;
     }
@@ -130,6 +137,8 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
         presenter = new EventPresenter(this);
+        restCommunication = new RestService(this);
+        restCommunication.setEventPresenter(presenter);
         recyclerView = findViewById(R.id.event_recycler_view);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -145,8 +154,6 @@ public class EventListActivity extends Activity implements EventListViewInterfac
             }
         });
     }
-
-
 
     ////////////
     // HOLDER //

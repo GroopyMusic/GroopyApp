@@ -1,6 +1,5 @@
 package adri.suys.un_mutescan.presenter;
 
-import android.support.annotation.NonNull;
 import android.support.test.espresso.idling.CountingIdlingResource;
 
 import com.android.volley.AuthFailureError;
@@ -20,25 +19,20 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.activities.EventListActivity;
 import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.model.Counterpart;
-import adri.suys.un_mutescan.model.Ticket;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.model.User;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.EventRowViewInterface;
 
@@ -49,15 +43,12 @@ public class EventPresenter {
     private final User user;
     private Event currentEvent;
     private final EventListViewInterface view;
-    private final RestService restCommunication;
-    private final CountingIdlingResource countingIdlingResource = new CountingIdlingResource("name");
     private boolean isFiltered;
+    private String error = "";
 
-    public EventPresenter(EventListActivity view){
+    public EventPresenter(EventListViewInterface view){
         this.view = view;
         user = UnMuteDataHolder.getUser();
-        restCommunication = new RestService(view);
-        restCommunication.setEventPresenter(this);
     }
 
     public void onViewEventAtPosition(int position, EventRowViewInterface view, boolean isFilteredList){
@@ -94,15 +85,13 @@ public class EventPresenter {
     }
 
     public void collectEvents(boolean forceRefresh, boolean isInternetConnected) {
-        countingIdlingResource.increment();
-        if (UnMuteDataHolder.getEvent() != null){
+        if (UnMuteDataHolder.getEvents() != null){
             if (forceRefresh){
                 fetchEventsInDB(isInternetConnected);
             } else {
                 events = UnMuteDataHolder.getEvents();
                 view.hideProgressBar();
                 view.updateEventsList(false);
-                countingIdlingResource.decrement();
             }
         } else {
             fetchEventsInDB(isInternetConnected);
@@ -122,7 +111,6 @@ public class EventPresenter {
             view.showServerConnectionProblemToast();
         }
         view.hideProgressBar();
-        countingIdlingResource.decrement();
     }
 
     public void handleJSONArray(JSONArray response) {
@@ -134,17 +122,35 @@ public class EventPresenter {
         } catch (JSONException e) {
             try {
                 String error = ((JSONObject) response.get(0)).getString("error");
+                this.error = error;
                 view.showToast(error);
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
-            e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
         view.hideProgressBar();
         view.updateEventsList(false);
-        countingIdlingResource.decrement();
+    }
+
+    public List<Event> getFilteredResult(String pattern) {
+        List<Event> filteredEvents = new ArrayList<>();
+        if (pattern.isEmpty() || pattern == null){
+            filteredEvents = events;
+        } else {
+            for (Event event : events){
+                if (event.getName().toLowerCase().contains(pattern)){
+                    filteredEvents.add(event);
+                }
+            }
+        }
+        return filteredEvents;
+    }
+
+    public void notifyChanged(List<Event> filteredEvents) {
+        this.filteredEvents = filteredEvents;
+        view.updateEventsList(true);
     }
 
     private List<Event> getEventsFromJSON(JSONArray response) throws JSONException, ParseException {
@@ -184,33 +190,9 @@ public class EventPresenter {
         return events;
     }
 
-    public List<Event> getFilteredResult(String pattern) {
-        List<Event> filteredEvents = new ArrayList<>();
-        if (pattern.isEmpty() || pattern == null){
-            filteredEvents = events;
-        } else {
-            for (Event event : events){
-                if (event.getName().toLowerCase().contains(pattern)){
-                    filteredEvents.add(event);
-                }
-            }
-        }
-        return filteredEvents;
-    }
-
-    public void notifyChanged(List<Event> filteredEvents) {
-        this.filteredEvents = filteredEvents;
-        view.updateEventsList(true);
-    }
-
-    public CountingIdlingResource getCountingIdlingResource() {
-        return countingIdlingResource;
-    }
-
     private void fetchEventsInDB(boolean isInternetConnected){
-        System.out.println("fecthEvents");
         if (isInternetConnected){
-            restCommunication.collectEvents(user.getId());
+            view.collectEventsInDB(user.getId());
         } else {
             events = view.retrieveEvents();
             if (events != null){
@@ -230,13 +212,17 @@ public class EventPresenter {
                 Iterator it = jsonObject.keys();
                 while(it.hasNext()){
                     String cpId = (String) it.next();
-                    String nbTix = jsonObject.getString(cpId);
-                    detailsTixPerCp.put(cpId, nbTix);
+                    Integer nbTix = jsonObject.getInt(cpId);
+                    detailsTixPerCp.put(cpId, Integer.toString(nbTix));
                 }
             } catch (JSONException e1) {
                 e1.printStackTrace();
             }
         }
         return detailsTixPerCp;
+    }
+
+    public String getError() {
+        return error;
     }
 }

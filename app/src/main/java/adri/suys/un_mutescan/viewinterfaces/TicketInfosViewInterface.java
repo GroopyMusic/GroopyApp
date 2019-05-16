@@ -10,5 +10,5 @@ public interface TicketInfosViewInterface {
     void showNoConnectionRetryToast();
     void showServerConnectionProblemToast();
     void displayAlertMsg(boolean isScanned);
-
+    void scanTicket(int id, int id1, String barcode);
 }

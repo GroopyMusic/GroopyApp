@@ -4,10 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.presenter.PayPresenter;
 import adri.suys.un_mutescan.viewinterfaces.PayViewInterface;
 
@@ -16,8 +21,14 @@ import static android.view.View.GONE;
 public class PayActivity extends Activity implements PayViewInterface {
 
     private TextView amountToPay;
+    private EditText emailInput, firstnameInput, lastnameInput;
     private PayPresenter presenter;
     private ProgressBar progressBar;
+    private RestService restCommunication;
+    private static final int EMAIL_NOT_OK = 0;
+    private static final int NO_EMAIL = 1;
+    private static final int VALIDATED = 2;
+    private static final int NONE = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -25,8 +36,13 @@ public class PayActivity extends Activity implements PayViewInterface {
         setContentView(R.layout.activity_pay);
         configActionBar();
         presenter = new PayPresenter(this);
+        restCommunication = new RestService(this);
+        restCommunication.setPayPresenter(presenter);
         amountToPay = findViewById(R.id.amount_to_pay);
         progressBar = findViewById(R.id.pay_progressBar);
+        emailInput = findViewById(R.id.buyer_email_input);
+        firstnameInput = findViewById(R.id.buyer_firstname_input);
+        lastnameInput = findViewById(R.id.buyer_lastname_input);
         hideProgressBar();
         setButtons();
         initPrice();
@@ -59,13 +75,18 @@ public class PayActivity extends Activity implements PayViewInterface {
     }
 
     @Override
-    public void showTicketAddedToast() {
-        showToast(getResources().getString(R.string.tickets_well_added));
+    public void addTicket(boolean paidInCash, String email, String firstname, String lastname) {
+        restCommunication.addTicket(paidInCash, email, firstname, lastname);
     }
 
     @Override
-    public void showTicketNotAddedToast() {
-        showToast(getResources().getString(R.string.tickets_not_well_added));
+    public void addAnotherTicket() {
+        restCommunication.addAnotherTicket();
+    }
+
+    @Override
+    public void showTicketAddedToast() {
+        showToast(getResources().getString(R.string.tickets_well_added));
     }
 
     public void hideProgressBar(){
@@ -87,9 +108,44 @@ public class PayActivity extends Activity implements PayViewInterface {
         cashBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                progressBar.setVisibility(View.VISIBLE);
-                presenter.addTickets(true);
+                String email = emailInput.getText().toString();
+                String firstname = firstnameInput.getText().toString();
+                String lastname = lastnameInput.getText().toString();
+                switch (validateUserInput()){
+                    case VALIDATED:
+                        progressBar.setVisibility(View.VISIBLE);
+                        presenter.addTickets(true, email, firstname, lastname);
+                        break;
+                    case EMAIL_NOT_OK:
+                        showToast(getResources().getString(R.string.email_no_valid));
+                        break;
+                    case NO_EMAIL:
+                        showToast(getResources().getString(R.string.name_but_no_email));
+                        break;
+                    default:
+                        progressBar.setVisibility(View.VISIBLE);
+                        presenter.addTickets(true, "", "", "");
+                        break;
+                }
+
             }
         });
+    }
+
+    private int validateUserInput(){
+        String email = emailInput.getText().toString();
+        String firstname = firstnameInput.getText().toString();
+        String lastname = lastnameInput.getText().toString();
+        if (email.equals("") && firstname.equals("") && lastname.equals("")){
+            return NONE;
+        }
+        if (!email.equals("") && !firstname.equals("") && !lastname.equals("")){
+            if (presenter.validateEmail(email)){
+                return VALIDATED;
+            } else {
+                return EMAIL_NOT_OK;
+            }
+        }
+        return NO_EMAIL;
     }
 }

@@ -3,8 +3,8 @@ package adri.suys.un_mutescan.model;
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * An user of the app, he must be in the UM database + he must organize event to access the app
@@ -61,12 +61,8 @@ public class User implements Serializable {
         this.lastConnection = lastConnection;
     }
 
-    public long getLastConnection() {
-        return lastConnection;
-    }
-
     public boolean isTokenStillActive(){
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
         String lastConnection = formatter.format(new Date(this.lastConnection));
         String now = formatter.format(new Date());
         return lastConnection.equals(now);

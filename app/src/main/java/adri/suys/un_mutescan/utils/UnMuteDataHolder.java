@@ -102,7 +102,7 @@ public class UnMuteDataHolder {
         UnMuteDataHolder.requestURLs = requestURLs;
     }
 
-    private static List<Event> sortEvents(List<Event> events){
+    public static List<Event> sortEvents(List<Event> events){
         List<Event> sorted = new ArrayList<>();
         List<Event> past = new ArrayList<>();
         List<Event> future = new ArrayList<>();

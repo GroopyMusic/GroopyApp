@@ -10,10 +10,10 @@
     <string name="scan_status">scanned : </string>
     <string name="ticket_ok">Ticket validated !</string>
     <string name="ticket_ok_dialog">Ticket validated !</string>
-    <string name="see_more">More infos</string>
+    <string name="see_more">More info</string>
     <string name="back_to_scan">Back to scan</string>
     <string name="ok">OK</string>
-    <string name="sth_wrong">"Oops, an error occured"</string>
+    <string name="sth_wrong">"Oops, an error occurred"</string>
     <string name="no_barcode_detected">No barcode detected</string>
     <string name="stat">STATS</string>
     <string name="my_events">MY EVENTS</string>
@@ -48,7 +48,7 @@
     <string name="order_recap">You are selling %1$d ticket(s) for %2$.2f euros. Confirm ?</string>
     <string name="payment_mode">Payment mode</string>
     <string name="via_bancontact">For BANCONTACT, scan the barcode below.</string>
-    <string name="via_cash">VIA CASH</string>
+    <string name="via_cash">PAY VIA CASH</string>
     <string name="via_bc">VIA BANCONTACT</string>
     <string name="amount_to_pay">To pay : %1$.2f euro(s)</string>
     <string name="done_payment">It\'s paid !</string>
@@ -82,7 +82,7 @@
     <string name="horizontalchart_label_cb">Card (%1$d/%2$d)</string>
     <string name="already_passed">[Already passed] </string>
     <string name="credentials_saved">Credentials saved</string>
-    <string name="credentials_not_saved">An error occured while saving credentials</string>
+    <string name="credentials_not_saved">An error occurred while saving credentials</string>
     <string name="right_account">Do you want to automatically sign in with the account %1$s ?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
@@ -95,4 +95,11 @@
     <string name="faq_answer3">To be able to use the app, you have to be registered to the platform Ticked-it as an event manager. Thus, the person can either use the account of one of the managers of the event or you can temporarily add him/her to your organization.</string>
     <string name="instructions">In order to scan tickets, you need to have your app synced with our database. To do so, you just need to be connected to the internet (Wi-Fi or 3/4G) and to sign in at least once on the day of your event. Be aware that if you sell tickets after this connection, those tickets will not appear on the app. Therefore, you\’ll need to sign in once again (with an Internet connection).</string>
     <string name="no_internet">No connection ?!</string>
+    <string name="save_buyers_infos">Save buyer\'s info</string>
+    <string name="email_address">Email address</string>
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+    <string name="optional">(Optional)</string>
+    <string name="name_but_no_email">The 3 input fields must be filled !</string>
+    <string name="email_no_valid">Email address not valid</string>
 </resources>

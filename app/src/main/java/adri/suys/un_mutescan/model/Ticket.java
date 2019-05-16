@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import adri.suys.un_mutescan.R;
-
 /**
  * A ticket is a ticket generated, sold, bought for an event
  */
@@ -17,7 +15,6 @@ public class Ticket implements Serializable {
     private final String barcode;
     private final String error;
     private String is_validated;
-    private int event;
 
     /**
      *
@@ -68,16 +65,8 @@ public class Ticket implements Serializable {
         return ticket_type;
     }
 
-    public String getSeatType() {
-        return seat_type;
-    }
-
     public String getBarcodeText() {
         return barcode;
-    }
-
-    public String getErrorMessage() {
-        return error;
     }
 
     public boolean isScanned(){
@@ -86,10 +75,6 @@ public class Ticket implements Serializable {
 
     public void setIs_validated(boolean scanned){
         is_validated = scanned ? "vrai" : "faux";
-    }
-
-    public void setEvent(int id){
-        this.event = id;
     }
 
     @Override

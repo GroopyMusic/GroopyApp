@@ -1,13 +1,10 @@
 package adri.suys.un_mutescan.presenter;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Counterpart;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
-import adri.suys.un_mutescan.fragments.EventStatFragment;
 import adri.suys.un_mutescan.model.Event;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.EventStatViewInterface;
 
 public class EventStatPresenter {
@@ -50,14 +47,6 @@ public class EventStatPresenter {
 
     public Map<Counterpart, Integer> getDetailsOfSellCp(){
         return event.getStatsPerCp();
-    }
-
-    public boolean checkIfEventToday(){
-        return event.isToday();
-    }
-
-    public boolean isEventInTheFuture(){
-        return event.isFuture();
     }
 
 }

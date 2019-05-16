@@ -30,6 +30,7 @@ import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.presenter.AudiencePresenter;
 import adri.suys.un_mutescan.utils.OnSwipeTouchListener;
+import adri.suys.un_mutescan.viewinterfaces.AudienceRowViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
 public class AudienceFragment extends Fragment implements AudienceViewInterface {
@@ -158,7 +159,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     }
 
     private void getAudience(int options){
-        presenter.getAudience(options, currentTab);
+        presenter.getAudience(options);
     }
 
     private void clickAll(){
@@ -228,7 +229,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
     // HOLDER //
     ////////////
 
-    public class AudienceHolder extends RecyclerView.ViewHolder {
+    public class AudienceHolder extends RecyclerView.ViewHolder implements AudienceRowViewInterface {
 
         TextView buyerName, seatNo, ticketType;
         Button copyBtn;

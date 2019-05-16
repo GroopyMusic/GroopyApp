@@ -19,7 +19,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,8 +31,8 @@ import java.util.Map;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.model.Counterpart;
-import adri.suys.un_mutescan.utils.MyFormatter;
 import adri.suys.un_mutescan.presenter.EventStatPresenter;
+import adri.suys.un_mutescan.utils.MyFormatter;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.EventStatViewInterface;
 
@@ -127,8 +126,6 @@ public class EventStatFragment extends Fragment implements EventStatViewInterfac
         this.horizontalBarChart.getAxisRight().setAxisMinimum(0);
         this.horizontalBarChart.getLegend().setEnabled(false);
         if (presenter.getTotalSoldOnSite() == 0){
-            displayHorizontalBarChart(false);
-        } else if (presenter.isEventInTheFuture()) {
             displayHorizontalBarChart(false);
         } else {
             displayHorizontalBarChart(true);

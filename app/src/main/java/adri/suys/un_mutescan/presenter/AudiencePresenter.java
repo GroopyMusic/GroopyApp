@@ -5,35 +5,31 @@ import java.util.List;
 
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.apirest.RestService;
-import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.fragments.AudienceFragment;
 import adri.suys.un_mutescan.model.Ticket;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
+import adri.suys.un_mutescan.viewinterfaces.AudienceRowViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
 public class AudiencePresenter {
 
-    private final RestService restCommunication;
     private final AudienceViewInterface view;
     private List<Ticket> audienceToBeDisplayed = new ArrayList<>();
     private static final int ALL = 1;
     private static final int IN = 2;
     private static final int OUT = 3;
 
-    public AudiencePresenter(AudienceFragment view){
+    public AudiencePresenter(AudienceViewInterface view){
         this.view = view;
-        this.restCommunication = new RestService((Activity) view.getActivity());
     }
 
-    public void getAudience(int options, int currentState) {
+    public void getAudience(int options) {
         if (options == ALL){
-            currentState = ALL;
             audienceToBeDisplayed = UnMuteDataHolder.getAudience();
         } else {
             if (options == IN){
-                currentState = IN;
                 audienceToBeDisplayed = sortAudienceIn();
             } else if (options == OUT) {
-                currentState = OUT;
                 audienceToBeDisplayed = sortAudienceOut();
             }
         }
@@ -41,7 +37,7 @@ public class AudiencePresenter {
         view.updateAudienceList();
     }
 
-    public void onViewCounterpartAtPosition(int i, AudienceFragment.AudienceHolder audienceHolder) {
+    public void onViewCounterpartAtPosition(int i, AudienceRowViewInterface audienceHolder) {
         Ticket currentCustomer = audienceToBeDisplayed.get(i);
         String name = currentCustomer.getName() + " (" + currentCustomer.getBarcodeText() + ")";
         audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatValue());
@@ -66,7 +62,6 @@ public class AudiencePresenter {
     private List<Ticket> sortAudienceIn() {
         List<Ticket> audienceSorted = new ArrayList<>();
         for (Ticket t : UnMuteDataHolder.getAudience()){
-            System.out.println(t);
             if (t.isScanned()){
                 audienceSorted.add(t);
             }

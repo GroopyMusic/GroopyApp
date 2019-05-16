@@ -48,7 +48,7 @@
     <string name="order_recap">U voegt %1$d ticket(s) toe voor %2$.2f euro. Bevestigen ?</string>
     <string name="payment_mode">Betaalmiddel</string>
     <string name="via_bancontact">For BANCONTACT, scan the barcode below.</string>
-    <string name="via_cash">VIA CASH</string>
+    <string name="via_cash">BETALEN MET CASH</string>
     <string name="via_bc">VIA BANCONTACT</string>
     <string name="amount_to_pay">Te betalen : %1$.2f euro</string>
     <string name="done_payment">Het is betaald !</string>
@@ -95,4 +95,11 @@
     <string name="faq_answer3">Om de app te kunnen gebruiken, moet u geregistreerd zijn op het platform Ticked-it als event manager. De persoon kan dus ofwel het account van een van de managers van het evenement gebruiken of u kunt hem/haar tijdelijk toevoegen aan uw organisatie.</string>
     <string name="instructions">Om tickets te kunnen scannen, moet uw app gesynchroniseerd zijn met onze database. Om dit te doen, hoeft u alleen maar verbonden te zijn met het internet en u minimaal één keer in te loggen op de dag van uw evenement. Houd er rekening mee dat als u na deze verbinding tickets verkoopt, deze niet op de app verschijnen. Daarom moet u zich opnieuw aanmelden (met een internetverbinding).</string>
     <string name="no_internet">Geen internetverbinding ?!</string>
+    <string name="save_buyers_infos">Bewaar de info van de koper</string>
+    <string name="email_address">Emailadres</string>
+    <string name="firstname">Voornaam</string>
+    <string name="lastname">Familienaam</string>
+    <string name="optional">(Facultatief)</string>
+    <string name="name_but_no_email">De 3 invoervelden moeten worden ingevuld !</string>
+    <string name="email_no_valid">Emailadres niet geldig</string>
 </resources>

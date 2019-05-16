@@ -163,7 +163,7 @@ public abstract class Activity extends AppCompatActivity {
      * Get the user's data stored in a internal storage file
      * @return the user
      */
-    public User retrieveUser(){
+    public User retrieveUserFromDB(){
         User user = null;
         try {
             FileInputStream fis = openFileInput(USER);

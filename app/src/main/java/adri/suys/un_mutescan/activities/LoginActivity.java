@@ -3,27 +3,30 @@ package adri.suys.un_mutescan.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.credentials.Credential;
+import com.google.android.gms.auth.api.credentials.CredentialRequest;
+import com.google.android.gms.auth.api.credentials.CredentialRequestResult;
+import com.google.android.gms.auth.api.credentials.CredentialsOptions;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.presenter.LoginPresenter;
 import adri.suys.un_mutescan.viewinterfaces.LoginViewInterface;
 
@@ -37,17 +40,28 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
     private boolean isShown = false;
     private final static String KEY_USERNAME = "username";
     private static final int RC_SAVE = 999;
+    private RestService restCommunication;
+    private GoogleApiClient credentialsClient;
+    private Credential credential;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         configActionBar();
+        restCommunication = new RestService(this);
         initViewElements();
         if (savedInstanceState != null){
             pwdInput.setText(savedInstanceState.getString(KEY_USERNAME));
         }
         presenter = new LoginPresenter(this);
+        restCommunication.setUserPresenter(presenter);
+        CredentialsOptions credentialsOptions = new CredentialsOptions.Builder().forceEnableSaveDialog().build();
+        credentialsClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .enableAutoManage(this, 0, this)
+                .addApi(Auth.CREDENTIALS_API, credentialsOptions)
+                .build();
     }
 
     @Override
@@ -78,7 +92,6 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
             showToast(getResources().getString(R.string.user_logged, usernameInput.getText().toString()));
             changeScreen();
         }
-        presenter.setmIsResolving(false);
     }
 
     @Override
@@ -102,47 +115,14 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         System.out.println("onConnectionFailed");
     }
 
-    /**
-     * Log the user with the username and the password he has typed in the Textfield
-     * @param v the view linked to the Activity
-     */
-    public void loginViaUm(View v) {
-        String username = usernameInput.getText().toString();
-        if (!username.equals("")){
-            showProgressBar();
-            presenter.logUser(isInternetConnected(), username.toLowerCase());
-        } else {
-            showToast(getResources().getString(R.string.user_no_login));
-        }
-    }
-
-    /**
-     * Changes the screen to the one that has all the events (those linked to the user) listed.
-     */
+    @Override
     public void changeScreen(){
         startActivity(new Intent(this, EventListActivity.class));
     }
 
-    /**
-     * Hide the ProgressBar
-     */
+    @Override
     public void hideProgressBar() {
         progressBar.setVisibility(View.INVISIBLE);
-    }
-
-    /**
-     * Show the ProgressBar
-     */
-    private void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public String getUsername(){
-        return usernameInput.getText().toString();
-    }
-
-    public String getPassword(){
-        return pwdInput.getText().toString();
     }
 
     @Override
@@ -190,11 +170,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         showToast(getResources().getString(R.string.credentials_saved));
     }
 
-    /**
-     * Displays a pop up that asks the user if he wants to save its credential on its Google account
-     * with the Smart Lock for Password functionality.
-     * @param username
-     */
+    @Override
     public void showSmartLockPopUp(String username) {
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
         String message = getResources().getString(R.string.right_account, username);
@@ -205,7 +181,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
                         showProgressBar();
-                        presenter.logUserSmartlock();
+                        presenter.logUserSmartlock(credential.getPassword(), credential.getId());
                     }
                 })
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -217,20 +193,6 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
                 });
         AlertDialog alert = dialogBuilder.create();
         alert.setTitle("Smart Lock");
-        alert.show();
-    }
-
-    private void showInstructionPopUp(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogNoInternetStyle);
-        String title = getResources().getString(R.string.no_internet);
-        builder.setMessage(R.string.instructions).setTitle(title);
-        builder.setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        AlertDialog alert = builder.create();
         alert.show();
     }
 
@@ -251,6 +213,72 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
             }
         } else {
             System.out.println("STATUS: FAIL");
+        }
+    }
+
+    @Override
+    public void loginUser(String username) {
+        restCommunication.loginUser(username);
+    }
+
+    @Override
+    public void retrieveCredentials() {
+        CredentialRequest request = new CredentialRequest.Builder().setPasswordLoginSupported(true).build();
+        Auth.CredentialsApi.request(credentialsClient, request).setResultCallback(
+                new ResultCallback<CredentialRequestResult>() {
+                    @Override
+                    public void onResult(CredentialRequestResult credentialRequestResult) {
+                        Status status = credentialRequestResult.getStatus();
+                        if (credentialRequestResult.getStatus().isSuccess()) {
+                            onCredentialRetrieved(credentialRequestResult.getCredential());
+                        } else if (status.getStatusCode() == CommonStatusCodes.SIGN_IN_REQUIRED) {
+                            hideProgressBar();
+                        } else {
+                            hideProgressBar();
+                            System.out.println("Unrecognized status code: " + status.getStatusCode());
+                        }
+                    }
+                }
+        );
+    }
+
+    @Override
+    public void deleteCredential() {
+        Auth.CredentialsApi.delete(credentialsClient,
+                credential).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(Status status) {
+                if (status.isSuccess()) {
+                    // yeah
+                } else {
+                    // oops
+                }
+            }
+        });
+    }
+
+    @Override
+    public void saveCredentials(String username, String password) {
+        Credential credential = new Credential.Builder(username).setPassword(password).build();
+        Auth.CredentialsApi.save(credentialsClient, credential).setResultCallback(new ResultCallback<Status>() {
+            @Override
+            public void onResult(@NonNull Status status) {
+                if (status.isSuccess()){
+                    showCredentialsSavedToast();
+                } else {
+                    resolveResult(status, RC_SAVE, false);
+                }
+            }
+        });
+    }
+
+    public void loginViaUm(View v) {
+        String username = usernameInput.getText().toString();
+        if (!username.equals("")){
+            showProgressBar();
+            presenter.logUser(isInternetConnected(), username.toLowerCase(), pwdInput.getText().toString());
+        } else {
+            showToast(getResources().getString(R.string.user_no_login));
         }
     }
 
@@ -284,5 +312,28 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         });
     }
 
+    private void onCredentialRetrieved(Credential credential){
+        presenter.setHasCredentialsStocked(true);
+        this.credential = credential;
+        hideProgressBar();
+        showSmartLockPopUp(credential.getId());
+    }
 
+    private void showInstructionPopUp(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogNoInternetStyle);
+        String title = getResources().getString(R.string.no_internet);
+        builder.setMessage(R.string.instructions).setTitle(title);
+        builder.setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
 }

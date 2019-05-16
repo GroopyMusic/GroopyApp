@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
+import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
 import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
@@ -21,6 +22,7 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
     private TicketInfosPresenter presenter;
     private ProgressBar progressBar;
     private LinearLayout frame;
+    private RestService restCommunication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,8 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
         configActionBar();
         initViewElements();
         presenter = new TicketInfosPresenter(this);
+        restCommunication = new RestService(this);
+        restCommunication.setTicketPresenter(presenter);
         dialogBuilder = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
         displayInfos();
     }
@@ -176,6 +180,11 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
         AlertDialog alert = dialogBuilder.create();
         alert.setTitle("");
         alert.show();
+    }
+
+    @Override
+    public void scanTicket(int userID, int eventID, String barcode) {
+        restCommunication.scanTicket(userID, eventID, barcode);
     }
 
     /**

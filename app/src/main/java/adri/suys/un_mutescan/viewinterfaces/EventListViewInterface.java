@@ -1,6 +1,7 @@
 package adri.suys.un_mutescan.viewinterfaces;
 
 import java.util.List;
+
 import adri.suys.un_mutescan.model.Event;
 
 public interface EventListViewInterface {
@@ -12,4 +13,5 @@ public interface EventListViewInterface {
     void backUpEvents();
     void showToast(String message);
     List<Event> retrieveEvents();
+    void collectEventsInDB(int id);
 }
