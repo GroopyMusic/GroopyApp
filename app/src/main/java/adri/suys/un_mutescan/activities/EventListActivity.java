@@ -3,7 +3,10 @@ package adri.suys.un_mutescan.activities;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -18,8 +21,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Objects;
 
@@ -158,10 +164,10 @@ public class EventListActivity extends Activity implements EventListViewInterfac
     ////////////
     // HOLDER //
     ////////////
-
     public class EventHolder extends RecyclerView.ViewHolder implements EventRowViewInterface {
 
         private Button eventBtn;
+        private ImageView imageView;
 
         EventHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_event, parent, false));
@@ -183,6 +189,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
 
         private void initViewElements() {
             eventBtn = itemView.findViewById(R.id.event);
+            imageView = itemView.findViewById(R.id.event_img);
             setClickActions();
         }
 
@@ -194,12 +201,18 @@ public class EventListActivity extends Activity implements EventListViewInterfac
             eventBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    myAction();
+                    selectEvent();
+                }
+            });
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    selectEvent();
                 }
             });
         }
 
-        private void myAction(){
+        private void selectEvent(){
             int currentPosition = this.getAdapterPosition();
             presenter.persistEvent(currentPosition);
             Intent intent = new Intent(EventListActivity.this, OneEventActivity.class);
@@ -213,12 +226,16 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         public void setEventNameInGreen(){
             eventBtn.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.reef_encounter));
         }
+
+        @Override
+        public void setImage(String photoPath) {
+            new DownLoadImageTask(imageView).execute(photoPath);
+        }
     }
 
     /////////////
     // ADAPTER //
     /////////////
-
     @SuppressWarnings("unchecked")
     private class EventAdapter extends RecyclerView.Adapter<EventHolder> implements Filterable {
 
@@ -271,6 +288,38 @@ public class EventListActivity extends Activity implements EventListViewInterfac
                     presenter.notifyChanged(filteredEvents);
                 }
             };
+        }
+    }
+
+    /////////////////////////////////////////////////////
+    // FETCH IMAGE FROM URL AND SAVE IT INTO IMAGEVIEW //
+    /////////////////////////////////////////////////////
+    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap> {
+
+        ImageView imageView;
+
+        public DownLoadImageTask(ImageView imageView){
+            this.imageView = imageView;
+        }
+
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        protected void onPostExecute(Bitmap result){
+            if (result != null) {
+                imageView.setImageBitmap(result);
+            } else {
+                imageView.setImageDrawable(ContextCompat.getDrawable(EventListActivity.this, R.drawable.artist_card_default));
+            }
         }
     }
 

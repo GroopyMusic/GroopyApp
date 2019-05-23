@@ -15,6 +15,7 @@ public class Ticket implements Serializable {
     private final String barcode;
     private final String error;
     private String is_validated;
+    private String cart_number;
 
     /**
      *
@@ -24,13 +25,14 @@ public class Ticket implements Serializable {
      * @param seatType the seat number (nothing if it is a stand up ticket)
      * @param errorMessage the error message (nothing if the ticket is valid) if the ticket is unvalid
      */
-    public Ticket(String name, String ticketType, String seatType, String barcodeText, String errorMessage, String isScanned) {
+    public Ticket(String name, String ticketType, String seatType, String barcodeText, String errorMessage, String isScanned, String cartNumber) {
         this.buyer = name;
         this.ticket_type = ticketType;
         this.seat_type = seatType;
         this.barcode = barcodeText;
         this.error = errorMessage;
         this.is_validated = isScanned;
+        this.cart_number = cartNumber;
     }
 
     public String getSeatValue(){
@@ -75,6 +77,10 @@ public class Ticket implements Serializable {
 
     public void setIs_validated(boolean scanned){
         is_validated = scanned ? "vrai" : "faux";
+    }
+
+    public String getCartNumber(){
+        return cart_number;
     }
 
     @Override

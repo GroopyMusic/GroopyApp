@@ -25,4 +25,5 @@ public interface LoginViewInterface {
     void retrieveCredentials();
     void deleteCredential();
     void saveCredentials(String username, String password);
+    void enableButton();
 }

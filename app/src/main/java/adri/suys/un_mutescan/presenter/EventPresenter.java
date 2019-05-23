@@ -58,6 +58,7 @@ public class EventPresenter {
         } else {
             this.currentEvent = events.get(position);
         }
+        view.setImage(currentEvent.getPhotoPath());
         if (!currentEvent.isToday() && currentEvent.isPassed()){
             view.setPastEventName(currentEvent.getName());
             view.setEventNameInRed();
@@ -185,6 +186,7 @@ public class EventPresenter {
             JSONArray detailsTixPerCp = (JSONArray) jsonObject.get("detailsTixPerCp");
             Map<String, String> map = retrieveDetailsTixPerCp(detailsTixPerCp);
             e.setMap(map);
+            e.setPhotoPath(jsonObject.getString("photoPath"));
             events.add(e);
         }
         return events;

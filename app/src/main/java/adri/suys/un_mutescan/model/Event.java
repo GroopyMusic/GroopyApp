@@ -28,6 +28,8 @@ public class Event implements Serializable {
     private List<Ticket> audience;
     private List<Counterpart> counterparts;
     private Map<Counterpart, Integer> statsPerCp;
+    private boolean isUnMute;
+    private String photoPath;
 
     /**
      *
@@ -43,8 +45,10 @@ public class Event implements Serializable {
         this.id = id;
         if (name.contains("[Ticked-it]")){
             this.name = name.substring(12);
+            this.isUnMute = false;
         } else {
             this.name = name;
+            this.isUnMute = true;
         }
         this.nbTotalTicket = nbTotalTicket;
         this.nbScannedTicket = nbScannedTicket;
@@ -136,7 +140,33 @@ public class Event implements Serializable {
         if (date == null){
             return true;
         } else {
-            return date.before(new Date());
+            Calendar calToday = Calendar.getInstance();
+            calToday.setTime(new Date());
+            int todayDay = calToday.get(Calendar.DAY_OF_MONTH);
+            int todayMonth = calToday.get(Calendar.MONTH) + 1;
+            int todayYear = calToday.get(Calendar.YEAR);
+            Calendar calEvent = Calendar.getInstance();
+            calEvent.setTime(date);
+            int eventDay = calEvent.get(Calendar.DAY_OF_MONTH);
+            int eventMonth = calEvent.get(Calendar.MONTH) + 1;
+            int eventYear = calEvent.get(Calendar.YEAR);
+            if (eventYear < todayYear){
+                return true;
+            } else if (eventYear > todayYear){
+                return false;
+            } else {
+                if (eventMonth < todayMonth){
+                    return true;
+                } else if (eventMonth > todayMonth){
+                    return false;
+                } else {
+                    if (eventDay < todayDay){
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
         }
     }
 
@@ -185,5 +215,24 @@ public class Event implements Serializable {
 
     public Map<Counterpart, Integer> getStatsPerCp() {
         return statsPerCp;
+    }
+
+    public boolean isUnMute() {
+        return isUnMute;
+    }
+
+    public String getPhotoPath() {
+        if (photoPath.equals("")){
+            return "http://192.168.1.33:8888/GroopyMusic/web/images/artist-card-default.jpg";
+        }
+        if (isUnMute){
+            return "http://192.168.1.33:8888/GroopyMusic/web/images/festivals/" + photoPath;
+        } else {
+            return "http://192.168.1.33:8888/GroopyMusic/web/yb/images/campaigns/" + photoPath;
+        }
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 }

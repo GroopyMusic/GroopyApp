@@ -30,14 +30,14 @@ public class AudiencePresenterTest {
 
     @Before
     public void setUp() throws Exception {
-        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "vrai");
-        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode1", "", "vrai");
-        Ticket t3 = new Ticket("Personne 3", "Ticket adulte", "N/A", "barcode1", "", "vrai");
-        Ticket t4 = new Ticket("Personne 4", "Ticket adulte", "N/A", "barcode1", "", "vrai");
+        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "vrai","bcd");
+        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode1", "", "vrai","aaa");
+        Ticket t3 = new Ticket("Personne 3", "Ticket adulte", "N/A", "barcode1", "", "vrai","bca");
+        Ticket t4 = new Ticket("Personne 4", "Ticket adulte", "N/A", "barcode1", "", "vrai","abc");
 
-        Ticket t5 = new Ticket("Personne 11", "Ticket adulte", "N/A", "barcode1", "", "faux");
-        Ticket t6 = new Ticket("Personne 12", "Ticket adulte", "N/A", "barcode1", "", "faux");
-        Ticket t7 = new Ticket("Personne 13", "Ticket adulte", "N/A", "barcode1", "", "faux");
+        Ticket t5 = new Ticket("Personne 11", "Ticket adulte", "N/A", "barcode1", "", "faux","cde");
+        Ticket t6 = new Ticket("Personne 12", "Ticket adulte", "N/A", "barcode1", "", "faux","eee");
+        Ticket t7 = new Ticket("Personne 13", "Ticket adulte", "N/A", "barcode1", "", "faux","fee");
 
         List<Ticket> audience = new ArrayList<>(Arrays.asList(t1, t2, t3, t4, t5, t6, t7));
         Event event = new Event(1, "Mon événement", 50, 10, 40, 3, new Date(), 1);
@@ -122,5 +122,12 @@ public class AudiencePresenterTest {
         String pattern = "pers";
         List<Ticket> filtered = presenter.getFilteredResult(pattern, IN);
         assertEquals(4, filtered.size());
+    }
+
+    @Test
+    public void filterCartSuccess(){
+        String pattern = "bc";
+        List<Ticket> filtered = presenter.getFilteredResult(pattern, ALL);
+        assertEquals(3, filtered.size());
     }
 }

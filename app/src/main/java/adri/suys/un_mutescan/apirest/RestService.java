@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import adri.suys.un_mutescan.BuildConfig;
 import adri.suys.un_mutescan.activities.Activity;
 import adri.suys.un_mutescan.model.Counterpart;
 import adri.suys.un_mutescan.model.Event;
@@ -34,16 +35,12 @@ public class RestService {
 
     private static final int SCAN_TICKET = 0;
     private static final int USER = 2;
+    private static final String IP_ADDRESS = "192.168.1.33"; // changer en fonction des besoins ou utiliser "localhost"
 
-    private static final String BASE_URL_USER = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/loginuser?";
-    private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/scanticket?";
-    private static final String BASE_URL_EVENTS = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/getevents?";
-    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.33:8888/GroopyMusic/web/app_dev.php/yb/rest/addticket?";
-
-    /*private static final String BASE_URL_USER = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/loginuser?";
-    private static final String BASE_URL_SCAN_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/scanticket?";
-    private static final String BASE_URL_EVENTS = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/getevents?";
-    private static final String BASE_URL_ADD_TICKET = "http://192.168.1.205:8888/GroopyMusic/web/app_dev.php/addticket?";*/
+    private static String BASE_URL_USER;
+    private static String BASE_URL_SCAN_TICKET;
+    private static String BASE_URL_EVENTS;
+    private static String BASE_URL_ADD_TICKET;
 
     private TicketInfosPresenter ticketPresenter;
     private LoginPresenter userPresenter;
@@ -62,6 +59,21 @@ public class RestService {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setDateFormat("M/d/yy hh:mm a");
         gson = gsonBuilder.create();
+        handleUrls();
+    }
+
+    private void handleUrls(){
+        if (BuildConfig.IS_DEBUG_MODE){
+            BASE_URL_USER = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/loginuser?";
+            BASE_URL_SCAN_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/scanticket?";
+            BASE_URL_EVENTS = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/getevents?";
+            BASE_URL_ADD_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/addticket?";
+        } else {
+            BASE_URL_USER = "https://ticked-it.be/rest/loginuser?";
+            BASE_URL_SCAN_TICKET = "https://ticked-it.be/rest/scanticket?";
+            BASE_URL_EVENTS = "https://ticked-it.be/rest/getevents?";
+            BASE_URL_ADD_TICKET = "https://ticked-it.be/rest/addticket?";
+        }
     }
 
     /**

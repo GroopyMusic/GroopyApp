@@ -77,8 +77,8 @@ public class UnMuteDataHolderTest {
 
     @Test
     public void testValidatingTicketSuccess(){
-        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "faux");
-        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode2", "", "faux");
+        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "faux","");
+        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode2", "", "faux","");
         UnMuteDataHolder.getAudience().add(t1);
         UnMuteDataHolder.getAudience().add(t2);
         int i = UnMuteDataHolder.isValidatedTicket("barcode1");
@@ -87,8 +87,8 @@ public class UnMuteDataHolderTest {
 
     @Test
     public void testValidatingTicketFail(){
-        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "faux");
-        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode2", "", "faux");
+        Ticket t1 = new Ticket("Personne 1", "Ticket adulte", "N/A", "barcode1", "", "faux","");
+        Ticket t2 = new Ticket("Personne 2", "Ticket adulte", "N/A", "barcode2", "", "faux","");
         UnMuteDataHolder.getAudience().add(t1);
         UnMuteDataHolder.getAudience().add(t2);
         int i = UnMuteDataHolder.isValidatedTicket("nejuendenudne");

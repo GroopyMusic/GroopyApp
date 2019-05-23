@@ -77,7 +77,7 @@ public class UnMuteDataHolder {
     public static void addTickets(){
         for (Counterpart cp : event.getCounterparts()){
             for (int i = 0; i < cp.getQuantity(); i++) {
-                Ticket t = new Ticket("anonyme", cp.getName(), "", "000", "", "vrai");
+                Ticket t = new Ticket("anonyme", cp.getName(), "", "000", "", "vrai", "");
                 event.getAudience().add(t);
             }
             event.updateMap(cp, cp.getQuantity());

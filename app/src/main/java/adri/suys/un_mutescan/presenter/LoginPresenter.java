@@ -89,6 +89,7 @@ public class LoginPresenter {
                 view.showBadCredentialsToast();
                 break;
         }
+        view.enableButton();
         view.hideProgressBar();
     }
 
@@ -104,6 +105,7 @@ public class LoginPresenter {
         } else if (error instanceof ParseError){
             view.showServerConnectionProblemToast();
         }
+        view.enableButton();
         view.hideProgressBar();
     }
 

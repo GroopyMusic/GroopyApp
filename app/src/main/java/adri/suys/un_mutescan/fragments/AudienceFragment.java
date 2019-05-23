@@ -231,7 +231,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
 
     public class AudienceHolder extends RecyclerView.ViewHolder implements AudienceRowViewInterface {
 
-        TextView buyerName, seatNo, ticketType;
+        TextView buyerName, seatNo, ticketType, cartNumber;
         Button copyBtn;
 
         AudienceHolder(View v){
@@ -239,10 +239,11 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
             initViewElements(v);
         }
 
-        public void displayInfos(String name, String ticketType, String seatNo){
+        public void displayInfos(String name, String ticketType, String seatNo, String cartNumber){
             this.buyerName.setText(name);
             this.seatNo.setText(seatNo);
             this.ticketType.setText(ticketType);
+            this.cartNumber.setText(cartNumber);
         }
 
         private void initViewElements(View v){
@@ -250,6 +251,7 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
             seatNo = v.findViewById(R.id.audience_seat_no);
             ticketType = v.findViewById(R.id.audience_ticket_type);
             copyBtn = v.findViewById(R.id.copyBtn);
+            cartNumber = v.findViewById(R.id.audience_cart_number);
             buyerName.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -272,6 +274,12 @@ public class AudienceFragment extends Fragment implements AudienceViewInterface 
                 @Override
                 public void onClick(View view) {
                     copyBarcode(view);
+                }
+            });
+            cartNumber.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    return copyBarcode(view);
                 }
             });
         }

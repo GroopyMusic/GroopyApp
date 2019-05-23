@@ -45,8 +45,8 @@ public class EventTest {
     @Test
     public void isTodayTestFail(){
         Date d = null;
-        Event e = new Event(1, "Mon événement", 50, 10, 40, 3, d, 1);
-        boolean isToday = e.isToday();
+        Event event = new Event(1, "Mon événement", 50, 10, 40, 3, d, 1);
+        boolean isToday = event.isToday();
         assertFalse(isToday);
     }
 

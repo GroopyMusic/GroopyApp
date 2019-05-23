@@ -28,9 +28,9 @@ public class TicketInfosPresenterTest {
     @Before
     public void setUp() throws Exception {
         Event event = new Event(1, "Mon événement", 50, 10, 40, 3, new Date(), 1);
-        Ticket t5 = new Ticket("Personne 11", "Ticket adulte", "N/A", "barcode1", "", "vrai");
-        Ticket t6 = new Ticket("Personne 12", "Ticket adulte", "N/A", "barcode2", "", "faux");
-        Ticket t7 = new Ticket("Personne 13", "Ticket adulte", "N/A", "barcode3", "", "faux");
+        Ticket t5 = new Ticket("Personne 11", "Ticket adulte", "N/A", "barcode1", "", "vrai", "");
+        Ticket t6 = new Ticket("Personne 12", "Ticket adulte", "N/A", "barcode2", "", "faux", "");
+        Ticket t7 = new Ticket("Personne 13", "Ticket adulte", "N/A", "barcode3", "", "faux"," ");
         List<Ticket> audience = new ArrayList<>(Arrays.asList(t5, t6, t7));
         event.setAudience(audience);
         UnMuteDataHolder.setEvent(event);

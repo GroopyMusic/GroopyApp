@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
@@ -43,6 +44,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
     private RestService restCommunication;
     private GoogleApiClient credentialsClient;
     private Credential credential;
+    private AppCompatButton logBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,6 +183,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
                         showProgressBar();
+                        logBtn.setEnabled(false);
                         presenter.logUserSmartlock(credential.getPassword(), credential.getId());
                     }
                 })
@@ -272,6 +275,11 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         });
     }
 
+    @Override
+    public void enableButton() {
+        logBtn.setEnabled(true);
+    }
+
     public void loginViaUm(View v) {
         String username = usernameInput.getText().toString();
         if (!username.equals("")){
@@ -293,6 +301,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         showProgressBar();
         showPassword = findViewById(R.id.password_visibility);
         handleShowHidePwd();
+        logBtn = findViewById(R.id.login_um_btn);
     }
 
     private void handleShowHidePwd(){

@@ -40,7 +40,8 @@ public class AudiencePresenter {
     public void onViewCounterpartAtPosition(int i, AudienceRowViewInterface audienceHolder) {
         Ticket currentCustomer = audienceToBeDisplayed.get(i);
         String name = currentCustomer.getName() + " (" + currentCustomer.getBarcodeText() + ")";
-        audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatValue());
+        String cartText = "Commande: " + currentCustomer.getCartNumber();
+        audienceHolder.displayInfos(name, currentCustomer.getTicketType(), currentCustomer.getSeatValue(), cartText);
     }
 
     public int getItemCount() {
@@ -101,7 +102,7 @@ public class AudiencePresenter {
                 default: unfilteredList = sortAudienceOut(); break;
             }
             for (Ticket t : unfilteredList){
-                if (t.getName().toLowerCase().contains(pattern)){
+                if (t.getName().toLowerCase().contains(pattern) || t.getCartNumber().toLowerCase().contains(pattern)){
                     filteredList.add(t);
                 }
             }

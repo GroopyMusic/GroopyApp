@@ -15,6 +15,7 @@ import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventPresenterTest {
@@ -40,18 +41,7 @@ public class EventPresenterTest {
     @Test
     public void handleJSONArrayTestSuccess(){
         presenter.handleJSONArray(jsonArrayOK);
-        List<Event> events = UnMuteDataHolder.getEvents();
-        assertEquals(events.get(0).getId(),750051);
-        assertEquals(events.get(1).getId(),750048);
-        assertEquals(events.get(2).getId(),750041);
-        Event e1 = events.get(0);
-        assertEquals(e1.getAudience().get(e1.getAudience().size() - 1).getName(), "ynns pakis");
-        Event e2 = events.get(1);
-        assertEquals(e2.getCounterparts().get(0).getName(), "Ticket général");
-        Event e3 = events.get(2);
-        Counterpart cp = e3.getCounterparts().get(0);
-        int nbSoldTicketForFirstCp = e3.getStatsPerCp().get(cp);
-        assertEquals(nbSoldTicketForFirstCp, 1);
+        verify(viewInterface).backUpEvents();
     }
 
     @Test
@@ -60,7 +50,7 @@ public class EventPresenterTest {
         assertTrue(presenter.getError() != "");
     }
 
-    private String getResponseFromAPI() {
+    private String getResponseFromAPI(){
         return "[\n" +
                 "    {\n" +
                 "        \"id\": 750041,\n" +
@@ -112,7 +102,45 @@ public class EventPresenterTest {
                 "            {\n" +
                 "                \"82\": 1\n" +
                 "            }\n" +
-                "        ]\n" +
+                "        ],\n" +
+                "        \"photoPath\": \"\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"id\": 750039,\n" +
+                "        \"name\": \"[Ticked-it] Event A\",\n" +
+                "        \"nbTotalTicket\": 500,\n" +
+                "        \"nbScannedTicket\": 0,\n" +
+                "        \"nbSoldTicket\": 0,\n" +
+                "        \"nbBoughtOnSiteTicket\": 0,\n" +
+                "        \"date\": {\n" +
+                "            \"date\": \"2019-06-20 20:00:00.000000\",\n" +
+                "            \"timezone_type\": 3,\n" +
+                "            \"timezone\": \"Europe/Brussels\"\n" +
+                "        },\n" +
+                "        \"nbTicketBoughtInCash\": 0,\n" +
+                "        \"error\": \"\",\n" +
+                "        \"audience\": [],\n" +
+                "        \"counterparts\": [\n" +
+                "            {\n" +
+                "                \"id\": 76,\n" +
+                "                \"name\": \"Ticket adulte\",\n" +
+                "                \"price\": 10\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"id\": 77,\n" +
+                "                \"name\": \"Ticket enfant\",\n" +
+                "                \"price\": 8\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"detailsTixPerCp\": [\n" +
+                "            {\n" +
+                "                \"76\": 0\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"77\": 0\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"photoPath\": \"\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "        \"id\": 750051,\n" +
@@ -120,13 +148,13 @@ public class EventPresenterTest {
                 "        \"nbTotalTicket\": 50,\n" +
                 "        \"nbScannedTicket\": 6,\n" +
                 "        \"nbSoldTicket\": 14,\n" +
-                "        \"nbBoughtOnSiteTicket\": 24,\n" +
+                "        \"nbBoughtOnSiteTicket\": 29,\n" +
                 "        \"date\": {\n" +
-                "            \"date\": \"2019-05-15 11:07:35.393933\",\n" +
+                "            \"date\": \"2019-05-17 16:41:35.528103\",\n" +
                 "            \"timezone_type\": 3,\n" +
                 "            \"timezone\": \"Europe/Brussels\"\n" +
                 "        },\n" +
-                "        \"nbTicketBoughtInCash\": 24,\n" +
+                "        \"nbTicketBoughtInCash\": 29,\n" +
                 "        \"error\": \"\",\n" +
                 "        \"audience\": [\n" +
                 "            {\n" +
@@ -432,6 +460,46 @@ public class EventPresenterTest {
                 "                \"barcode\": \"cf9935cc7057bdb5821\",\n" +
                 "                \"error\": \"\",\n" +
                 "                \"is_validated\": \"faux\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"buyer\": \"Tyrion Lannister\",\n" +
+                "                \"ticket_type\": \"Jeton de présence\",\n" +
+                "                \"seat_type\": \"N/A\",\n" +
+                "                \"barcode\": \"0\",\n" +
+                "                \"error\": \"\",\n" +
+                "                \"is_validated\": \"vrai\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"buyer\": \" \",\n" +
+                "                \"ticket_type\": \"Jeton de présence\",\n" +
+                "                \"seat_type\": \"N/A\",\n" +
+                "                \"barcode\": \"0\",\n" +
+                "                \"error\": \"\",\n" +
+                "                \"is_validated\": \"vrai\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"buyer\": \"anonyme anonyme\",\n" +
+                "                \"ticket_type\": \"Jeton de présence\",\n" +
+                "                \"seat_type\": \"N/A\",\n" +
+                "                \"barcode\": \"0\",\n" +
+                "                \"error\": \"\",\n" +
+                "                \"is_validated\": \"vrai\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"buyer\": \"anonyme\",\n" +
+                "                \"ticket_type\": \"Jeton de présence\",\n" +
+                "                \"seat_type\": \"N/A\",\n" +
+                "                \"barcode\": \"0\",\n" +
+                "                \"error\": \"\",\n" +
+                "                \"is_validated\": \"vrai\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"buyer\": \"Guillaume Denis\",\n" +
+                "                \"ticket_type\": \"Jeton de présence\",\n" +
+                "                \"seat_type\": \"N/A\",\n" +
+                "                \"barcode\": \"0\",\n" +
+                "                \"error\": \"\",\n" +
+                "                \"is_validated\": \"vrai\"\n" +
                 "            }\n" +
                 "        ],\n" +
                 "        \"counterparts\": [\n" +
@@ -443,9 +511,39 @@ public class EventPresenterTest {
                 "        ],\n" +
                 "        \"detailsTixPerCp\": [\n" +
                 "            {\n" +
-                "                \"86\": 38\n" +
+                "                \"86\": 43\n" +
                 "            }\n" +
-                "        ]\n" +
+                "        ],\n" +
+                "        \"photoPath\": \"fred-and-the-healers-spacium.jpg\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "        \"id\": 750049,\n" +
+                "        \"name\": \"[Ticked-it] Una evenementa spectacular\",\n" +
+                "        \"nbTotalTicket\": 403,\n" +
+                "        \"nbScannedTicket\": 1,\n" +
+                "        \"nbSoldTicket\": 8,\n" +
+                "        \"nbBoughtOnSiteTicket\": 0,\n" +
+                "        \"date\": {\n" +
+                "            \"date\": \"2019-05-28 12:00:00.000000\",\n" +
+                "            \"timezone_type\": 3,\n" +
+                "            \"timezone\": \"Europe/Brussels\"\n" +
+                "        },\n" +
+                "        \"nbTicketBoughtInCash\": 0,\n" +
+                "        \"error\": \"\",\n" +
+                "        \"audience\": [],\n" +
+                "        \"counterparts\": [\n" +
+                "            {\n" +
+                "                \"id\": 85,\n" +
+                "                \"name\": \"Uno ticketo normale\",\n" +
+                "                \"price\": 34\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"detailsTixPerCp\": [\n" +
+                "            {\n" +
+                "                \"85\": 8\n" +
+                "            }\n" +
+                "        ],\n" +
+                "        \"photoPath\": \"\"\n" +
                 "    },\n" +
                 "    {\n" +
                 "        \"id\": 750048,\n" +
@@ -473,8 +571,18 @@ public class EventPresenterTest {
                 "            {\n" +
                 "                \"84\": 0\n" +
                 "            }\n" +
-                "        ]\n" +
+                "        ],\n" +
+                "        \"photoPath\": \"\"\n" +
                 "    }\n" +
                 "]";
+    }
+
+    public boolean hasEvent(List<Event> events, int id){
+        for (Event e : events) {
+            if (e.getId() == id){
+                return true;
+            }
+        }
+        return false;
     }
 }
