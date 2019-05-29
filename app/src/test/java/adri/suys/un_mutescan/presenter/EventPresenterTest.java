@@ -16,6 +16,7 @@ import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EventPresenterTest {

@@ -36,6 +36,7 @@ public class RestService {
     private static final int SCAN_TICKET = 0;
     private static final int USER = 2;
     private static final String IP_ADDRESS = "192.168.1.33"; // changer en fonction des besoins ou utiliser "localhost"
+    private static final boolean USE_REAL_URL_IN_DEBUG = false;
 
     private static String BASE_URL_USER;
     private static String BASE_URL_SCAN_TICKET;
@@ -64,10 +65,17 @@ public class RestService {
 
     private void handleUrls(){
         if (BuildConfig.IS_DEBUG_MODE){
-            BASE_URL_USER = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/loginuser?";
-            BASE_URL_SCAN_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/scanticket?";
-            BASE_URL_EVENTS = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/getevents?";
-            BASE_URL_ADD_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/addticket?";
+            if (!USE_REAL_URL_IN_DEBUG) {
+                BASE_URL_USER = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/loginuser?";
+                BASE_URL_SCAN_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/scanticket?";
+                BASE_URL_EVENTS = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/getevents?";
+                BASE_URL_ADD_TICKET = "http://" + IP_ADDRESS + ":8888/GroopyMusic/web/app_dev.php/yb/rest/addticket?";
+            } else {
+                BASE_URL_USER = "https://ticked-it.be/rest/loginuser?";
+                BASE_URL_SCAN_TICKET = "https://ticked-it.be/rest/scanticket?";
+                BASE_URL_EVENTS = "https://ticked-it.be/rest/getevents?";
+                BASE_URL_ADD_TICKET = "https://ticked-it.be/rest/addticket?";
+            }
         } else {
             BASE_URL_USER = "https://ticked-it.be/rest/loginuser?";
             BASE_URL_SCAN_TICKET = "https://ticked-it.be/rest/scanticket?";
