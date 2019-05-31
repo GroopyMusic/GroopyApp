@@ -189,7 +189,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
 
         private void initViewElements() {
             eventBtn = itemView.findViewById(R.id.event);
-            imageView = itemView.findViewById(R.id.event_img);
+            //imageView = itemView.findViewById(R.id.event_img);
             setClickActions();
         }
 
@@ -204,12 +204,12 @@ public class EventListActivity extends Activity implements EventListViewInterfac
                     selectEvent();
                 }
             });
-            imageView.setOnClickListener(new View.OnClickListener() {
+            /*imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     selectEvent();
                 }
-            });
+            });*/
         }
 
         private void selectEvent(){
@@ -229,7 +229,7 @@ public class EventListActivity extends Activity implements EventListViewInterfac
 
         @Override
         public void setImage(String photoPath) {
-            new DownLoadImageTask(imageView).execute(photoPath);
+            //new DownLoadImageTask(imageView).execute(photoPath);
         }
     }
 
