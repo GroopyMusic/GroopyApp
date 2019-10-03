@@ -51,8 +51,10 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
         configActionBar();
+        hideMenuItem(false);
         setElements();
-        createEvents(false);
+        boolean forceRefresh = getIntent().getBooleanExtra("refresh", false);
+        createEvents(forceRefresh);
         handleSearch();
         handlePullToRefresh();
     }
@@ -104,13 +106,13 @@ public class EventListActivity extends Activity implements EventListViewInterfac
         return presenter;
     }
 
+    public void createEvents(boolean forceRefresh) {
+        presenter.collectEvents(forceRefresh, isInternetConnected());
+    }
+
     /////////////////////
     // private methods //
     /////////////////////
-
-    private void createEvents(boolean forceRefresh) {
-        presenter.collectEvents(forceRefresh, isInternetConnected());
-    }
 
     private void handleSearch(){
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

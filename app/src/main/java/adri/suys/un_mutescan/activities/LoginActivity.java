@@ -28,6 +28,7 @@ import com.google.android.gms.common.api.Status;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestService;
+import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.presenter.LoginPresenter;
 import adri.suys.un_mutescan.viewinterfaces.LoginViewInterface;
 
@@ -51,6 +52,7 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         configActionBar();
+        hideMenuItem(true);
         restCommunication = new RestService(this);
         initViewElements();
         if (savedInstanceState != null){
@@ -119,7 +121,9 @@ public class LoginActivity extends Activity implements LoginViewInterface, Googl
 
     @Override
     public void changeScreen(){
-        startActivity(new Intent(this, EventListActivity.class));
+        Intent i = new Intent(this, EventListActivity.class);
+        i.putExtra("refresh", false);
+        startActivity(i);
     }
 
     @Override

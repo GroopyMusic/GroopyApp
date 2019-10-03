@@ -31,7 +31,7 @@ import adri.suys.un_mutescan.security.BCrypt;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.LoginViewInterface;
 
-public class LoginPresenter {
+public class LoginPresenter extends Presenter {
 
     private String username;
     private String password;
@@ -96,14 +96,24 @@ public class LoginPresenter {
     public void handleVolleyError(VolleyError error) {
         if (error instanceof NoConnectionError || error instanceof TimeoutError){
             view.showNoConnectionRetryToast();
+            System.out.println("wifi 0");
+            if (error instanceof  NoConnectionError){
+                System.out.println("no connection error");
+            } else {
+                System.out.println("time out error");
+            }
         } else if (error instanceof AuthFailureError){
             view.showServerConnectionProblemToast();
+            System.out.println("wifi 1");
         } else if (error instanceof ServerError){
             view.showServerConnectionProblemToast();
+            System.out.println("wifi 2");
         } else if (error instanceof NetworkError) {
             view.showServerConnectionProblemToast();
+            System.out.println("wifi 3");
         } else if (error instanceof ParseError){
             view.showServerConnectionProblemToast();
+            System.out.println("wifi 4");
         }
         view.enableButton();
         view.hideProgressBar();

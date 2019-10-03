@@ -83,6 +83,8 @@ public class Ticket implements Serializable {
         return cart_number;
     }
 
+    public String getError(){ return error; }
+
     @Override
     public String toString() {
         return buyer + " - " + is_validated;

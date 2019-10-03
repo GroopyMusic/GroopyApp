@@ -21,7 +21,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.OneEventActivity" />
-        <activity android:name=".activities.TicketInfosActivity"/>
+        <activity android:name=".activities.TicketInfosActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".activities.EventListActivity"/>
         <activity android:name=".activities.PayActivity"/>
         <activity android:name=".activities.FAQActivity"/>

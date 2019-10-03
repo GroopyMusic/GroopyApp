@@ -11,7 +11,7 @@ import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.AudienceRowViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.AudienceViewInterface;
 
-public class AudiencePresenter {
+public class AudiencePresenter extends Presenter {
 
     private final AudienceViewInterface view;
     private List<Ticket> audienceToBeDisplayed = new ArrayList<>();

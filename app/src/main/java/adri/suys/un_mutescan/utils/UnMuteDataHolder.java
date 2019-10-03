@@ -25,6 +25,7 @@ public class UnMuteDataHolder {
     private static int currentFragment = 0;
     private static List<Event> events;
     private static List<String> requestURLs;
+    private static boolean hideRefreshButton = false;
 
     public static User getUser() {
         return user;
@@ -40,6 +41,14 @@ public class UnMuteDataHolder {
 
     public static void setEvent(Event event) {
         UnMuteDataHolder.event = event;
+    }
+
+    public static boolean isHideRefreshButton(){
+        return hideRefreshButton;
+    }
+
+    public static void setHideRefreshButton(boolean hideRefreshButton) {
+        UnMuteDataHolder.hideRefreshButton = hideRefreshButton;
     }
 
     public static int getCurrentFragment() {
@@ -137,7 +146,7 @@ public class UnMuteDataHolder {
         return sorted;
     }
 
-    public static int isValidatedTicket(String barcode){
+    public static int getTicketPosition(String barcode){
         for (int i = 0; i < getAudience().size(); i++){
             if (getAudience().get(i).getBarcodeText().equals(barcode)){
                 return i;
@@ -174,5 +183,14 @@ public class UnMuteDataHolder {
         return new int[]{
             tomatoRed, yueGuangLanBlue, waterfall
         };
+    }
+
+    public static Event GetEventFromID(int eventID){
+        for (Event e : events){
+            if (e.getId() == eventID){
+                return e;
+            }
+        }
+        return null;
     }
 }

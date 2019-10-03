@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestService;
+import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.presenter.TicketInfosPresenter;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
 public class TicketInfosActivity extends Activity implements TicketInfosViewInterface {
@@ -29,6 +31,7 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_infos);
         configActionBar();
+        hideMenuItem(true);
         initViewElements();
         presenter = new TicketInfosPresenter(this);
         restCommunication = new RestService(this);
@@ -61,20 +64,20 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
     /**
      * Display the infos of the ticket
      * @param isValid a boolean indicating if the ticket is valid or not
-     * @param isScanned a boolean indicating if the ticket has already been scanned
+     * @param isAlreadyScanned a boolean indicating if the ticket has already been scanned
      * @param barcodeText the value of the barcode
      * @param name the name of the buyer
      * @param ticketType the type of ticket
      * @param seatType the seat number
      */
-    public void displayTicket(boolean isValid, boolean isScanned, String barcodeText, String name, String ticketType, String seatType) {
+    public void displayTicket(boolean isValid, boolean isAlreadyScanned, String barcodeText, String name, String ticketType, String seatType) {
         frame.setBackgroundResource(R.drawable.dark_green_border);
         barcode.setText(barcodeText);
         this.name.setText(name);
         this.ticketType.setText(ticketType);
         this.seatType.setText(seatType);
         String message;
-        if (isScanned){
+        if (isAlreadyScanned){
             message = getResources().getString(R.string.scan_error_already_scanned);
         } else {
             message = getResources().getString(R.string.ticket_ok_dialog);
@@ -83,11 +86,53 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
             int green = ContextCompat.getColor(this, R.color.aurora_green);
             ticketError.setTextColor(green);
             ticketError.setText(message);
+            presenter.updateDB();
         } else {
             int red = ContextCompat.getColor(this, R.color.tomato_red);
             ticketError.setTextColor(red);
             ticketError.setText(message);
         }
+    }
+
+    private void displayScanAlertMsg(Ticket ticketScanned){
+        final String message;
+        message = ticketScanned.getError().equals("") ? "Ticket validé" : ticketScanned.getError();
+        dialogBuilder.setMessage(message).setTitle("");
+        dialogBuilder.setCancelable(false)
+                .setPositiveButton(R.string.back_to_scan, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                        startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
+                    }
+                })
+                .setNegativeButton(R.string.see_more, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog alert = dialogBuilder.create();
+        alert.setTitle("");
+        alert.show();
+    }
+
+    public void displayScanResult(Ticket ticketScanned){
+        frame.setBackgroundResource(R.drawable.dark_green_border);
+        barcode.setText(ticketScanned.getBarcodeText());
+        this.name.setText(ticketScanned.getName());
+        this.ticketType.setText(ticketScanned.getTicketType());
+        this.seatType.setText(ticketScanned.getSeatValue());
+        if (ticketScanned.getError().equals("")){
+            int green = ContextCompat.getColor(this, R.color.aurora_green);
+            ticketError.setTextColor(green);
+            ticketError.setText(getResources().getString(R.string.ticket_ok_dialog));
+        } else {
+            int red = ContextCompat.getColor(this, R.color.tomato_red);
+            ticketError.setTextColor(red);
+            ticketError.setText(ticketScanned.getError());
+        }
+        displayScanAlertMsg(ticketScanned);
     }
 
     @Override
@@ -125,9 +170,6 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
-                            presenter.updateDB();
-                        }
                         startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
                     }
                 })
@@ -135,9 +177,6 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
-                            presenter.updateDB();
-                        }
                     }
                 });
         AlertDialog alert = dialogBuilder.create();
@@ -162,9 +201,6 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
-                            presenter.updateDB();
-                        }
                         startActivity(new Intent(TicketInfosActivity.this, OneEventActivity.class));
                     }
                 })
@@ -172,9 +208,6 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.cancel();
-                        if (message.equals(getResources().getString(R.string.ticket_ok_dialog))){
-                            presenter.updateDB();
-                        }
                     }
                 });
         AlertDialog alert = dialogBuilder.create();
@@ -183,8 +216,8 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
     }
 
     @Override
-    public void scanTicket(int userID, int eventID, String barcode) {
-        restCommunication.scanTicket(userID, eventID, barcode);
+    public void scanTicket(int userID, int eventID, String barcode, boolean directRest) {
+        restCommunication.scanTicket(userID, eventID, barcode, directRest);
     }
 
     /**
@@ -212,8 +245,11 @@ public class TicketInfosActivity extends Activity implements TicketInfosViewInte
 
     private void displayInfos(){
         String barcodeValue = getIntent().getStringExtra("barcode");
-        presenter.validateBarcode(barcodeValue);
+        if (isInternetConnected()){
+            scanTicket(UnMuteDataHolder.getUser().getId(), UnMuteDataHolder.getEvent().getId(), barcodeValue, true);
+        } else {
+            presenter.validateBarcode(barcodeValue);
+        }
     }
-
 
 }

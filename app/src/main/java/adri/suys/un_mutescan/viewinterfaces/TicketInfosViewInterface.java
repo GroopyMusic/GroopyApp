@@ -1,5 +1,7 @@
 package adri.suys.un_mutescan.viewinterfaces;
 
+import adri.suys.un_mutescan.model.Ticket;
+
 public interface TicketInfosViewInterface {
 
     void hideProgressBar();
@@ -10,5 +12,6 @@ public interface TicketInfosViewInterface {
     void showNoConnectionRetryToast();
     void showServerConnectionProblemToast();
     void displayAlertMsg(boolean isScanned);
-    void scanTicket(int id, int id1, String barcode);
+    void scanTicket(int id, int id1, String barcode, boolean directRest);
+    void displayScanResult(Ticket ticketScanned);
 }

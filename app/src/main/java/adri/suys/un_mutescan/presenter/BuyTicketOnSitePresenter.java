@@ -12,7 +12,7 @@ import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.BuyTicketOnSiteViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.PurchaseRowViewInterface;
 
-public class BuyTicketOnSitePresenter{
+public class BuyTicketOnSitePresenter extends Presenter {
 
     private final Event event;
     private List<Counterpart> counterparts = new ArrayList<>();

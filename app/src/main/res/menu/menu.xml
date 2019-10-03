@@ -5,10 +5,16 @@
         android:id="@+id/faq"
         android:title="FAQ"
         android:icon="@drawable/ic_info_outline_green_24dp"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/refresh"
+        android:title="Rafraichir"
+        android:icon="@drawable/ic_refresh_green_24dp"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/disconnect"
         android:title="Se déconnecter"
         android:icon="@drawable/ic_exit_to_app_green_24dp"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>

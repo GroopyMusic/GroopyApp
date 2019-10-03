@@ -33,6 +33,7 @@ public class OneEventActivity extends Activity {
         setContentView(R.layout.activity_one_event);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         configActionBar();
+        hideMenuItem(false);
         setNavigationActions();
         loadFragment(new EventStatFragment());
     }
@@ -66,7 +67,9 @@ public class OneEventActivity extends Activity {
 
     @Override
     public void onBackPressed(){
-        startActivity(new Intent(this, EventListActivity.class));
+        Intent i = new Intent(this, EventListActivity.class);
+        i.putExtra("refresh", false);
+        startActivity(i);
     }
 
 

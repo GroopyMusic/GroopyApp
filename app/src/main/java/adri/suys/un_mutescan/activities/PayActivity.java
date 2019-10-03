@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.presenter.PayPresenter;
+import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.PayViewInterface;
 
 import static android.view.View.GONE;
@@ -35,6 +36,7 @@ public class PayActivity extends Activity implements PayViewInterface {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
         configActionBar();
+        hideMenuItem(true);
         presenter = new PayPresenter(this);
         restCommunication = new RestService(this);
         restCommunication.setPayPresenter(presenter);

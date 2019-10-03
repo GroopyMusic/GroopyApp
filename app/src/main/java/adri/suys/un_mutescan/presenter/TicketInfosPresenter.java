@@ -8,8 +8,11 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
+
+import java.util.List;
 
 import adri.suys.un_mutescan.activities.TicketInfosActivity;
 import adri.suys.un_mutescan.apirest.RestService;
@@ -18,7 +21,7 @@ import adri.suys.un_mutescan.model.Ticket;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.TicketInfosViewInterface;
 
-public class TicketInfosPresenter {
+public class TicketInfosPresenter extends Presenter {
 
     private final Event currentEvent;
     private final TicketInfosViewInterface view;
@@ -33,13 +36,13 @@ public class TicketInfosPresenter {
     public void updateDB(){
         ticket.setIs_validated(true);
         currentEvent.scanTicket();
-        view.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcode);
+        view.scanTicket(UnMuteDataHolder.getUser().getId(), currentEvent.getId(), barcode, false);
     }
 
     public boolean validateBarcode(String barcodeValue){
         barcode = barcodeValue;
         boolean isValid = false;
-        int i = UnMuteDataHolder.isValidatedTicket(barcodeValue);
+        int i = UnMuteDataHolder.getTicketPosition(barcodeValue);
         if (i == -2){
             view.hideProgressBar();
             view.displayEventName(currentEvent.getName());
@@ -47,25 +50,44 @@ public class TicketInfosPresenter {
             view.displayAlert();
         } else {
             ticket = UnMuteDataHolder.getAudience().get(i);
-            boolean isScanned;
+            boolean isAlreadyScanned;
             if (ticket.isScanned()){
-                isScanned = true;
+                isAlreadyScanned = true;
             } else {
-                isScanned = false;
+                isAlreadyScanned = false;
                 isValid = true;
                 ticket.setIs_validated(true);
             }
             view.hideProgressBar();
             view.displayEventName(currentEvent.getName());
-            view.displayTicket(isValid, isScanned, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatValue());
-            view.displayAlertMsg(isScanned);
+            view.displayTicket(isValid, isAlreadyScanned, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatValue());
+            view.displayAlertMsg(isAlreadyScanned);
         }
         return isValid;
     }
 
-    public void handleJSONObject(JSONObject response, Gson gson) {
-        System.out.println("J'ai fini ma requete");
-        // do nothing
+    public void handleJSONObject(JSONObject response, Gson gson, boolean directRest) {
+        if (directRest){
+            Ticket ticketScanned = gson.fromJson(response.toString(), new TypeToken<Ticket>(){}.getType());
+            if (ticketScanned.getError().equals("Ce ticket n'existe pas.")){
+                view.hideProgressBar();
+                view.displayEventName(currentEvent.getName());
+                view.displayTicketUnknwn(ticketScanned.getBarcodeText());
+                view.displayAlert();
+            } else {
+                ticket = UnMuteDataHolder.getAudience().get(UnMuteDataHolder.getTicketPosition(ticketScanned.getBarcodeText()));
+                if (ticketScanned.getError().equals("")) {
+                    ticket.setIs_validated(true);
+                }
+                view.hideProgressBar();
+                view.displayEventName(currentEvent.getName());
+                view.displayScanResult(ticketScanned);
+                //view.displayTicket(isValid, isAlreadyScanned, ticket.getBarcodeText(), ticket.getName(), ticket.getTicketType(), ticket.getSeatValue(), true);
+                //view.displayAlertMsg(isAlreadyScanned);
+            }
+        } else {
+            System.out.println("J'ai fini ma requête.");
+        }
     }
 
     public void handleVolleyError(VolleyError error){

@@ -24,6 +24,7 @@ import adri.suys.un_mutescan.R;
 import adri.suys.un_mutescan.apirest.RestService;
 import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.model.User;
+import adri.suys.un_mutescan.presenter.Presenter;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 
 public abstract class Activity extends AppCompatActivity {
@@ -64,8 +65,24 @@ public abstract class Activity extends AppCompatActivity {
             makePendingRequest();
             startActivity(new Intent(this, FAQActivity.class));
             return true;
+        } else if (id == R.id.refresh){
+            makePendingRequest();
+            Intent i = new Intent(this, EventListActivity.class);
+            i.putExtra("refresh", true);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        menu.findItem(R.id.refresh).setVisible(!UnMuteDataHolder.isHideRefreshButton());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void hideMenuItem(boolean mustHide){
+        UnMuteDataHolder.setHideRefreshButton(mustHide);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -231,7 +248,7 @@ public abstract class Activity extends AppCompatActivity {
      * If the device is connected to the internet, tries to connect with the server
      * and make all the pending requests.
      */
-    void makePendingRequest(){
+    public void makePendingRequest(){
         if (isInternetConnected()) {
             List<String> pendingRequests = retrievePendingRequest();
             UnMuteDataHolder.setRequestURLs(pendingRequests);

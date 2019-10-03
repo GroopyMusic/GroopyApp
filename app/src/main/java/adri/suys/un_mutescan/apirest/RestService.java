@@ -35,7 +35,7 @@ public class RestService {
 
     private static final int SCAN_TICKET = 0;
     private static final int USER = 2;
-    private static final String IP_ADDRESS = "192.168.1.33"; // changer en fonction des besoins ou utiliser "localhost"
+    private static final String IP_ADDRESS = "192.168.1.7"; // changer en fonction des besoins ou utiliser "localhost"
     private static final boolean USE_REAL_URL_IN_DEBUG = false;
 
     private static String BASE_URL_USER;
@@ -92,7 +92,7 @@ public class RestService {
      */
     public void loginUser(String username){
         String url = BASE_URL_USER + "username=" + username;
-        createJsonObjectRequest(url, USER, false);
+        createJsonObjectRequest(url, USER, false, false);
     }
 
     /**
@@ -103,10 +103,10 @@ public class RestService {
      * @param eventID the id of the current event
      * @param barcodeValue the barcode value scanned
      */
-    public void scanTicket(int userID, int eventID, String barcodeValue){
+    public void scanTicket(int userID, int eventID, String barcodeValue, boolean directRest){
         String url = BASE_URL_SCAN_TICKET + "user_id=" + userID + "&event_id=" + eventID + "&barcode=" + barcodeValue;
         if (activity.isInternetConnected()) {
-            createJsonObjectRequest(url, SCAN_TICKET, false);
+            createJsonObjectRequest(url, SCAN_TICKET, false, directRest);
         } else {
             UnMuteDataHolder.addRequest(url);
             activity.backUpUrls();
@@ -158,7 +158,7 @@ public class RestService {
     public void makePendingRequest() {
         for (String url : UnMuteDataHolder.getRequestURLs()){
             if (url.contains("scanticket")){
-                createJsonObjectRequest(url, SCAN_TICKET, true);
+                createJsonObjectRequest(url, SCAN_TICKET, true, false);
             } else if (url.contains("addticket")){
                 createAddRequest(url, true);
             }
@@ -189,7 +189,7 @@ public class RestService {
     //||PRIVATE||//
     //|||||||||||//
 
-    private void createJsonObjectRequest(final String url, final int hint, final boolean isSilent){
+    private void createJsonObjectRequest(final String url, final int hint, final boolean isSilent, final boolean directRest){
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -199,7 +199,7 @@ public class RestService {
                         } else {
                             switch (hint) {
                                 case SCAN_TICKET:
-                                    ticketPresenter.handleJSONObject(response, gson);
+                                    ticketPresenter.handleJSONObject(response, gson, directRest);
                                     break;
                                 case USER:
                                     userPresenter.handleJSONObject(response, gson);
@@ -325,4 +325,8 @@ public class RestService {
                 + "&mode=" + mode + "&email=" + email + "&firstname=" + firstname + "&lastname=" + lastname;
     }
 
+    public void refreshData(int id) {
+        String url = BASE_URL_EVENTS + "id=" + id;
+        createJsonArrayRequest(url);
+    }
 }

@@ -36,7 +36,7 @@ import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.EventListViewInterface;
 import adri.suys.un_mutescan.viewinterfaces.EventRowViewInterface;
 
-public class EventPresenter {
+public class EventPresenter extends Presenter {
 
     private List<Event> events = new ArrayList<>();
     private List<Event> filteredEvents = new ArrayList<>();

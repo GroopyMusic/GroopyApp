@@ -19,7 +19,7 @@ import adri.suys.un_mutescan.model.Event;
 import adri.suys.un_mutescan.utils.UnMuteDataHolder;
 import adri.suys.un_mutescan.viewinterfaces.PayViewInterface;
 
-public class PayPresenter {
+public class PayPresenter extends Presenter {
 
     private final PayViewInterface view;
     private final Event event;
